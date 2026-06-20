@@ -55,3 +55,4 @@ table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius:
 th, td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,.12); text-align: left; }
 th { color: var(--accent); }
 .warn { color: var(--danger) !important; }
+.clip-visual { width: 100%; margin-top: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,.16); background: #0b3b27; }

@@ -29,6 +29,7 @@ function generateAnswer(log, question) {
 }
 function renderClip() {
   const log = logs[$('clipSelect').selectedIndex];
+  if ($('clipVisual')) $('clipVisual').src = log.visual_asset || '';
   $('matchState').innerHTML = `
     <dl>
       <dt>Possession</dt><dd>${log.team_in_possession}</dd>

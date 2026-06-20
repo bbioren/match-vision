@@ -15,7 +15,8 @@
       "where is the ball": "The ball is on the right wing, about 30 yards from goal. Blue are attacking from left to right.",
       "what just happened": "The blue winger beat a defender near the right sideline and sent a low cross into the six-yard box. A striker almost reached it in front of goal but missed by less than a step.",
       "why did the crowd react": "The crowd reacted because the cross rolled across the most dangerous area in front of goal, and the striker barely missed a tap-in."
-    }
+    },
+    "visual_asset": "clips/clip_1.svg"
   },
   {
     "clip_id": "clip_2",
@@ -33,7 +34,8 @@
       "where is the ball": "The ball is near the center circle, moving quickly from right to left as White start a counterattack.",
       "who has space": "The white left winger has the most space, sprinting into the left channel with no defender tight to them.",
       "what just happened": "White won possession in midfield and immediately broke forward with three attackers against two defenders."
-    }
+    },
+    "visual_asset": "clips/clip_2.svg"
   },
   {
     "clip_id": "clip_3",
@@ -51,6 +53,7 @@
       "what just happened": "A red attacker tried to cut inside near the left edge of the penalty area. A defender slid in from the side, made contact, and both players went down.",
       "why did the crowd react": "The contact happened very close to the penalty area, so fans are reacting to whether it should be a foul or possibly a penalty.",
       "where is the ball": "The ball is loose near the left edge of the penalty area after the sliding challenge."
-    }
+    },
+    "visual_asset": "clips/clip_3.svg"
   }
 ]
