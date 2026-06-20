@@ -10,7 +10,7 @@ import {
   setZoomLevel,
   isTracking_fn,
   getGazePosition
-} from './eyetrack-simple.js';
+} from './eyetrack-real.js';
 
 export class EyeTrackingVideoPlayer {
   constructor(containerId) {
