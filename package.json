@@ -6,8 +6,16 @@
   "scripts": {
     "dev": "python3 -m http.server 5173",
     "start": "python3 -m http.server 5173",
-    "check": "node scripts/check-data.mjs"
+    "check": "node scripts/check-data.mjs",
+    "metrics": "node scripts/compute-metrics.mjs"
   },
-  "keywords": ["accessibility", "soccer", "voice", "hackathon", "deepgram", "terac"],
+  "keywords": [
+    "accessibility",
+    "soccer",
+    "voice",
+    "hackathon",
+    "deepgram",
+    "terac"
+  ],
   "license": "MIT"
 }

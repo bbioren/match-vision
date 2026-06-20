@@ -1,0 +1,26 @@
+[
+  {
+    "task_id": "t1",
+    "clip_id": "clip_1",
+    "clip_summary": "Blue attacks left to right. Ball on right wing, about 30 yards from goal. Winger beats defender and sends low cross across six-yard box. Striker nearly reaches it.",
+    "baseline": "Blue put a ball into the box and it was almost a goal.",
+    "improved": "Blue are attacking left to right. The ball is on the right wing, about 30 yards from goal. A winger beats one defender and drives a low cross toward the six-yard box, where a striker misses it by less than a step. The crowd reacts because it was a clear chance directly in front of goal.",
+    "split": "train"
+  },
+  {
+    "task_id": "t2",
+    "clip_id": "clip_2",
+    "clip_summary": "White wins possession in midfield and counterattacks right to left with three attackers against two defenders. Left winger is open.",
+    "baseline": "White are on the break and have options.",
+    "improved": "White have won the ball near the center circle and are counterattacking from right to left. They have three attackers against two retreating defenders. The left winger is open in space, while the central striker is closely marked. The danger is the pass into the left channel.",
+    "split": "train"
+  },
+  {
+    "task_id": "t3",
+    "clip_id": "clip_3",
+    "clip_summary": "Red attacks left to right near the left edge of the penalty area. Attacker cuts inside, defender slides from the side, both go down near the box.",
+    "baseline": "There is a challenge near the box and the crowd wants a call.",
+    "improved": "Red are attacking left to right near the left edge of the penalty area. The attacker cuts inside, and a defender slides in from the side. Both players fall just outside or on the edge of the box. The crowd reacts because the contact is close to the penalty area and could lead to a dangerous free kick or penalty review.",
+    "split": "heldout"
+  }
+]

@@ -2,36 +2,46 @@
 
 **Commentary tells you the game. MatchVision lets you see it.**
 
-MatchVision is a voice-first accessibility companion that gives blind and low-vision soccer fans the missing visual layer of a match: ball location, player positioning, direction of attack, and why key moments matter.
+MatchVision is a voice-first accessibility companion that gives blind and low-vision soccer fans the missing visual layer of a soccer match: ball location, player positioning, direction of attack, and why key moments matter.
 
-Built for the World Cup era, it uses:
+## Run the demo
 
-- **Deepgram** for voice input and spoken audio descriptions
-- **Claude / Anthropic** for accessible match descriptions and Q&A
-- **Terac** for human accessibility labels and before/after improvement
-- **Redis** for match memory and user preference modes
-- **Arize** for evaluation traces and quality metrics
+```bash
+npm run dev
+```
 
-## Hackathon goal
+Open <http://localhost:5173>.
 
-Target **Ddoski's World** and sponsor tracks including **Terac**, **Deepgram**, **Anthropic**, **Redis**, and **Arize**.
+No install is required for the current static MVP. It uses browser speech APIs as a local fallback while Deepgram integration is added.
 
-## Problem
+## Hackathon sponsor strategy
 
-Existing soccer commentary assumes the viewer can already see the field. Blind and low-vision fans often miss spatial context: where the ball is, which team is attacking, why the crowd reacted, who is open, and what changed in the last few seconds.
+- **Terac:** custom annotation task comparing baseline vs improved accessibility descriptions, then before/after metrics.
+- **Deepgram:** voice-first user questions and spoken answers.
+- **Anthropic:** accessible description generation and natural-language Q&A.
+- **Redis:** match memory and user preference modes.
+- **Arize:** evaluation evidence for helpfulness, event coverage, and hallucination reduction.
 
-MatchVision adds the missing accessibility-grade visual description layer.
+## Current MVP
 
-## MVP
+- Static web demo
+- 3 structured soccer match moments
+- voice/text question flow
+- spoken answer fallback using browser TTS
+- baseline vs improved Terac comparison panel
+- initial metrics panel
+- annotation task and metric scripts
 
-- 3-5 preselected soccer clips
-- structured event logs for each clip
-- voice question input
-- spoken answers
-- accessible descriptions generated from match state
-- Terac labeling flow comparing baseline vs improved descriptions
-- before/after quality metrics
+## Validate data
 
-## Repository status
+```bash
+npm run check
+node scripts/compute-metrics.mjs
+```
 
-This repo was initialized during the UC Berkeley AI Hackathon sprint. See [`SCOPE.md`](./SCOPE.md) for the full project plan and sponsor strategy.
+## Key docs
+
+- [`SCOPE.md`](./SCOPE.md): full scope and architecture
+- [`TODO.md`](./TODO.md): sprint checklist
+- [`docs/TERAC_ANNOTATION_PLAN.md`](./docs/TERAC_ANNOTATION_PLAN.md): labeling plan
+- [`docs/DEVPOST_DRAFT.md`](./docs/DEVPOST_DRAFT.md): submission draft
