@@ -1,24 +1,12 @@
+import { generateAccessibleDescription } from './services/description.js';
+import { setupSpeechRecognition, speakWithDeepgramOrFallback } from './services/voice.js';
+import { loadMemory, saveMemory } from './services/memory.js';
+
 let logs = [];
-let currentUtterance = null;
-const MEMORY_KEY = 'matchvision_memory';
 const $ = (id) => document.getElementById(id);
 
 function normalize(text) {
   return text.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
-}
-function loadMemory() {
-  return JSON.parse(localStorage.getItem(MEMORY_KEY) || '[]');
-}
-function saveMemory(entry) {
-  const memory = [entry, ...loadMemory()].slice(0, 5);
-  localStorage.setItem(MEMORY_KEY, JSON.stringify(memory));
-  renderMemory();
-}
-function renderMemory() {
-  const el = $('memoryList');
-  if (!el) return;
-  const memory = loadMemory();
-  el.innerHTML = memory.length ? memory.map((m) => `<li><strong>${m.mode}</strong> · ${m.clip}: “${m.question}”</li>`).join('') : '<li>No recent questions yet.</li>';
 }
 function modeInstruction(mode, log) {
   if (mode === 'brief') return `${log.team_in_possession} are attacking ${log.direction}. The ball is ${log.ball_location}. ${log.event}.`;
@@ -53,42 +41,25 @@ function renderClip() {
   $('answer').textContent = generateAnswer(log, $('questionInput').value);
   renderMemory();
 }
-function ask() {
+async function ask() {
   const log = logs[$('clipSelect').selectedIndex];
   const question = $('questionInput').value;
-  $('answer').textContent = generateAnswer(log, question);
-  saveMemory({ clip: log.title, question, mode: $('modeSelect')?.value || 'balanced', ts: Date.now() });
+  const mode = $('modeSelect')?.value || 'balanced';
+  $('answer').textContent = await generateAccessibleDescription({ log, question, mode, fallback: () => generateAnswer(log, question) });
+  await saveMemory({ clip: log.title, question, mode, ts: Date.now() });
+  renderMemory();
 }
 function speak() {
-  const text = $('answer').textContent;
-  if (!('speechSynthesis' in window) || !text) return;
-  if (currentUtterance) window.speechSynthesis.cancel();
-  currentUtterance = new SpeechSynthesisUtterance(text);
-  currentUtterance.rate = 0.95;
-  window.speechSynthesis.speak(currentUtterance);
+  speakWithDeepgramOrFallback($('answer').textContent);
 }
 function setupVoiceInput() {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) {
-    $('voiceBtn').disabled = true;
-    $('voiceBtn').textContent = '🎙️ Voice unavailable in this browser';
-    return;
-  }
-  const recognition = new SpeechRecognition();
-  recognition.lang = 'en-US';
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
-  $('voiceBtn').addEventListener('click', () => {
-    $('voiceBtn').textContent = 'Listening...';
-    recognition.start();
-  });
-  recognition.addEventListener('result', (event) => {
-    $('questionInput').value = event.results[0][0].transcript;
-    ask();
-    speak();
-  });
-  recognition.addEventListener('end', () => {
-    $('voiceBtn').textContent = '🎙️ Ask with voice';
+  setupSpeechRecognition({
+    button: $('voiceBtn'),
+    onTranscript: async (transcript) => {
+      $('questionInput').value = transcript;
+      await ask();
+      speak();
+    }
   });
 }
 async function init() {
