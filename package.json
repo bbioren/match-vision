@@ -7,7 +7,8 @@
     "dev": "node server.mjs",
     "start": "node server.mjs",
     "check": "node scripts/check-data.mjs",
-    "metrics": "node scripts/compute-metrics.mjs"
+    "metrics": "node scripts/compute-metrics.mjs",
+    "rehearse": "node scripts/rehearsal-timer.mjs"
   },
   "keywords": [
     "accessibility",
