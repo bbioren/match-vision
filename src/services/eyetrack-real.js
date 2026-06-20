@@ -59,46 +59,66 @@ export async function initEyeTracking(videoElement, zoomLevel = 1.5) {
     isTracking = true;
 
     // Create facemesh model
-    facemesh = await ml5.facemesh(video, () => {
-      console.log('✅ Face detection model ready');
+    console.log('Creating facemesh model...');
+    facemesh = await ml5.faceMesh({
+      maxFaces: 1,
+      refineLandmarks: true,
+      flipped: false
     });
 
+    console.log('✅ Face detection model ready');
+
     // Get predictions
-    facemesh.on('predict', (predictions) => {
-      if (predictions.length > 0) {
+    const detectFace = async () => {
+      const predictions = await facemesh.estimateFaces(video);
+      
+      if (predictions && predictions.length > 0) {
         const prediction = predictions[0];
-        const leftEye = prediction.landmarks[130]; // Left eye center
-        const rightEye = prediction.landmarks[359]; // Right eye center
+        
+        if (prediction.landmarks && prediction.landmarks.length > 0) {
+          // Use eye landmarks
+          const landmarks = prediction.landmarks;
+          const leftEye = landmarks[130] || landmarks[33]; // Eye positions
+          const rightEye = landmarks[359] || landmarks[263];
 
-        if (leftEye && rightEye) {
-          // Average eye position
-          const avgX = (leftEye[0] + rightEye[0]) / 2;
-          const avgY = (leftEye[1] + rightEye[1]) / 2;
+          if (leftEye && rightEye) {
+            // Average eye position
+            const avgX = (leftEye[0] + rightEye[0]) / 2;
+            const avgY = (leftEye[1] + rightEye[1]) / 2;
 
-          // Normalize to 0-1 range
-          gazeX = avgX / 640;
-          gazeY = avgY / 480;
+            // Normalize to 0-1 range
+            gazeX = avgX / 640;
+            gazeY = avgY / 480;
 
-          // Clamp
-          gazeX = Math.max(0, Math.min(1, gazeX));
-          gazeY = Math.max(0, Math.min(1, gazeY));
+            // Clamp
+            gazeX = Math.max(0, Math.min(1, gazeX));
+            gazeY = Math.max(0, Math.min(1, gazeY));
 
-          lastEyeDetection = Date.now();
+            lastEyeDetection = Date.now();
 
-          // Log every 500ms
-          if (Math.random() < 0.02) {
-            console.log(`👁️ Gaze: (${(gazeX * 100).toFixed(0)}%, ${(gazeY * 100).toFixed(0)}%)`);
+            // Log every 500ms
+            if (Math.random() < 0.02) {
+              console.log(`👁️ Gaze: (${(gazeX * 100).toFixed(0)}%, ${(gazeY * 100).toFixed(0)}%)`);
+            }
+
+            updateVideoZoom(videoElement, zoomLevel);
           }
-
-          updateVideoZoom(videoElement, zoomLevel);
         }
       } else {
-        if (Date.now() - lastEyeDetection > 1000) {
+        if (Date.now() - lastEyeDetection > 2000) {
           console.log('Looking for face...');
           lastEyeDetection = Date.now();
         }
       }
-    });
+
+      // Keep detecting
+      if (isTracking) {
+        requestAnimationFrame(detectFace);
+      }
+    };
+
+    // Start detection loop
+    detectFace();
 
     return true;
   } catch (error) {
