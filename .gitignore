@@ -1,0 +1,25 @@
+# dependencies
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# env/secrets
+.env
+.env.local
+*.pem
+
+# build outputs
+dist/
+build/
+.next/
+.vercel/
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
+
+# media/raw data
+clips/raw/
