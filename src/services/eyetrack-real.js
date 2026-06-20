@@ -98,27 +98,12 @@ export async function initEyeTracking(videoElement, zoomLevel = 1.5) {
 
     isTracking = true;
 
-    // Create facemesh model
+    // Create facemesh model - ml5.faceMesh returns a Promise
     console.log('Creating facemesh model...');
-    facemesh = ml5.faceMesh({
+    facemesh = await ml5.faceMesh({
       maxFaces: 1,
       refineLandmarks: true,
       flipped: false
-    });
-
-    // Wait for model to be ready
-    await new Promise((resolve) => {
-      const checkReady = setInterval(() => {
-        if (facemesh && facemesh.ready) {
-          clearInterval(checkReady);
-          resolve();
-        }
-      }, 100);
-      // Timeout after 10s
-      setTimeout(() => {
-        clearInterval(checkReady);
-        resolve();
-      }, 10000);
     });
 
     console.log('✅ Face detection model ready');
