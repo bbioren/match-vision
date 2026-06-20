@@ -1,0 +1,56 @@
+[
+  {
+    "clip_id": "clip_1",
+    "title": "Right-wing cross and near miss",
+    "time": "00:14",
+    "team_in_possession": "Blue",
+    "direction": "left to right",
+    "ball_location": "right wing, about 30 yards from goal",
+    "event": "the winger beats one defender and sends a low cross toward the six-yard box",
+    "players": "two blue attackers enter the penalty area; the far-post runner is unmarked",
+    "crowd_reason": "the striker nearly reaches the cross in front of goal",
+    "baseline_description": "Blue put a ball into the box and it was almost a goal.",
+    "improved_description": "Blue are attacking left to right. The ball is on the right wing, about 30 yards from goal. A winger beats one defender and drives a low cross toward the six-yard box, where a striker misses it by less than a step. The crowd reacts because it was a clear chance directly in front of goal.",
+    "questions": {
+      "where is the ball": "The ball is on the right wing, about 30 yards from goal. Blue are attacking from left to right.",
+      "what just happened": "The blue winger beat a defender near the right sideline and sent a low cross into the six-yard box. A striker almost reached it in front of goal but missed by less than a step.",
+      "why did the crowd react": "The crowd reacted because the cross rolled across the most dangerous area in front of goal, and the striker barely missed a tap-in."
+    }
+  },
+  {
+    "clip_id": "clip_2",
+    "title": "Counterattack through midfield",
+    "time": "00:22",
+    "team_in_possession": "White",
+    "direction": "right to left",
+    "ball_location": "center circle, moving into open midfield",
+    "event": "white wins the ball and breaks forward quickly with three attackers against two defenders",
+    "players": "left winger is sprinting into open space; central striker is marked; right winger trails the play",
+    "crowd_reason": "a dangerous counterattack opens up with a numbers advantage",
+    "baseline_description": "White are on the break and have options.",
+    "improved_description": "White have won the ball near the center circle and are counterattacking from right to left. They have three attackers against two retreating defenders. The left winger is open in space, while the central striker is closely marked. The danger is the pass into the left channel.",
+    "questions": {
+      "where is the ball": "The ball is near the center circle, moving quickly from right to left as White start a counterattack.",
+      "who has space": "The white left winger has the most space, sprinting into the left channel with no defender tight to them.",
+      "what just happened": "White won possession in midfield and immediately broke forward with three attackers against two defenders."
+    }
+  },
+  {
+    "clip_id": "clip_3",
+    "title": "Hard challenge and possible foul",
+    "time": "00:31",
+    "team_in_possession": "Red",
+    "direction": "left to right",
+    "ball_location": "left edge of the penalty area",
+    "event": "a defender slides in from the side as the attacker cuts toward the box; both players go down",
+    "players": "attacker is on the ground near the penalty area; referee is moving toward the incident; defenders are appealing",
+    "crowd_reason": "fans want a foul because contact happened near the penalty area",
+    "baseline_description": "There is a challenge near the box and the crowd wants a call.",
+    "improved_description": "Red are attacking left to right near the left edge of the penalty area. The attacker cuts inside, and a defender slides in from the side. Both players fall just outside or on the edge of the box. The crowd reacts because the contact is close to the penalty area and could lead to a dangerous free kick or penalty review.",
+    "questions": {
+      "what just happened": "A red attacker tried to cut inside near the left edge of the penalty area. A defender slid in from the side, made contact, and both players went down.",
+      "why did the crowd react": "The contact happened very close to the penalty area, so fans are reacting to whether it should be a foul or possibly a penalty.",
+      "where is the ball": "The ball is loose near the left edge of the penalty area after the sliding challenge."
+    }
+  }
+]

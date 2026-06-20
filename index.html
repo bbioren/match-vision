@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MatchVision</title>
+    <link rel="stylesheet" href="src/styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="hero" aria-labelledby="title">
+        <p class="eyebrow">World Cup-level access for blind and low-vision fans</p>
+        <h1 id="title">MatchVision</h1>
+        <p class="tagline">Commentary tells you the game. MatchVision lets you see it.</p>
+      </section>
+
+      <section class="grid">
+        <section class="card" aria-labelledby="clip-heading">
+          <h2 id="clip-heading">1. Pick a match moment</h2>
+          <label for="clipSelect">Demo clip</label>
+          <select id="clipSelect"></select>
+          <div class="match-state" id="matchState"></div>
+        </section>
+
+        <section class="card" aria-labelledby="ask-heading">
+          <h2 id="ask-heading">2. Ask by voice or text</h2>
+          <div class="controls">
+            <button id="voiceBtn" type="button">🎙️ Ask with voice</button>
+            <button id="speakBtn" type="button">🔊 Speak answer</button>
+          </div>
+          <label for="questionInput">Question</label>
+          <input id="questionInput" value="What just happened?" />
+          <button id="askBtn" type="button" class="primary">Describe the visual layer</button>
+          <p class="hint">Try: “Where is the ball?”, “Why did the crowd react?”, “Who has space?”</p>
+        </section>
+      </section>
+
+      <section class="card answer-card" aria-live="polite">
+        <h2>Accessible audio description</h2>
+        <p id="answer" class="answer"></p>
+      </section>
+
+      <section class="grid">
+        <section class="card">
+          <h2>Terac annotation comparison</h2>
+          <div class="comparison">
+            <div>
+              <h3>Baseline</h3>
+              <p id="baseline"></p>
+            </div>
+            <div>
+              <h3>Improved</h3>
+              <p id="improved"></p>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Before/after metrics</h2>
+          <div class="metric"><span>Helpfulness</span><strong>63% → 84%</strong></div>
+          <div class="metric"><span>Key-event coverage</span><strong>58% → 81%</strong></div>
+          <div class="metric"><span>Hallucination rate</span><strong>21% → 9%</strong></div>
+          <p class="hint">Replace with Terac + Arize numbers once labels arrive.</p>
+        </section>
+      </section>
+    </main>
+    <script type="module" src="src/app.js"></script>
+  </body>
+</html>

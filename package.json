@@ -1,0 +1,13 @@
+{
+  "name": "match-vision",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Voice-first accessibility companion for blind and low-vision soccer fans.",
+  "scripts": {
+    "dev": "python3 -m http.server 5173",
+    "start": "python3 -m http.server 5173",
+    "check": "node scripts/check-data.mjs"
+  },
+  "keywords": ["accessibility", "soccer", "voice", "hackathon", "deepgram", "terac"],
+  "license": "MIT"
+}
