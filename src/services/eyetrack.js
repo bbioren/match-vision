@@ -21,20 +21,31 @@ export async function initEyeTracking(videoElement, zoomLevel = 1.5) {
   try {
     // Load WebGazer from CDN if not already loaded
     if (typeof webgazer === 'undefined') {
+      console.log('Loading WebGazer from CDN...');
       await loadWebGazer();
+      console.log('✅ WebGazer loaded');
     }
 
     isGazeTracking = true;
 
     // Start WebGazer with simple regression (faster, more reliable)
+    console.log('Starting WebGazer.begin()...');
     webgazer.setRegression('ridge');
     webgazer.begin();
-
+    
     console.log('📹 Eye tracking started. Look at the video to control zoom/pan.');
     console.log('💡 Calibration: Look at different parts of the video for ~5 seconds');
 
+    // Add debug tracking for gaze listener
+    let gazeListenerFired = false;
+
     // Listen for gaze data
     webgazer.setGazeListener((data, elapsedTime) => {
+      if (!gazeListenerFired) {
+        console.log('🔍 Gaze listener fired! Data:', data);
+        gazeListenerFired = true;
+      }
+
       if (data == null) {
         console.log('No gaze data yet - calibrating...');
         return;
@@ -54,6 +65,9 @@ export async function initEyeTracking(videoElement, zoomLevel = 1.5) {
       }
     });
 
+    // Also check camera permission
+    console.log('🎥 Requesting camera access...');
+    
     return true;
   } catch (error) {
     console.error('❌ Eye tracking failed:', error);
@@ -161,15 +175,37 @@ function loadWebGazer() {
     const script = document.createElement('script');
     script.src = 'https://webgazer.cs.brown.edu/webgazer.js';
     script.async = true;
+    
     script.onload = () => {
-      // Hide WebGazer's default UI
-      if (typeof webgazer !== 'undefined') {
-        webgazer.showVideo(false); // Hide camera feed
-        webgazer.showPredictionPoints(false); // Hide gaze dots
-      }
-      resolve();
+      console.log('✅ WebGazer script loaded from CDN');
+      console.log('Waiting for webgazer to be available...');
+      
+      // Wait for webgazer to be available
+      let attempts = 0;
+      const checkWebgazer = setInterval(() => {
+        attempts++;
+        if (typeof webgazer !== 'undefined') {
+          clearInterval(checkWebgazer);
+          console.log('✅ webgazer object available');
+          // Hide WebGazer's default UI
+          if (typeof webgazer !== 'undefined') {
+            webgazer.showVideo(false); // Hide camera feed
+            webgazer.showPredictionPoints(false); // Hide gaze dots
+          }
+          resolve();
+        } else if (attempts > 50) {
+          clearInterval(checkWebgazer);
+          console.error('❌ webgazer object not available after 5 seconds');
+          reject(new Error('webgazer failed to initialize'));
+        }
+      }, 100);
     };
-    script.onerror = reject;
+    
+    script.onerror = (error) => {
+      console.error('❌ Failed to load WebGazer from CDN:', error);
+      reject(new Error('Failed to load WebGazer from CDN'));
+    };
+    
     document.head.appendChild(script);
   });
 }
