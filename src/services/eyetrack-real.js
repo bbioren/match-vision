@@ -60,33 +60,55 @@ export async function initEyeTracking(videoElement, zoomLevel = 1.5) {
 
     // Create facemesh model
     console.log('Creating facemesh model...');
-    facemesh = await ml5.faceMesh({
+    facemesh = ml5.faceMesh({
       maxFaces: 1,
       refineLandmarks: true,
       flipped: false
     });
 
+    // Wait for model to be ready
+    await new Promise((resolve) => {
+      const checkReady = setInterval(() => {
+        if (facemesh && facemesh.ready) {
+          clearInterval(checkReady);
+          resolve();
+        }
+      }, 100);
+      // Timeout after 10s
+      setTimeout(() => {
+        clearInterval(checkReady);
+        resolve();
+      }, 10000);
+    });
+
     console.log('✅ Face detection model ready');
 
-    // Get predictions
-    const detectFace = async () => {
-      const predictions = await facemesh.estimateFaces(video);
-      
-      if (predictions && predictions.length > 0) {
-        const prediction = predictions[0];
+    // Use detectStart for continuous detection
+    facemesh.detectStart(video, (results) => {
+      if (results && results.length > 0) {
+        const face = results[0];
         
-        if (prediction.landmarks && prediction.landmarks.length > 0) {
-          // Use eye landmarks
-          const landmarks = prediction.landmarks;
-          const leftEye = landmarks[130] || landmarks[33]; // Eye positions
-          const rightEye = landmarks[359] || landmarks[263];
+        // ml5 faceMesh returns keypoints
+        const keypoints = face.keypoints || face.landmarks;
+        
+        if (keypoints && keypoints.length > 0) {
+          // Eye landmarks: left eye ~130-133, right eye ~359-362
+          // Use approximate indices for eye center
+          const leftEye = keypoints[130] || keypoints[33] || keypoints[0];
+          const rightEye = keypoints[359] || keypoints[263] || keypoints[1];
 
           if (leftEye && rightEye) {
-            // Average eye position
-            const avgX = (leftEye[0] + rightEye[0]) / 2;
-            const avgY = (leftEye[1] + rightEye[1]) / 2;
+            // Handle both {x, y} and [x, y] formats
+            const lx = leftEye.x !== undefined ? leftEye.x : leftEye[0];
+            const ly = leftEye.y !== undefined ? leftEye.y : leftEye[1];
+            const rx = rightEye.x !== undefined ? rightEye.x : rightEye[0];
+            const ry = rightEye.y !== undefined ? rightEye.y : rightEye[1];
 
-            // Normalize to 0-1 range
+            // Average eye position
+            const avgX = (lx + rx) / 2;
+            const avgY = (ly + ry) / 2;
+
+            // Normalize to 0-1 range (video is 640x480)
             gazeX = avgX / 640;
             gazeY = avgY / 480;
 
@@ -96,7 +118,7 @@ export async function initEyeTracking(videoElement, zoomLevel = 1.5) {
 
             lastEyeDetection = Date.now();
 
-            // Log every 500ms
+            // Log periodically
             if (Math.random() < 0.02) {
               console.log(`👁️ Gaze: (${(gazeX * 100).toFixed(0)}%, ${(gazeY * 100).toFixed(0)}%)`);
             }
@@ -110,15 +132,7 @@ export async function initEyeTracking(videoElement, zoomLevel = 1.5) {
           lastEyeDetection = Date.now();
         }
       }
-
-      // Keep detecting
-      if (isTracking) {
-        requestAnimationFrame(detectFace);
-      }
-    };
-
-    // Start detection loop
-    detectFace();
+    });
 
     return true;
   } catch (error) {
