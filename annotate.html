@@ -11,7 +11,7 @@
       <section class="hero">
         <p class="eyebrow">Terac-ready accessibility labels</p>
         <h1>Annotation Lab</h1>
-        <p class="tagline">Compare baseline commentary against MatchVision's accessibility-grade visual description.</p>
+        <p class="tagline">Rank candidate descriptions. These labels train/tune MatchVision's accessibility selector.</p>
         <p><a class="link" href="index.html">← Back to demo</a></p>
       </section>
 
@@ -24,13 +24,15 @@
 
       <section class="grid">
         <section class="card"><h2>Baseline</h2><p id="baseline"></p></section>
-        <section class="card"><h2>MatchVision improved</h2><p id="improved"></p></section>
+        <section class="card"><h2>Current selected output</h2><p id="improved"></p></section>
       </section>
 
       <form id="labelForm" class="card">
-        <h2>Accessibility rubric</h2>
-        <label>Which description is more useful?</label>
-        <select name="preferred"><option>improved</option><option>baseline</option><option>tie</option></select>
+        <h2>Accessibility selector training rubric</h2>
+        <label>Which candidate is best for a blind/low-vision listener?</label>
+        <div id="candidateList" class="candidate-list"></div>
+        <label>Second-best candidate</label>
+        <select id="secondBest" name="second_best"></select>
         <label>Does improved mention ball location?</label>
         <select name="ball_location"><option>yes</option><option>no</option></select>
         <label>Does improved mention direction of attack?</label>

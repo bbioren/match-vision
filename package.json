@@ -8,7 +8,8 @@
     "start": "node server.mjs",
     "check": "node scripts/check-data.mjs",
     "metrics": "node scripts/compute-metrics.mjs",
-    "rehearse": "node scripts/rehearsal-timer.mjs"
+    "rehearse": "node scripts/rehearsal-timer.mjs",
+    "eval-ranker": "node scripts/evaluate-ranker.mjs"
   },
   "keywords": [
     "accessibility",
@@ -18,5 +19,6 @@
     "deepgram",
     "terac"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "type": "module"
 }

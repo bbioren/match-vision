@@ -39,7 +39,7 @@ Say:
 ### 1:55-2:35 Terac improvement
 
 1. Open `annotate.html`.
-2. Show baseline vs improved description.
+2. Show baseline vs candidate-ranked description.
 3. Show rubric fields.
 4. Mention metrics script.
 
@@ -51,7 +51,7 @@ Say:
 
 Say:
 
-> Deepgram powers the voice interface, Claude generates accessible descriptions, Redis is the real-time match memory and preference layer, Terac gives us human accessibility labels, and Arize-style evals prove whether the system actually improves. We are not replacing commentators. We are adding the missing visual layer for fans who have been excluded from the world's most visual sport.
+> Deepgram powers the voice interface, Claude generates accessible descriptions, Redis is the real-time match memory and preference layer, Terac gives us human accessibility labels that train/tune the description selector, and Arize-style evals prove whether the system actually improves. We are not replacing commentators. We are adding the missing visual layer for fans who have been excluded from the world's most visual sport.
 
 ## 5-minute table judging flow
 

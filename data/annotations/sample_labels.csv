@@ -1,6 +1,6 @@
-task_id,preferred,ball_location,direction,key_event,conciseness,hallucination,helpfulness
- t1,improved,yes,yes,yes,4,no,5
- t1,improved,yes,yes,yes,4,no,5
- t2,improved,yes,yes,yes,5,no,4
- t2,improved,yes,yes,yes,4,no,5
- t3,improved,yes,yes,yes,4,no,4
+task_id,best_candidate,second_best,ball_location,direction,key_event,conciseness,hallucination,helpfulness
+t1,spatial,brief,yes,yes,yes,4,no,5
+t1,spatial,tactical,yes,yes,yes,4,no,5
+t2,tactical,spatial,yes,yes,yes,4,no,5
+t2,spatial,brief,yes,yes,yes,5,no,4
+t3,spatial,brief,yes,yes,yes,4,no,4

@@ -1,5 +1,5 @@
 const $ = (id) => document.getElementById(id);
-const headers = ['task_id','preferred','ball_location','direction','key_event','conciseness','hallucination','helpfulness'];
+const headers = ['task_id','best_candidate','second_best','ball_location','direction','key_event','conciseness','hallucination','helpfulness'];
 let tasks = [];
 let labels = JSON.parse(localStorage.getItem('matchvision_labels') || '[]');
 
@@ -16,6 +16,9 @@ function renderTask() {
   $('clipSummary').textContent = task.clip_summary;
   $('baseline').textContent = task.baseline;
   $('improved').textContent = task.improved;
+  const candidates = task.candidates || [];
+  $('candidateList').innerHTML = candidates.map((c) => `<label><input type="radio" name="best_candidate" value="${c.id}" ${c.id === 'spatial' ? 'checked' : ''}/> <strong>${c.label}</strong><br/><span>${c.description}</span></label>`).join('');
+  $('secondBest').innerHTML = candidates.map((c) => `<option value="${c.id}">${c.label}</option>`).join('');
 }
 async function init() {
   tasks = await fetch('data/annotation_tasks.json').then((r) => r.json());

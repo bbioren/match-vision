@@ -2,7 +2,7 @@
 
 ## One-liner
 
-**MatchVision turns live or preselected soccer video into personalized, queryable audio description for blind and low-vision fans, then improves its descriptions using human accessibility labels collected during the hackathon.**
+**MatchVision turns live or preselected soccer video into personalized, queryable audio description for blind and low-vision fans, then improves its descriptions using human accessibility labels that train/tune the description selector collected during the hackathon.**
 
 ## Tagline
 
@@ -29,7 +29,7 @@ Submit under **Ddoski’s World**.
 
 Narrative:
 
-> The World Cup is one of the most watched events on Earth, but sports video remains fundamentally visual. MatchVision gives blind and low-vision fans real-time, personalized access to the spatial and tactical context sighted fans take for granted. We prove improvement with human accessibility labels collected during the hackathon.
+> The World Cup is one of the most watched events on Earth, but sports video remains fundamentally visual. MatchVision gives blind and low-vision fans real-time, personalized access to the spatial and tactical context sighted fans take for granted. We prove improvement with human accessibility labels that train/tune the description selector collected during the hackathon.
 
 This hits:
 
@@ -238,7 +238,7 @@ MatchVision responds:
 
 Show:
 
-- baseline vs improved description
+- baseline vs candidate-ranked description
 - helpfulness improved
 - hallucination reduced
 - key-event coverage improved
@@ -278,7 +278,7 @@ Avoid:
 
 ## Devpost pitch draft
 
-**MatchVision is a voice-first accessibility companion that gives blind and low-vision soccer fans the missing visual layer of a match: ball location, player positioning, direction of attack, and why key moments matter. Built for the World Cup era, it uses Deepgram for voice interaction, Claude for accessible descriptions, Redis for match memory, Terac for human accessibility labels, and Arize to prove our descriptions improve over a baseline.**
+**MatchVision is a voice-first accessibility companion that gives blind and low-vision soccer fans the missing visual layer of a match: ball location, player positioning, direction of attack, and why key moments matter. Built for the World Cup era, it uses Deepgram for voice interaction, Claude for accessible descriptions, Redis for match memory, Terac for human accessibility labels that train/tune the description selector, and Arize to prove our descriptions improve over a baseline.**
 
 ## Closing line
 

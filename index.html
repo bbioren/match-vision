@@ -59,17 +59,19 @@
 
       <section class="grid">
         <section class="card">
-          <h2>Terac annotation comparison</h2>
+          <h2>Terac-trained description selector</h2>
           <div class="comparison">
             <div>
               <h3>Baseline</h3>
               <p id="baseline"></p>
             </div>
             <div>
-              <h3>Improved</h3>
+              <h3>Ranker selected</h3>
               <p id="improved"></p>
             </div>
           </div>
+          <h3>Candidate scores</h3>
+          <div id="rankerDetails"></div>
         </section>
 
         <section class="card">
@@ -77,7 +79,7 @@
           <div class="metric"><span>Helpfulness</span><strong>63% → 84%</strong></div>
           <div class="metric"><span>Key-event coverage</span><strong>58% → 81%</strong></div>
           <div class="metric"><span>Hallucination rate</span><strong>21% → 9%</strong></div>
-          <p class="hint">Replace with Terac + Arize numbers once labels arrive. <a class="link" href="eval.html">Open eval dashboard →</a></p>
+          <p class="hint">The ranker weights are trained/tuned from Terac-style labels. Replace with real Terac + Arize numbers once labels arrive. <a class="link" href="eval.html">Open eval dashboard →</a></p>
         </section>
       </section>
     </main>

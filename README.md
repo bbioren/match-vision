@@ -16,7 +16,7 @@ No install is required for the current static MVP. It uses browser speech APIs a
 
 ## Hackathon sponsor strategy
 
-- **Terac:** custom annotation task comparing baseline vs improved accessibility descriptions, then before/after metrics.
+- **Terac:** custom annotation task comparing baseline vs candidate-ranked accessibility descriptions, then before/after metrics.
 - **Deepgram:** voice-first user questions and spoken answers.
 - **Anthropic:** accessible description generation and natural-language Q&A.
 - **Redis:** match memory and user preference modes.
@@ -28,7 +28,7 @@ No install is required for the current static MVP. It uses browser speech APIs a
 - 3 structured soccer match moments
 - voice/text question flow
 - spoken answer fallback using browser TTS
-- baseline vs improved Terac comparison panel
+- baseline vs candidate-ranked Terac comparison panel
 - initial metrics panel
 - annotation task and metric scripts
 

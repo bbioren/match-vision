@@ -56,3 +56,5 @@ th, td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,.12); text-ali
 th { color: var(--accent); }
 .warn { color: var(--danger) !important; }
 .clip-visual { width: 100%; margin-top: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,.16); background: #0b3b27; }
+.candidate-list label { display: block; padding: 12px; margin: 10px 0; border: 1px solid rgba(255,255,255,.14); border-radius: 14px; background: rgba(0,0,0,.16); }
+.candidate-list span { color: var(--muted); }

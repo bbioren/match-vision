@@ -1,6 +1,7 @@
 import { generateAccessibleDescription } from './services/description.js';
 import { setupSpeechRecognition, speakWithDeepgramOrFallback } from './services/voice.js';
 import { loadMemory, saveMemory } from './services/memory.js';
+import { selectBestCandidate, scoreCandidate } from './ranker.js';
 
 let logs = [];
 const $ = (id) => document.getElementById(id);
@@ -25,7 +26,7 @@ function generateAnswer(log, question) {
   for (const [key, answer] of Object.entries(log.questions || {})) {
     if (q.includes(key)) return answer;
   }
-  return log.improved_description;
+  return selectBestCandidate(log.candidates || [{ id: 'improved', description: log.improved_description }]).description;
 }
 function renderClip() {
   const log = logs[$('clipSelect').selectedIndex];
@@ -44,8 +45,11 @@ function renderClip() {
       <dt>Ball</dt><dd>${log.ball_location}</dd>
       <dt>Visual event</dt><dd>${log.event}</dd>
     </dl>`;
+  const selected = selectBestCandidate(log.candidates || [{ id: 'improved', description: log.improved_description }]);
   $('baseline').textContent = log.baseline_description;
-  $('improved').textContent = log.improved_description;
+  $('improved').textContent = selected.description;
+  const ranker = document.getElementById('rankerDetails');
+  if (ranker) ranker.innerHTML = (log.candidates || []).map((c) => `<div class="metric"><span>${c.label || c.id}</span><strong>${scoreCandidate(c).toFixed(1)}</strong></div>`).join('');
   $('answer').textContent = generateAnswer(log, $('questionInput').value);
   renderMemory();
 }
