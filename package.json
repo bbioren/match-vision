@@ -4,8 +4,8 @@
   "private": true,
   "description": "Voice-first accessibility companion for blind and low-vision soccer fans.",
   "scripts": {
-    "dev": "python3 -m http.server 5173",
-    "start": "python3 -m http.server 5173",
+    "dev": "node server.mjs",
+    "start": "node server.mjs",
     "check": "node scripts/check-data.mjs",
     "metrics": "node scripts/compute-metrics.mjs"
   },

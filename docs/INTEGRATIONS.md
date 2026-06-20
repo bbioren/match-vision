@@ -50,3 +50,18 @@ Log each generated answer with:
 - human/eval labels
 - hallucination flag
 - helpfulness score
+
+## Local server
+
+Run:
+
+```bash
+cp .env.example .env
+# fill ANTHROPIC_API_KEY and/or DEEPGRAM_API_KEY if available
+npm run dev
+```
+
+The server exposes:
+
+- `POST /api/describe`: calls Anthropic when `ANTHROPIC_API_KEY` exists, otherwise returns fallback mode.
+- `POST /api/tts`: calls Deepgram when `DEEPGRAM_API_KEY` exists, otherwise browser TTS fallback remains available.
