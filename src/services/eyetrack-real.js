@@ -1,57 +1,52 @@
 /**
- * Real Eye-tracking using tracking.js
- * Detects eyes in video stream and calculates gaze position
+ * Real Eye-tracking using ml5.js
+ * Uses machine learning to detect eyes in real-time
  */
 
 let isTracking = false;
-let tracker = null;
+let facemesh = null;
 let video = null;
-let canvas = null;
 let gazeX = 0.5;
 let gazeY = 0.5;
+let lastEyeDetection = 0;
 
 /**
- * Initialize real eye tracking with tracking.js
+ * Initialize real eye tracking with ml5.js
  */
 export async function initEyeTracking(videoElement, zoomLevel = 1.5) {
   if (isTracking) return;
 
   try {
-    console.log('📹 Loading eye tracking library...');
+    console.log('📹 Loading ml5.js eye tracking...');
     
-    // Load tracking.js from CDN
-    if (typeof tracking === 'undefined') {
-      await loadTrackingLibrary();
+    // Load ml5.js from CDN
+    if (typeof ml5 === 'undefined') {
+      await loadML5();
     }
 
-    console.log('✅ Tracking library loaded');
+    console.log('✅ ml5.js loaded');
 
     // Create video element for camera
     video = document.createElement('video');
-    video.setAttribute('width', 320);
-    video.setAttribute('height', 240);
-    video.style.display = 'none';
-
-    // Create canvas for tracking visualization
-    canvas = document.createElement('canvas');
-    canvas.setAttribute('width', 320);
-    canvas.setAttribute('height', 240);
-    canvas.style.display = 'none';
+    video.setAttribute('width', 640);
+    video.setAttribute('height', 480);
+    video.style.position = 'fixed';
+    video.style.bottom = '10px';
+    video.style.right = '10px';
+    video.style.width = '200px';
+    video.style.height = '150px';
+    video.style.border = '2px solid #6500B7';
+    video.style.borderRadius = '8px';
+    video.style.zIndex = '9999';
+    video.style.transform = 'scaleX(-1)'; // Mirror for user perspective
 
     document.body.appendChild(video);
-    document.body.appendChild(canvas);
-
-    // Create eye tracker
-    tracker = new tracking.ObjectTracker(['eye']);
-    tracker.setInitialScale(4);
-    tracker.setStepSize(5);
-    tracker.setEdgesDensity(0.1);
 
     console.log('🎥 Requesting camera access...');
 
     // Get camera stream
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: { width: 320, height: 240 },
+      video: { width: 640, height: 480 },
       audio: false
     });
 
@@ -59,40 +54,51 @@ export async function initEyeTracking(videoElement, zoomLevel = 1.5) {
     video.play();
 
     console.log('✅ Camera access granted');
-    console.log('💡 Look at the screen and blink to start tracking');
+    console.log('💡 Face detection starting - look at camera');
 
     isTracking = true;
 
-    // Start tracking
-    video.onplay = () => {
-      tracking.track(video, tracker);
+    // Create facemesh model
+    facemesh = await ml5.facemesh(video, () => {
+      console.log('✅ Face detection model ready');
+    });
 
-      tracker.on('track', (event) => {
-        if (event.data.length > 0) {
-          // Calculate gaze position from detected eyes
-          let sumX = 0;
-          let sumY = 0;
-          
-          event.data.forEach((rect) => {
-            sumX += rect.x + rect.width / 2;
-            sumY += rect.y + rect.height / 2;
-          });
+    // Get predictions
+    facemesh.on('predict', (predictions) => {
+      if (predictions.length > 0) {
+        const prediction = predictions[0];
+        const leftEye = prediction.landmarks[130]; // Left eye center
+        const rightEye = prediction.landmarks[359]; // Right eye center
 
-          gazeX = (sumX / event.data.length) / 320;
-          gazeY = (sumY / event.data.length) / 240;
+        if (leftEye && rightEye) {
+          // Average eye position
+          const avgX = (leftEye[0] + rightEye[0]) / 2;
+          const avgY = (leftEye[1] + rightEye[1]) / 2;
 
-          // Clamp to 0-1
+          // Normalize to 0-1 range
+          gazeX = avgX / 640;
+          gazeY = avgY / 480;
+
+          // Clamp
           gazeX = Math.max(0, Math.min(1, gazeX));
           gazeY = Math.max(0, Math.min(1, gazeY));
 
-          console.log(`👁️ Eyes detected. Gaze: (${(gazeX * 100).toFixed(0)}%, ${(gazeY * 100).toFixed(0)}%)`);
+          lastEyeDetection = Date.now();
+
+          // Log every 500ms
+          if (Math.random() < 0.02) {
+            console.log(`👁️ Gaze: (${(gazeX * 100).toFixed(0)}%, ${(gazeY * 100).toFixed(0)}%)`);
+          }
 
           updateVideoZoom(videoElement, zoomLevel);
-        } else {
-          console.log('Looking for eyes...');
         }
-      });
-    };
+      } else {
+        if (Date.now() - lastEyeDetection > 1000) {
+          console.log('Looking for face...');
+          lastEyeDetection = Date.now();
+        }
+      }
+    });
 
     return true;
   } catch (error) {
@@ -110,8 +116,8 @@ export async function stopEyeTracking() {
   if (video && video.srcObject) {
     video.srcObject.getTracks().forEach(track => track.stop());
   }
-  if (tracker) {
-    tracking.stopTracking();
+  if (video && video.parentElement) {
+    video.parentElement.removeChild(video);
   }
   console.log('Eye tracking stopped');
 }
@@ -183,25 +189,17 @@ export function getGazePosition() {
 }
 
 /**
- * Load tracking.js from CDN
+ * Load ml5.js from CDN
  */
-function loadTrackingLibrary() {
+function loadML5() {
   return new Promise((resolve, reject) => {
-    // Load tracking.js
-    const script1 = document.createElement('script');
-    script1.src = 'https://cdnjs.cloudflare.com/ajax/libs/tracking.js/1.8.8/tracking.min.js';
-    script1.onload = () => {
-      // Load eye tracking module
-      const script2 = document.createElement('script');
-      script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/tracking.js/1.8.8/data/eye.min.js';
-      script2.onload = () => {
-        console.log('✅ tracking.js and eye.js loaded');
-        resolve();
-      };
-      script2.onerror = () => reject(new Error('Failed to load eye.js'));
-      document.head.appendChild(script2);
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/ml5@latest/dist/ml5.min.js';
+    script.onload = () => {
+      console.log('✅ ml5.js script loaded from CDN');
+      resolve();
     };
-    script1.onerror = () => reject(new Error('Failed to load tracking.js'));
-    document.head.appendChild(script1);
+    script.onerror = () => reject(new Error('Failed to load ml5.js from CDN'));
+    document.head.appendChild(script);
   });
 }
