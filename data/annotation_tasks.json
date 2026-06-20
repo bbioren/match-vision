@@ -172,5 +172,300 @@
       }
     ],
     "split": "heldout"
+  },
+  {
+    "task_id": "yt_eng_cro_01",
+    "clip_id": "england_vs_croatia_extended_highlights_2026_fifa_world_cup_001",
+    "video_src": "clips/youtube/segments/england_vs_croatia_extended_highlights_2026_fifa_world_cup_001.mp4",
+    "clip_summary": "YouTube highlight segment 1: watch the 10-second clip, then rank which commentary style would be most useful for a blind or low-vision soccer fan.",
+    "baseline": "A soccer highlight is playing and the teams are moving the ball upfield.",
+    "improved": "The ball is in active play during an England versus Croatia sequence. Describe where the ball is, which direction the attack is moving, nearby pressure, and the immediate next threat in one or two spoken sentences.",
+    "candidates": [
+      {
+        "id": "baseline",
+        "label": "Baseline commentary",
+        "description": "A soccer highlight is playing and the teams are moving the ball upfield.",
+        "features": {
+          "ball_location": 0,
+          "direction": 0,
+          "key_event": 1,
+          "concise": 1,
+          "hallucination_risk": 1
+        }
+      },
+      {
+        "id": "spatial",
+        "label": "Spatial accessibility prompt",
+        "description": "The ball is in active play during an England versus Croatia sequence. Describe where the ball is, which direction the attack is moving, nearby pressure, and the immediate next threat in one or two spoken sentences.",
+        "features": {
+          "ball_location": 1,
+          "direction": 1,
+          "key_event": 1,
+          "concise": 1,
+          "hallucination_risk": 0
+        }
+      },
+      {
+        "id": "tactical",
+        "label": "Tactical context prompt",
+        "description": "Explain the attacking shape, defensive pressure, and why this moment matters. Include ball location and direction, but prioritize tactical context over brevity.",
+        "features": {
+          "ball_location": 1,
+          "direction": 1,
+          "key_event": 1,
+          "concise": 0,
+          "hallucination_risk": 0
+        }
+      },
+      {
+        "id": "brief",
+        "label": "Brief live audio prompt",
+        "description": "Give one short spoken sentence with ball location, direction of play, and the key event, avoiding any unsupported player identity or exact claim.",
+        "features": {
+          "ball_location": 1,
+          "direction": 1,
+          "key_event": 1,
+          "concise": 1,
+          "hallucination_risk": 0
+        }
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "task_id": "yt_eng_cro_02",
+    "clip_id": "england_vs_croatia_extended_highlights_2026_fifa_world_cup_002",
+    "video_src": "clips/youtube/segments/england_vs_croatia_extended_highlights_2026_fifa_world_cup_002.mp4",
+    "clip_summary": "YouTube highlight segment 2: watch the 10-second clip, then rank which commentary style would be most useful for a blind or low-vision soccer fan.",
+    "baseline": "A soccer highlight is playing and the teams are moving the ball upfield.",
+    "improved": "The ball is in active play during an England versus Croatia sequence. Describe where the ball is, which direction the attack is moving, nearby pressure, and the immediate next threat in one or two spoken sentences.",
+    "candidates": [
+      {
+        "id": "baseline",
+        "label": "Baseline commentary",
+        "description": "A soccer highlight is playing and the teams are moving the ball upfield.",
+        "features": {
+          "ball_location": 0,
+          "direction": 0,
+          "key_event": 1,
+          "concise": 1,
+          "hallucination_risk": 1
+        }
+      },
+      {
+        "id": "spatial",
+        "label": "Spatial accessibility prompt",
+        "description": "The ball is in active play during an England versus Croatia sequence. Describe where the ball is, which direction the attack is moving, nearby pressure, and the immediate next threat in one or two spoken sentences.",
+        "features": {
+          "ball_location": 1,
+          "direction": 1,
+          "key_event": 1,
+          "concise": 1,
+          "hallucination_risk": 0
+        }
+      },
+      {
+        "id": "tactical",
+        "label": "Tactical context prompt",
+        "description": "Explain the attacking shape, defensive pressure, and why this moment matters. Include ball location and direction, but prioritize tactical context over brevity.",
+        "features": {
+          "ball_location": 1,
+          "direction": 1,
+          "key_event": 1,
+          "concise": 0,
+          "hallucination_risk": 0
+        }
+      },
+      {
+        "id": "brief",
+        "label": "Brief live audio prompt",
+        "description": "Give one short spoken sentence with ball location, direction of play, and the key event, avoiding any unsupported player identity or exact claim.",
+        "features": {
+          "ball_location": 1,
+          "direction": 1,
+          "key_event": 1,
+          "concise": 1,
+          "hallucination_risk": 0
+        }
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "task_id": "yt_eng_cro_03",
+    "clip_id": "england_vs_croatia_extended_highlights_2026_fifa_world_cup_003",
+    "video_src": "clips/youtube/segments/england_vs_croatia_extended_highlights_2026_fifa_world_cup_003.mp4",
+    "clip_summary": "YouTube highlight segment 3: watch the 10-second clip, then rank which commentary style would be most useful for a blind or low-vision soccer fan.",
+    "baseline": "A soccer highlight is playing and the teams are moving the ball upfield.",
+    "improved": "The ball is in active play during an England versus Croatia sequence. Describe where the ball is, which direction the attack is moving, nearby pressure, and the immediate next threat in one or two spoken sentences.",
+    "candidates": [
+      {
+        "id": "baseline",
+        "label": "Baseline commentary",
+        "description": "A soccer highlight is playing and the teams are moving the ball upfield.",
+        "features": {
+          "ball_location": 0,
+          "direction": 0,
+          "key_event": 1,
+          "concise": 1,
+          "hallucination_risk": 1
+        }
+      },
+      {
+        "id": "spatial",
+        "label": "Spatial accessibility prompt",
+        "description": "The ball is in active play during an England versus Croatia sequence. Describe where the ball is, which direction the attack is moving, nearby pressure, and the immediate next threat in one or two spoken sentences.",
+        "features": {
+          "ball_location": 1,
+          "direction": 1,
+          "key_event": 1,
+          "concise": 1,
+          "hallucination_risk": 0
+        }
+      },
+      {
+        "id": "tactical",
+        "label": "Tactical context prompt",
+        "description": "Explain the attacking shape, defensive pressure, and why this moment matters. Include ball location and direction, but prioritize tactical context over brevity.",
+        "features": {
+          "ball_location": 1,
+          "direction": 1,
+          "key_event": 1,
+          "concise": 0,
+          "hallucination_risk": 0
+        }
+      },
+      {
+        "id": "brief",
+        "label": "Brief live audio prompt",
+        "description": "Give one short spoken sentence with ball location, direction of play, and the key event, avoiding any unsupported player identity or exact claim.",
+        "features": {
+          "ball_location": 1,
+          "direction": 1,
+          "key_event": 1,
+          "concise": 1,
+          "hallucination_risk": 0
+        }
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "task_id": "yt_eng_cro_04",
+    "clip_id": "england_vs_croatia_extended_highlights_2026_fifa_world_cup_004",
+    "video_src": "clips/youtube/segments/england_vs_croatia_extended_highlights_2026_fifa_world_cup_004.mp4",
+    "clip_summary": "YouTube highlight segment 4: watch the 10-second clip, then rank which commentary style would be most useful for a blind or low-vision soccer fan.",
+    "baseline": "A soccer highlight is playing and the teams are moving the ball upfield.",
+    "improved": "The ball is in active play during an England versus Croatia sequence. Describe where the ball is, which direction the attack is moving, nearby pressure, and the immediate next threat in one or two spoken sentences.",
+    "candidates": [
+      {
+        "id": "baseline",
+        "label": "Baseline commentary",
+        "description": "A soccer highlight is playing and the teams are moving the ball upfield.",
+        "features": {
+          "ball_location": 0,
+          "direction": 0,
+          "key_event": 1,
+          "concise": 1,
+          "hallucination_risk": 1
+        }
+      },
+      {
+        "id": "spatial",
+        "label": "Spatial accessibility prompt",
+        "description": "The ball is in active play during an England versus Croatia sequence. Describe where the ball is, which direction the attack is moving, nearby pressure, and the immediate next threat in one or two spoken sentences.",
+        "features": {
+          "ball_location": 1,
+          "direction": 1,
+          "key_event": 1,
+          "concise": 1,
+          "hallucination_risk": 0
+        }
+      },
+      {
+        "id": "tactical",
+        "label": "Tactical context prompt",
+        "description": "Explain the attacking shape, defensive pressure, and why this moment matters. Include ball location and direction, but prioritize tactical context over brevity.",
+        "features": {
+          "ball_location": 1,
+          "direction": 1,
+          "key_event": 1,
+          "concise": 0,
+          "hallucination_risk": 0
+        }
+      },
+      {
+        "id": "brief",
+        "label": "Brief live audio prompt",
+        "description": "Give one short spoken sentence with ball location, direction of play, and the key event, avoiding any unsupported player identity or exact claim.",
+        "features": {
+          "ball_location": 1,
+          "direction": 1,
+          "key_event": 1,
+          "concise": 1,
+          "hallucination_risk": 0
+        }
+      }
+    ],
+    "split": "train"
+  },
+  {
+    "task_id": "yt_eng_cro_05",
+    "clip_id": "england_vs_croatia_extended_highlights_2026_fifa_world_cup_005",
+    "video_src": "clips/youtube/segments/england_vs_croatia_extended_highlights_2026_fifa_world_cup_005.mp4",
+    "clip_summary": "YouTube highlight segment 5: watch the 10-second clip, then rank which commentary style would be most useful for a blind or low-vision soccer fan.",
+    "baseline": "A soccer highlight is playing and the teams are moving the ball upfield.",
+    "improved": "The ball is in active play during an England versus Croatia sequence. Describe where the ball is, which direction the attack is moving, nearby pressure, and the immediate next threat in one or two spoken sentences.",
+    "candidates": [
+      {
+        "id": "baseline",
+        "label": "Baseline commentary",
+        "description": "A soccer highlight is playing and the teams are moving the ball upfield.",
+        "features": {
+          "ball_location": 0,
+          "direction": 0,
+          "key_event": 1,
+          "concise": 1,
+          "hallucination_risk": 1
+        }
+      },
+      {
+        "id": "spatial",
+        "label": "Spatial accessibility prompt",
+        "description": "The ball is in active play during an England versus Croatia sequence. Describe where the ball is, which direction the attack is moving, nearby pressure, and the immediate next threat in one or two spoken sentences.",
+        "features": {
+          "ball_location": 1,
+          "direction": 1,
+          "key_event": 1,
+          "concise": 1,
+          "hallucination_risk": 0
+        }
+      },
+      {
+        "id": "tactical",
+        "label": "Tactical context prompt",
+        "description": "Explain the attacking shape, defensive pressure, and why this moment matters. Include ball location and direction, but prioritize tactical context over brevity.",
+        "features": {
+          "ball_location": 1,
+          "direction": 1,
+          "key_event": 1,
+          "concise": 0,
+          "hallucination_risk": 0
+        }
+      },
+      {
+        "id": "brief",
+        "label": "Brief live audio prompt",
+        "description": "Give one short spoken sentence with ball location, direction of play, and the key event, avoiding any unsupported player identity or exact claim.",
+        "features": {
+          "ball_location": 1,
+          "direction": 1,
+          "key_event": 1,
+          "concise": 1,
+          "hallucination_risk": 0
+        }
+      }
+    ],
+    "split": "heldout"
   }
 ]

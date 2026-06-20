@@ -23,3 +23,6 @@ build/
 
 # media/raw data
 clips/raw/
+downloads/
+clips/kaggle/
+clips/youtube/*.mp4

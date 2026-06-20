@@ -19,6 +19,7 @@
         <h2>Task</h2>
         <label for="taskSelect">Annotation task</label>
         <select id="taskSelect"></select>
+        <video id="clipVideo" class="clip-visual" controls muted playsinline hidden></video>
         <p id="clipSummary" class="answer small"></p>
       </section>
 
@@ -50,7 +51,7 @@
 
       <section class="card">
         <h2>Export labels</h2>
-        <p class="hint">Copy this CSV into <code>data/annotations/real_labels.csv</code> or upload equivalent rows to Terac.</p>
+        <p class="hint">Copy this CSV into <code>data/annotations/real_labels.csv</code> or upload equivalent rows to Terac. For video tasks, watch the clip first, then judge which commentary candidate best describes what is visible.</p>
         <textarea id="csvOutput" rows="8" readonly></textarea>
         <div class="controls"><button id="copyBtn" type="button">Copy CSV</button><button id="clearBtn" type="button">Clear local labels</button></div>
       </section>

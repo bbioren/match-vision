@@ -13,6 +13,15 @@ function renderCsv() {
 }
 function renderTask() {
   const task = tasks[$('taskSelect').selectedIndex];
+  const clipVideo = $('clipVideo');
+  if (task.video_src) {
+    clipVideo.src = task.video_src;
+    clipVideo.hidden = false;
+    clipVideo.load();
+  } else {
+    clipVideo.removeAttribute('src');
+    clipVideo.hidden = true;
+  }
   $('clipSummary').textContent = task.clip_summary;
   $('baseline').textContent = task.baseline;
   $('improved').textContent = task.improved;
