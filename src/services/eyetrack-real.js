@@ -11,6 +11,46 @@ let gazeY = 0.5;
 let lastEyeDetection = 0;
 
 /**
+ * Handle face detection results
+ */
+function handleResults(results, videoElement, zoomLevel) {
+  if (results && results.length > 0) {
+    const face = results[0];
+    const keypoints = face.keypoints || face.landmarks || face.scaledMesh;
+
+    if (keypoints && keypoints.length > 0) {
+      // Try common eye landmark indices
+      const leftEye = keypoints[130] || keypoints[33] || keypoints[159];
+      const rightEye = keypoints[359] || keypoints[263] || keypoints[386];
+
+      if (leftEye && rightEye) {
+        const lx = leftEye.x !== undefined ? leftEye.x : leftEye[0];
+        const ly = leftEye.y !== undefined ? leftEye.y : leftEye[1];
+        const rx = rightEye.x !== undefined ? rightEye.x : rightEye[0];
+        const ry = rightEye.y !== undefined ? rightEye.y : rightEye[1];
+
+        const avgX = (lx + rx) / 2;
+        const avgY = (ly + ry) / 2;
+
+        gazeX = Math.max(0, Math.min(1, avgX / 640));
+        gazeY = Math.max(0, Math.min(1, avgY / 480));
+
+        lastEyeDetection = Date.now();
+
+        if (Math.random() < 0.05) {
+          console.log(`👁️ Gaze: (${(gazeX * 100).toFixed(0)}%, ${(gazeY * 100).toFixed(0)}%)`);
+        }
+
+        updateVideoZoom(videoElement, zoomLevel);
+      }
+    }
+  } else if (Date.now() - lastEyeDetection > 2000) {
+    console.log('Looking for face...');
+    lastEyeDetection = Date.now();
+  }
+}
+
+/**
  * Initialize real eye tracking with ml5.js
  */
 export async function initEyeTracking(videoElement, zoomLevel = 1.5) {
@@ -82,57 +122,53 @@ export async function initEyeTracking(videoElement, zoomLevel = 1.5) {
     });
 
     console.log('✅ Face detection model ready');
+    console.log('🔍 Available facemesh methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(facemesh)));
+    console.log('🔍 Facemesh object:', facemesh);
 
-    // Use detectStart for continuous detection
-    facemesh.detectStart(video, (results) => {
-      if (results && results.length > 0) {
-        const face = results[0];
-        
-        // ml5 faceMesh returns keypoints
-        const keypoints = face.keypoints || face.landmarks;
-        
-        if (keypoints && keypoints.length > 0) {
-          // Eye landmarks: left eye ~130-133, right eye ~359-362
-          // Use approximate indices for eye center
-          const leftEye = keypoints[130] || keypoints[33] || keypoints[0];
-          const rightEye = keypoints[359] || keypoints[263] || keypoints[1];
-
-          if (leftEye && rightEye) {
-            // Handle both {x, y} and [x, y] formats
-            const lx = leftEye.x !== undefined ? leftEye.x : leftEye[0];
-            const ly = leftEye.y !== undefined ? leftEye.y : leftEye[1];
-            const rx = rightEye.x !== undefined ? rightEye.x : rightEye[0];
-            const ry = rightEye.y !== undefined ? rightEye.y : rightEye[1];
-
-            // Average eye position
-            const avgX = (lx + rx) / 2;
-            const avgY = (ly + ry) / 2;
-
-            // Normalize to 0-1 range (video is 640x480)
-            gazeX = avgX / 640;
-            gazeY = avgY / 480;
-
-            // Clamp
-            gazeX = Math.max(0, Math.min(1, gazeX));
-            gazeY = Math.max(0, Math.min(1, gazeY));
-
-            lastEyeDetection = Date.now();
-
-            // Log periodically
-            if (Math.random() < 0.02) {
-              console.log(`👁️ Gaze: (${(gazeX * 100).toFixed(0)}%, ${(gazeY * 100).toFixed(0)}%)`);
-            }
-
-            updateVideoZoom(videoElement, zoomLevel);
-          }
-        }
-      } else {
-        if (Date.now() - lastEyeDetection > 2000) {
-          console.log('Looking for face...');
-          lastEyeDetection = Date.now();
-        }
+    // Try multiple API variations - ml5 has different APIs in different versions
+    const startDetection = () => {
+      // Method 1: detect with callback (ml5 v1)
+      if (typeof facemesh.detect === 'function') {
+        console.log('Using facemesh.detect()');
+        const loop = () => {
+          if (!isTracking) return;
+          facemesh.detect(video, (results) => {
+            handleResults(results, videoElement, zoomLevel);
+            if (isTracking) requestAnimationFrame(loop);
+          });
+        };
+        loop();
+        return true;
       }
-    });
+      // Method 2: detectStart
+      if (typeof facemesh.detectStart === 'function') {
+        console.log('Using facemesh.detectStart()');
+        facemesh.detectStart(video, (results) => handleResults(results, videoElement, zoomLevel));
+        return true;
+      }
+      // Method 3: predict
+      if (typeof facemesh.predict === 'function') {
+        console.log('Using facemesh.predict()');
+        const loop = async () => {
+          if (!isTracking) return;
+          const results = await facemesh.predict(video);
+          handleResults(results, videoElement, zoomLevel);
+          if (isTracking) requestAnimationFrame(loop);
+        };
+        loop();
+        return true;
+      }
+      // Method 4: on('predict')
+      if (typeof facemesh.on === 'function') {
+        console.log('Using facemesh.on("predict")');
+        facemesh.on('predict', (results) => handleResults(results, videoElement, zoomLevel));
+        return true;
+      }
+      console.error('❌ No known detection method found on facemesh');
+      return false;
+    };
+
+    startDetection();
 
     return true;
   } catch (error) {
