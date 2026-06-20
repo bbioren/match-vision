@@ -9,7 +9,8 @@
     "check": "node scripts/check-data.mjs",
     "metrics": "node scripts/compute-metrics.mjs",
     "rehearse": "node scripts/rehearsal-timer.mjs",
-    "eval-ranker": "node scripts/evaluate-ranker.mjs"
+    "eval-ranker": "node scripts/evaluate-ranker.mjs",
+    "segment-videos": "node scripts/segment-videos.mjs"
   },
   "keywords": [
     "accessibility",
