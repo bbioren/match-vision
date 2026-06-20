@@ -2,6 +2,7 @@ const $ = (id) => document.getElementById(id);
 const headers = ['task_id','best_candidate','second_best','ball_location','direction','key_event','conciseness','hallucination','helpfulness'];
 let tasks = [];
 let labels = JSON.parse(localStorage.getItem('matchvision_labels') || '[]');
+let selectedTaskId = null;
 
 function csvEscape(value) {
   const s = String(value ?? '');
@@ -13,12 +14,14 @@ function renderCsv() {
 }
 function renderTask() {
   const task = tasks[$('taskSelect').selectedIndex];
+  selectedTaskId = task.task_id;
   const clipVideo = $('clipVideo');
   if (task.video_src) {
-    clipVideo.src = task.video_src;
+    clipVideo.src = `${task.video_src}?v=${encodeURIComponent(task.task_id)}`;
     clipVideo.hidden = false;
     clipVideo.load();
   } else {
+    clipVideo.pause();
     clipVideo.removeAttribute('src');
     clipVideo.hidden = true;
   }
@@ -41,9 +44,11 @@ async function init() {
   $('labelForm').addEventListener('submit', (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    labels.push({ task_id: $('taskSelect').value, ...Object.fromEntries(data.entries()) });
+    labels.push({ task_id: selectedTaskId, ...Object.fromEntries(data.entries()) });
     localStorage.setItem('matchvision_labels', JSON.stringify(labels));
     renderCsv();
+    event.currentTarget.querySelector('button[type="submit"]').textContent = 'Saved label ✓';
+    setTimeout(() => { event.currentTarget.querySelector('button[type="submit"]').textContent = 'Save label locally'; }, 1200);
   });
   $('copyBtn').addEventListener('click', async () => navigator.clipboard.writeText($('csvOutput').value));
   $('clearBtn').addEventListener('click', () => {
