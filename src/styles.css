@@ -50,3 +50,8 @@ dd { margin: 0; }
 .answer.small { font-size: 1.15rem; }
 textarea { width: 100%; border: 1px solid rgba(255,255,255,.16); border-radius: 14px; padding: 14px 16px; background: var(--panel); color: var(--text); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 code { color: var(--accent-2); }
+.memory-list { color: var(--muted); line-height: 1.8; }
+table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 14px; }
+th, td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,.12); text-align: left; }
+th { color: var(--accent); }
+.warn { color: var(--danger) !important; }

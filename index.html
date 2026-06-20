@@ -29,6 +29,14 @@
             <button id="voiceBtn" type="button">🎙️ Ask with voice</button>
             <button id="speakBtn" type="button">🔊 Speak answer</button>
           </div>
+          <label for="modeSelect">Description mode</label>
+          <select id="modeSelect">
+            <option value="balanced">Balanced</option>
+            <option value="brief">Brief</option>
+            <option value="tactical">Tactical</option>
+            <option value="beginner">Beginner-friendly</option>
+            <option value="emotional">Emotional</option>
+          </select>
           <label for="questionInput">Question</label>
           <input id="questionInput" value="What just happened?" />
           <button id="askBtn" type="button" class="primary">Describe the visual layer</button>
@@ -39,6 +47,12 @@
       <section class="card answer-card" aria-live="polite">
         <h2>Accessible audio description</h2>
         <p id="answer" class="answer"></p>
+      </section>
+
+      <section class="card">
+        <h2>Match memory</h2>
+        <p class="hint">Local fallback for Redis: recent questions, clip state, and user preference mode.</p>
+        <ul id="memoryList" class="memory-list"></ul>
       </section>
 
       <section class="grid">
@@ -61,7 +75,7 @@
           <div class="metric"><span>Helpfulness</span><strong>63% → 84%</strong></div>
           <div class="metric"><span>Key-event coverage</span><strong>58% → 81%</strong></div>
           <div class="metric"><span>Hallucination rate</span><strong>21% → 9%</strong></div>
-          <p class="hint">Replace with Terac + Arize numbers once labels arrive.</p>
+          <p class="hint">Replace with Terac + Arize numbers once labels arrive. <a class="link" href="eval.html">Open eval dashboard →</a></p>
         </section>
       </section>
     </main>

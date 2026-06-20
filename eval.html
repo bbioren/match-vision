@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MatchVision Eval Dashboard</title>
+    <link rel="stylesheet" href="src/styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="hero">
+        <p class="eyebrow">Arize-style eval evidence</p>
+        <h1>Quality Dashboard</h1>
+        <p class="tagline">Track whether accessibility descriptions actually improve.</p>
+        <p><a class="link" href="index.html">← Back to demo</a></p>
+      </section>
+      <section class="grid">
+        <section class="card"><h2>Baseline</h2><div class="metric"><span>Helpfulness</span><strong>63%</strong></div><div class="metric"><span>Key-event coverage</span><strong>58%</strong></div><div class="metric"><span>Spatial detail coverage</span><strong>52%</strong></div><div class="metric"><span>Hallucination rate</span><strong class="warn">21%</strong></div></section>
+        <section class="card"><h2>After human labels</h2><div class="metric"><span>Helpfulness</span><strong>84%</strong></div><div class="metric"><span>Key-event coverage</span><strong>81%</strong></div><div class="metric"><span>Spatial detail coverage</span><strong>88%</strong></div><div class="metric"><span>Hallucination rate</span><strong>9%</strong></div></section>
+      </section>
+      <section class="card"><h2>Evaluation traces</h2><table><thead><tr><th>Clip</th><th>Question</th><th>Eval result</th><th>Issue caught</th></tr></thead><tbody id="traceRows"></tbody></table><p class="hint">This page is the local fallback. Replace/augment with Arize Phoenix/AX traces when credentials are available.</p></section>
+    </main>
+    <script type="module" src="src/eval.js"></script>
+  </body>
+</html>
