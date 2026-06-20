@@ -29,7 +29,14 @@ function generateAnswer(log, question) {
 }
 function renderClip() {
   const log = logs[$('clipSelect').selectedIndex];
-  if ($('clipVisual')) $('clipVisual').src = log.visual_asset || '';
+  if ($('clipVideo')) {
+    $('clipVideo').src = log.video_asset || '';
+    $('clipVideo').style.display = log.video_asset ? 'block' : 'none';
+  }
+  if ($('clipVisual')) {
+    $('clipVisual').src = log.visual_asset || '';
+    $('clipVisual').style.display = log.video_asset ? 'none' : 'block';
+  }
   $('matchState').innerHTML = `
     <dl>
       <dt>Possession</dt><dd>${log.team_in_possession}</dd>

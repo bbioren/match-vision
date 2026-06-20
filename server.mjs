@@ -4,7 +4,7 @@ import path from 'node:path';
 
 const port = Number(process.env.PORT || 5173);
 const root = process.cwd();
-const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.md': 'text/markdown' };
+const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.webm': 'video/webm', '.mp4': 'video/mp4', '.md': 'text/markdown' };
 
 async function readJson(req) {
   const chunks = [];

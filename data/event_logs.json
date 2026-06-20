@@ -1,41 +1,43 @@
 [
   {
     "clip_id": "clip_1",
-    "title": "Right-wing cross and near miss",
+    "title": "Real clip: children attacking on grass field",
     "time": "00:14",
-    "team_in_possession": "Blue",
-    "direction": "left to right",
-    "ball_location": "right wing, about 30 yards from goal",
-    "event": "the winger beats one defender and sends a low cross toward the six-yard box",
-    "players": "two blue attackers enter the penalty area; the far-post runner is unmarked",
-    "crowd_reason": "the striker nearly reaches the cross in front of goal",
-    "baseline_description": "Blue put a ball into the box and it was almost a goal.",
-    "improved_description": "Blue are attacking left to right. The ball is on the right wing, about 30 yards from goal. A winger beats one defender and drives a low cross toward the six-yard box, where a striker misses it by less than a step. The crowd reacts because it was a clear chance directly in front of goal.",
+    "team_in_possession": "Light team",
+    "direction": "across the field toward the attacking half",
+    "ball_location": "near a cluster of youth players in open play",
+    "event": "children contest the ball and move it forward through a crowded midfield area",
+    "players": "several young players chase the ball while teammates spread out nearby",
+    "crowd_reason": "the play is developing as the ball breaks out of the cluster",
+    "baseline_description": "Kids are playing soccer and moving the ball around.",
+    "improved_description": "In this real youth soccer clip, the ball is in open play near a small cluster of children. The light team is trying to move the ball forward while several defenders converge. For a blind or low-vision fan, the key visual context is that the play is crowded, the ball is close to multiple players, and the next important moment is whether it breaks into open space.",
     "questions": {
-      "where is the ball": "The ball is on the right wing, about 30 yards from goal. Blue are attacking from left to right.",
-      "what just happened": "The blue winger beat a defender near the right sideline and sent a low cross into the six-yard box. A striker almost reached it in front of goal but missed by less than a step.",
-      "why did the crowd react": "The crowd reacted because the cross rolled across the most dangerous area in front of goal, and the striker barely missed a tap-in."
+      "where is the ball": "The ball is near a cluster of youth players in open play, with several children converging around it.",
+      "what just happened": "Several children contested the ball in midfield and the play started moving forward out of a crowded area.",
+      "why did the crowd react": "The reaction would come from the ball breaking out of pressure, creating a chance for the attacking team to move into space."
     },
-    "visual_asset": "clips/clip_1.svg"
+    "visual_asset": "clips/clip_1.svg",
+    "video_asset": "clips/real/children_football_01.webm"
   },
   {
     "clip_id": "clip_2",
-    "title": "Counterattack through midfield",
+    "title": "Real clip: youth soccer pressure and chase",
     "time": "00:22",
-    "team_in_possession": "White",
-    "direction": "right to left",
-    "ball_location": "center circle, moving into open midfield",
-    "event": "white wins the ball and breaks forward quickly with three attackers against two defenders",
-    "players": "left winger is sprinting into open space; central striker is marked; right winger trails the play",
-    "crowd_reason": "a dangerous counterattack opens up with a numbers advantage",
-    "baseline_description": "White are on the break and have options.",
-    "improved_description": "White have won the ball near the center circle and are counterattacking from right to left. They have three attackers against two retreating defenders. The left winger is open in space, while the central striker is closely marked. The danger is the pass into the left channel.",
+    "team_in_possession": "Youth players in possession battle",
+    "direction": "toward the far side of the field",
+    "ball_location": "low on the ground between two nearby players",
+    "event": "a player tries to keep the ball while another closes down quickly to challenge",
+    "players": "two main players are closest to the ball, with other children trailing and repositioning",
+    "crowd_reason": "the defender applies pressure and the ball may change possession",
+    "baseline_description": "A player has the ball and someone is defending.",
+    "improved_description": "In this real youth soccer clip, the ball is low on the ground between two nearby players. One child is trying to keep possession while another closes down from close range. The important visual layer is pressure: the ball carrier has little space, nearby teammates are repositioning, and possession could change quickly.",
     "questions": {
-      "where is the ball": "The ball is near the center circle, moving quickly from right to left as White start a counterattack.",
-      "who has space": "The white left winger has the most space, sprinting into the left channel with no defender tight to them.",
-      "what just happened": "White won possession in midfield and immediately broke forward with three attackers against two defenders."
+      "where is the ball": "The ball is on the ground between two nearby youth players, with pressure arriving quickly.",
+      "who has space": "The ball carrier has very little space. The best space is away from the immediate challenge, where trailing teammates are repositioning.",
+      "what just happened": "A defender closed down the ball carrier, turning the moment into a close possession battle."
     },
-    "visual_asset": "clips/clip_2.svg"
+    "visual_asset": "clips/clip_2.svg",
+    "video_asset": "clips/real/children_football_02.webm"
   },
   {
     "clip_id": "clip_3",
