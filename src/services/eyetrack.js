@@ -7,6 +7,7 @@
 let gazeData = { x: 0, y: 0 };
 let isGazeTracking = false;
 let gazeSamples = [];
+let lastUpdateTime = 0;
 
 /**
  * Initialize WebGazer and start eye tracking
@@ -25,25 +26,32 @@ export async function initEyeTracking(videoElement, zoomLevel = 1.5) {
 
     isGazeTracking = true;
 
-    // Start WebGazer
-    await webgazer.setRegression('ridge');
-    await webgazer.begin();
+    // Start WebGazer with simple regression (faster, more reliable)
+    webgazer.setRegression('ridge');
+    webgazer.begin();
 
-    // Calibration prompt (optional, can skip)
     console.log('📹 Eye tracking started. Look at the video to control zoom/pan.');
+    console.log('💡 Calibration: Look at different parts of the video for ~5 seconds');
 
     // Listen for gaze data
     webgazer.setGazeListener((data, elapsedTime) => {
-      if (data == null) return;
+      if (data == null) {
+        console.log('No gaze data yet - calibrating...');
+        return;
+      }
 
       gazeData = { x: data.x, y: data.y };
-      gazeSamples.push(gazeData);
+      gazeSamples.push({ ...gazeData, time: Date.now() });
 
-      // Keep only last 10 samples for smoothing
-      if (gazeSamples.length > 10) gazeSamples.shift();
+      // Keep only last 5 samples for smoothing (faster response)
+      if (gazeSamples.length > 5) gazeSamples.shift();
 
-      // Update video zoom/pan based on gaze
-      updateVideoZoom(videoElement, zoomLevel);
+      // Throttle updates to 20fps
+      const now = Date.now();
+      if (now - lastUpdateTime > 50) {
+        updateVideoZoom(videoElement, zoomLevel);
+        lastUpdateTime = now;
+      }
     });
 
     return true;
@@ -71,42 +79,48 @@ export async function stopEyeTracking() {
  * @param {number} zoomLevel - Zoom multiplier (1.5 = 150%)
  */
 function updateVideoZoom(videoElement, zoomLevel) {
-  if (!videoElement) return;
+  if (!videoElement || gazeSamples.length === 0) return;
 
   // Smooth gaze data (average last few samples)
-  const avgGaze = gazeSamples.reduce(
-    (acc, s) => ({
-      x: acc.x + s.x / gazeSamples.length,
-      y: acc.y + s.y / gazeSamples.length
-    }),
-    { x: 0, y: 0 }
-  );
+  let sumX = 0, sumY = 0;
+  gazeSamples.forEach(s => {
+    sumX += s.x;
+    sumY += s.y;
+  });
+  const avgGazeX = sumX / gazeSamples.length;
+  const avgGazeY = sumY / gazeSamples.length;
 
-  // Get video container dimensions
+  // Get video container (the wrapper we apply transform to)
   const container = videoElement.parentElement;
+  if (!container) return;
+
   const containerWidth = container.offsetWidth;
   const containerHeight = container.offsetHeight;
 
-  // Normalize gaze to 0-1 range
-  const gazeX = avgGaze.x / window.innerWidth; // 0 = left, 1 = right
-  const gazeY = avgGaze.y / window.innerHeight; // 0 = top, 1 = bottom
+  // Clamp and normalize gaze to 0-1 range within window
+  const gazeX = Math.max(0, Math.min(1, avgGazeX / window.innerWidth));
+  const gazeY = Math.max(0, Math.min(1, avgGazeY / window.innerHeight));
 
-  // Calculate pan offset (where to center the zoom)
-  // If user looks at left (gazeX=0), pan left
-  // If user looks at right (gazeX=1), pan right
-  const maxPanX = (zoomLevel - 1) * containerWidth * 0.5;
-  const maxPanY = (zoomLevel - 1) * containerHeight * 0.5;
+  // Calculate how much we can pan
+  // At zoom 1.5x, we can pan (zoomLevel - 1) * 50% = 25% in each direction
+  const maxPan = (zoomLevel - 1) / 2;
 
-  const panX = (gazeX - 0.5) * maxPanX * 2;
-  const panY = (gazeY - 0.5) * maxPanY * 2;
+  // Pan based on gaze: if looking left (0), pan left (-maxPan)
+  // If looking center (0.5), pan 0
+  // If looking right (1), pan right (+maxPan)
+  const panX = (gazeX - 0.5) * maxPan * containerWidth;
+  const panY = (gazeY - 0.5) * maxPan * containerHeight;
 
-  // Apply transform: zoom + pan
-  videoElement.style.transform = `
-    scale(${zoomLevel})
-    translate(${panX / zoomLevel}px, ${panY / zoomLevel}px)
-  `;
-  videoElement.style.transformOrigin = '50% 50%';
-  videoElement.style.transition = 'transform 0.1s ease-out';
+  // Apply transform: zoom first, then pan
+  // Use matrix transform for smoother performance
+  videoElement.style.transform = `scale(${zoomLevel}) translate(${panX}px, ${panY}px)`;
+  videoElement.style.transformOrigin = 'center';
+  videoElement.style.transition = 'none'; // Immediate response
+
+  // Debug: log gaze for testing
+  if (Math.random() < 0.01) { // Log 1% of updates to avoid spam
+    console.log(`Gaze: (${(gazeX * 100).toFixed(0)}%, ${(gazeY * 100).toFixed(0)}%) Pan: (${panX.toFixed(0)}px, ${panY.toFixed(0)}px)`);
+  }
 }
 
 /**

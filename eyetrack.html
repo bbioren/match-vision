@@ -127,9 +127,12 @@
 
       <section class="card">
         <h2>Demo: Eye-Tracked Soccer Video</h2>
-        <div id="eyetrack-player" class="video-container"></div>
-
-        <div class="calibration-note">
+        <div id="eyetrack-player" class="video-container" style="display: flex; align-items: center; justify-content: center; height: 500px; background: #000; border-radius: 8px;">
+          <!-- Video will be injected here -->
+        </div>
+        <div class="eyetrack-debug" id="debug-info">
+          Status: Initializing... (Check console for debug info)
+        </div>
           <strong>💡 Tip:</strong> For best results, position your camera at eye level and keep your head still. The eye tracker will get more accurate after you look at a few different parts of the video.
         </div>
       </section>

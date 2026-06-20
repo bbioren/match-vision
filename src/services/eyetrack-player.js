@@ -103,6 +103,15 @@ export class EyeTrackingVideoPlayer {
       this.zoomInBtn.disabled = enabled;
       this.zoomOutBtn.disabled = enabled;
       this.resetBtn.disabled = enabled;
+
+      // Update debug info
+      const debugInfo = document.getElementById('debug-info');
+      if (debugInfo) {
+        debugInfo.textContent = enabled 
+          ? '✅ Eye tracking active. Look at different parts of the video. Check console for gaze data.'
+          : 'Eye tracking disabled.';
+        debugInfo.style.background = enabled ? '#e8f5e9' : '#fff3cd';
+      }
     });
 
     // Zoom in button
@@ -171,7 +180,7 @@ export class EyeTrackingVideoPlayer {
       text-align: right;
       font-style: italic;
     `;
-    infoText.textContent = '💡 Tip: Enable eye tracking to automatically zoom where you\'re looking. Requires camera permissions.';
+    infoText.textContent = '💡 Tip: Enable eye tracking to zoom where you\'re looking. Requires camera + allow permissions.';
 
     // Add all controls
     this.controls.appendChild(toggleBtn);
