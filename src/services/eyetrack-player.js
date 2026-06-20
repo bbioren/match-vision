@@ -8,9 +8,9 @@ import {
   stopEyeTracking,
   toggleEyeTracking,
   setZoomLevel,
-  isTracking,
+  isTracking_fn,
   getGazePosition
-} from './eyetrack.js';
+} from './eyetrack-simple.js';
 
 export class EyeTrackingVideoPlayer {
   constructor(containerId) {
