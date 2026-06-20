@@ -46,3 +46,7 @@ dd { margin: 0; }
 .metric strong { color: var(--accent-2); }
 .hint { color: var(--muted); font-size: .95rem; }
 @media (max-width: 760px) { .grid, .comparison { grid-template-columns: 1fr; } }
+.link { color: var(--accent); font-weight: 800; }
+.answer.small { font-size: 1.15rem; }
+textarea { width: 100%; border: 1px solid rgba(255,255,255,.16); border-radius: 14px; padding: 14px 16px; background: var(--panel); color: var(--text); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+code { color: var(--accent-2); }
