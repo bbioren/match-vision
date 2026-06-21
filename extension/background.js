@@ -31,7 +31,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
   // Content script finished listening → call Claude
   if (msg.type === 'voice-transcript') {
-    handleVoiceQuery(msg.tabId, msg.text, msg.currentParams);
+    handleVoiceQuery(msg.tabId, msg.text, msg.currentParams, msg.history || []);
     return;
   }
 
@@ -41,7 +41,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
 });
 
-async function handleVoiceQuery(tabId, transcript, currentParams) {
+async function handleVoiceQuery(tabId, transcript, currentParams, history) {
   const { anthropicApiKey } = await chrome.storage.local.get('anthropicApiKey');
   console.log('[MV voice] key present:', !!anthropicApiKey, 'prefix:', anthropicApiKey?.slice(0, 12));
   if (!anthropicApiKey) {
@@ -135,7 +135,7 @@ When the user asks to change a setting, use the adjust_params tool. Always confi
         max_tokens: 256,
         system: systemPrompt,
         tools,
-        messages: [...(msg.history || []), { role: 'user', content: transcript }],
+        messages: [...history, { role: 'user', content: transcript }],
       }),
     });
 
