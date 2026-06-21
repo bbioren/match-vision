@@ -16,70 +16,64 @@
         border-radius: 4px;
         margin-bottom: 8px;
       }
-      .cal-banner {
-        background: #fff3cd;
-        border: 1px solid #ffc107;
-        border-radius: 6px;
-        padding: 10px 14px;
-        margin-bottom: 12px;
-        font-size: 0.9rem;
-        color: #856404;
-      }
-      .reason-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin: 10px 0 16px;
-      }
-      .tag-label {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        background: #f0f0f5;
-        border-radius: 20px;
-        padding: 4px 12px;
+      .task-kind {
+        display: inline-block;
+        background: #eef2ff;
+        color: #3730a3;
+        font-weight: 700;
         font-size: 0.85rem;
-        cursor: pointer;
-        user-select: none;
+        padding: 4px 10px;
+        border-radius: 999px;
+        margin-bottom: 8px;
       }
-      .tag-label input { accent-color: #7c83fd; }
+      .reference-box {
+        white-space: pre-wrap;
+        border-left: 4px solid #7c83fd;
+        padding: 12px 14px;
+        background: #f7f7ff;
+      }
+      .status-line {
+        min-height: 1.4em;
+        margin-top: 10px;
+        font-weight: 600;
+      }
+      textarea[readonly] {
+        background: #f7f7ff;
+        color: #333;
+      }
     </style>
   </head>
   <body>
     <main class="app">
       <section class="hero">
-        <p class="eyebrow">Terac-powered accessibility labels</p>
+        <p class="eyebrow">Terac expert visual transcription</p>
         <h1>Annotation Lab</h1>
-        <p class="tagline">Watch the clip, then drag the commentary options into best-to-worst order for a blind or low-vision soccer fan.</p>
+        <p class="tagline">Watch a soccer clip and write the visual layer a blind or low-vision fan needs. Two example clips show the target style.</p>
         <span id="submissionBadge" class="submission-badge" hidden></span>
         <p><a class="link" href="index.html">← Back to demo</a></p>
       </section>
 
       <section class="card">
-        <h2>Task</h2>
-        <label for="taskSelect">Annotation task</label>
+        <h2>Clip</h2>
+        <label for="taskSelect">Choose a clip</label>
         <select id="taskSelect"></select>
         <video id="clipVideo" class="clip-visual" controls muted playsinline hidden></video>
-        <p id="clipSummary" class="answer small"></p>
       </section>
 
       <form id="labelForm" class="card">
-        <div id="calBanner" class="cal-banner" hidden>
-          ⚠ <strong>Calibration check</strong> — one option is clearly much better than the other. Please rank carefully.
-        </div>
+        <span id="taskType" class="task-kind"></span>
+        <h2>Write the visual transcription</h2>
+        <p id="taskInstructions" class="hint"></p>
+        <p id="exampleHint" class="hint" hidden>Experts do not submit examples. Select a “To do” clip to write a new transcription.</p>
+        <p id="todoHint" class="hint" hidden>Focus on visible action: teams/colors if clear, ball location, key movement, player spacing, and whether the clip ends before an outcome. Do not invent what happens after the clip.</p>
 
-        <h2>Rank the commentary</h2>
-        <p class="hint">Drag so <strong>#1 is the best</strong> commentary for a blind or low-vision fan and <strong>#5 is the weakest</strong>. Judge the text itself, not the style label.</p>
-        <ol id="rankingList" class="ranking-list" aria-label="Commentary ranking"></ol>
+        <p id="clipSummary" class="reference-box" hidden></p>
 
-        <h3 style="margin-top:16px">Why did #1 win for a blind/visually impaired fan? <span style="font-weight:400;font-size:.9rem">(check all that apply)</span></h3>
-        <div id="reasonTags" class="reason-tags"></div>
+        <label for="transcription">Visual transcription</label>
+        <textarea id="transcription" name="transcription" rows="8" required></textarea>
 
-        <label for="whyBest">In your own words — what did #1 give you that the others didn't?</label>
-        <textarea id="whyBest" name="why_best" rows="3" required
-          placeholder="e.g. It told me exactly where Kane was standing and made me feel the tension — I could picture the moment without seeing it."></textarea>
-
-        <button class="primary" type="submit">Save ranking</button>
+        <button id="submitBtn" class="primary" type="submit">Save transcription</button>
+        <p id="saveStatus" class="status-line" aria-live="polite"></p>
       </form>
     </main>
     <script type="module" src="src/annotate.js"></script>

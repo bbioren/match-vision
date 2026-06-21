@@ -39,7 +39,10 @@ export default async function handler(req, res) {
 
     const row = {
       id: `label_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+      annotation_type: body.annotation_type ?? 'ranking',
       task_id: body.task_id ?? null,
+      clip_id: body.clip_id ?? null,
+      transcription: body.transcription ?? '',
       ranking: body.ranking ?? [],           // [{ id, text }] ordered best→worst
       reason_tags: body.reason_tags ?? [],   // e.g. ['ball_location', 'concise']
       why_best: body.why_best ?? '',

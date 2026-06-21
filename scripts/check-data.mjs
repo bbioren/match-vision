@@ -42,7 +42,6 @@ if (fs.existsSync(tasksPath)) {
     if (!Array.isArray(candidates) || candidates.length !== 5) {
       throw new Error(`annotation_tasks[${taskIndex}] ${task.task_id || task.clip_id} must have 5 candidates`);
     }
-
     for (const [candidateIndex, candidate] of candidates.entries()) {
       const text = candidate.text || candidate.description || '';
       if (text.includes('[generation failed:') || text.includes('Gemini API error')) {
