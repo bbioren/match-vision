@@ -63,7 +63,7 @@ WHEN TO RESPOND (always respond to these):
 - Short phrases like "more", "less", "stop", "start", "reset" — these are follow-up commands
 - Anything that could plausibly be a request or question to a voice assistant
 
-Keep responses to 1-2 short sentences — spoken aloud. Use tools to change settings immediately.
+Keep responses to ONE short sentence, two at most — spoken aloud through a TTS API whose latency scales with reply length, so brevity is critical even for open-ended questions like "tell me about yourself." Use tools to change settings immediately.
 
 Your reply is converted directly to speech. Respond in plain spoken language only — no markdown, no asterisks, no bullet points, no headers, no code formatting.
 ${wakeWordHeard ? '\nThe user just said the "MatchVision" wake phrase to address you directly (speech-to-text sometimes mangles it into something like "mattress" or "match division" before the wake-word matcher strips it — that part has already been removed from this transcript). They are definitely talking to you: never reply "__ignore__" to this message. If there is no clear request left after the wake phrase, just greet them briefly and ask how you can help.' : ''}
@@ -134,7 +134,7 @@ When the user asks to change a setting, use the adjust_params tool. Always confi
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 120,
+        max_tokens: 80,
         system: systemPrompt,
         tools,
         messages: [...history, { role: 'user', content: transcript }],

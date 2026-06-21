@@ -573,26 +573,33 @@
     text = stripMarkdown(text);
     window.speechSynthesis.cancel();
 
-    // Mute the mic for the whole time we're speaking, so the recognizer
+    // Mute the mic only once audio actually starts playing, so the recognizer
     // doesn't hear our own TTS and loop it back to Claude. Trailing buffer
-    // after playback ends covers speaker tail + recognition latency.
-    micMuteUntil = Infinity;
+    // after playback ends covers speaker tail + recognition latency. Mic stays
+    // live during the TTS network fetch itself, so a slow fetch doesn't make
+    // the extension look unresponsive.
     const unmute = () => { micMuteUntil = Date.now() + 700; };
-    setTimeout(() => { if (micMuteUntil === Infinity) unmute(); }, 15000); // safety net
+    function muteForPlayback() {
+      micMuteUntil = Infinity;
+      setTimeout(() => { if (micMuteUntil === Infinity) unmute(); }, 15000); // safety net
+    }
 
     // Try Deepgram first — falls back to browser TTS
     try {
       const deepgramKey = MV_DEEPGRAM_KEY;
       if (deepgramKey) {
+        const t0 = performance.now();
         const res = await fetch('https://api.deepgram.com/v1/speak?model=aura-2-thalia-en', {
           method: 'POST',
           headers: { Authorization: `Token ${deepgramKey}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({ text }),
         });
+        console.log('[MV speak] Deepgram TTS fetch took', Math.round(performance.now() - t0), 'ms');
         if (res.ok) {
           const url = URL.createObjectURL(await res.blob());
           const audio = new Audio(url);
           audio.playbackRate = TTS_RATE;
+          muteForPlayback();
           audio.onended = () => { URL.revokeObjectURL(url); unmute(); };
           audio.onerror = unmute;
           audio.play();
@@ -604,6 +611,7 @@
     // Fallback: Web Speech API with best available voice
     const utt = new SpeechSynthesisUtterance(text);
     utt.rate = TTS_RATE;
+    muteForPlayback();
     utt.onend = unmute;
     utt.onerror = unmute;
     const pick = () => {
