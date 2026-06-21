@@ -33,7 +33,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
   // Content script finished listening → call Claude
   if (msg.type === 'voice-transcript') {
-    handleVoiceQuery(msg.tabId, msg.text, msg.currentParams, msg.history || []);
+    handleVoiceQuery(msg.tabId, msg.text, msg.currentParams, msg.history || [], !!msg.wakeWordHeard);
     return;
   }
 
@@ -43,7 +43,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
 });
 
-async function handleVoiceQuery(tabId, transcript, currentParams, history) {
+async function handleVoiceQuery(tabId, transcript, currentParams, history, wakeWordHeard) {
   const anthropicApiKey = MV_ANTHROPIC_KEY;
   if (!anthropicApiKey) {
     chrome.tabs.sendMessage(tabId, {
@@ -66,6 +66,7 @@ WHEN TO RESPOND (always respond to these):
 Keep responses to 1-2 short sentences — spoken aloud. Use tools to change settings immediately.
 
 Your reply is converted directly to speech. Respond in plain spoken language only — no markdown, no asterisks, no bullet points, no headers, no code formatting.
+${wakeWordHeard ? '\nThe user just said the "MatchVision" wake phrase to address you directly (speech-to-text sometimes mangles it into something like "mattress" or "match division" before the wake-word matcher strips it — that part has already been removed from this transcript). They are definitely talking to you: never reply "__ignore__" to this message. If there is no clear request left after the wake phrase, just greet them briefly and ask how you can help.' : ''}
 
 Current settings:
 - Zoom: ${currentParams.zoom?.toFixed(1)}x

@@ -19,6 +19,31 @@
   let voiceBusy = false;  // prevent overlapping Claude calls
   let micMuteUntil = 0;   // Date.now() timestamp — ignore mic results until then (prevents hearing our own TTS)
   const TTS_RATE = 1.15;  // playback speed multiplier for all TTS engines
+
+  // Browser speech recognition frequently mishears "MatchVision" as similar-sounding
+  // phrases. Match those leniently so the wake phrase still works, and strip it off
+  // so Claude sees a clean trailing question instead of the garbled prefix.
+  const WAKE_PATTERNS = [
+    /\bmatch\s*vision\b/i,
+    /\bmatch\s*division\b/i,
+    /\bmatch\s*the\s*vision\b/i,
+    /\bmatch\s*a\s*vision\b/i,
+    /\bmatt\s*vision\b/i,
+    /\bmadge\s*vision\b/i,
+    /\bwatch\s*vision\b/i,
+    /\bmattress\b/i,
+  ];
+
+  function stripWakeWord(text) {
+    for (const re of WAKE_PATTERNS) {
+      const m = text.match(re);
+      if (m) {
+        const rest = text.slice(m.index + m[0].length).replace(/^[\s,.:;-]+/, '');
+        return { matched: true, rest };
+      }
+    }
+    return { matched: false, rest: text };
+  }
   let panInterval = null;
   let calibrationOverlay = null;
   let debugDot = null;
@@ -413,15 +438,20 @@
         listenRec = rec;
 
         rec.onresult = (e) => {
-          const text = e.results[0][0].transcript.trim();
-          if (!text) return;
-          if (Date.now() < micMuteUntil) { console.log('[MV listen] ignoring (TTS playing):', text); return; }
-          console.log('[MV listen] heard:', text);
+          const raw = e.results[0][0].transcript.trim();
+          if (!raw) return;
+          if (Date.now() < micMuteUntil) { console.log('[MV listen] ignoring (TTS playing):', raw); return; }
+
+          const { matched, rest } = stripWakeWord(raw);
+          const text = matched && rest.length > 1 ? rest : raw;
+          console.log('[MV listen] heard:', raw, matched ? '(wake word matched)' : '');
+
           if (voiceBusy) { console.log('[MV listen] busy, skipping'); return; }
           voiceBusy = true;
           voiceStatus.textContent = `"${text}" — thinking…`;
           chrome.runtime.sendMessage({
             type: 'voice-transcript', tabId, text,
+            wakeWordHeard: matched,
             history: voiceHistory.slice(-10),
             currentParams: { ...params, zoom: zoomLevel, isTracking },
           }).catch(() => { voiceBusy = false; });
