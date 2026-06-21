@@ -11,7 +11,10 @@
     "metrics": "node scripts/compute-metrics.mjs",
     "rehearse": "node scripts/rehearsal-timer.mjs",
     "eval-ranker": "node scripts/evaluate-ranker.mjs",
-    "segment-videos": "node scripts/segment-videos.mjs"
+    "segment-videos": "node scripts/segment-videos.mjs",
+    "terac": "node --env-file=.env.local scripts/terac-agent.mjs",
+    "terac:dry": "node --env-file=.env.local scripts/terac-agent.mjs --dry-run",
+    "build-pairs": "node --env-file=.env.local scripts/build-preference-dataset.mjs"
   },
   "keywords": [
     "accessibility",
@@ -22,5 +25,8 @@
     "terac"
   ],
   "license": "MIT",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@upstash/redis": "^1.38.0"
+  }
 }

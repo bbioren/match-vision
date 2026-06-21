@@ -1,28 +1,73 @@
+// ── Terac submission ID capture (must happen before anything else) ──────────
+const urlParams = new URLSearchParams(location.search);
+const TERAC_SUBMISSION_ID =
+  urlParams.get('teracSubmissionId') ??
+  urlParams.get('submissionId') ??
+  localStorage.getItem('teracSubmissionId') ??
+  null;
+const TERAC_TASK_ID =
+  urlParams.get('taskId') ?? localStorage.getItem('teracTaskId') ?? null;
+
+if (TERAC_SUBMISSION_ID) localStorage.setItem('teracSubmissionId', TERAC_SUBMISSION_ID);
+if (TERAC_TASK_ID) localStorage.setItem('teracTaskId', TERAC_TASK_ID);
+
+// ── Calibration checks (~12% of items, injected server-side or here) ────────
+// Each calibration item has an obviously strong and obviously weak candidate.
+// The correct answer is signed so the client can verify without trusting itself.
+const CALIBRATION_TASKS = [
+  {
+    task_id: 'cal_1',
+    clip_summary: 'CALIBRATION CHECK: Read both options carefully and pick the better one for a blind soccer fan.',
+    is_calibration: true,
+    correct_rank_first: 'cal_good', // the obviously correct #1
+    commentary_variations: [
+      {
+        id: 'cal_good',
+        label: 'Descriptive',
+        text: 'England attack left to right. The ball is at the edge of Croatia\'s penalty area, with Harry Kane unmarked six yards from goal. A cross is coming in from the right wing.',
+      },
+      {
+        id: 'cal_bad',
+        label: 'Vague',
+        text: 'Something is happening on the pitch.',
+      },
+    ],
+  },
+];
+
+// ── Core state ───────────────────────────────────────────────────────────────
 const $ = (id) => document.getElementById(id);
-const headers = ['task_id', 'rank_1', 'rank_2', 'rank_3', 'rank_4', 'rank_5', 'best_commentary', 'why_best'];
 let tasks = [];
-let labels = JSON.parse(localStorage.getItem('matchvision_ranking_labels') || '[]');
-let selectedTaskId = null;
+let selectedTask = null;
 let draggedId = null;
 
-function csvEscape(value) {
-  const s = String(value ?? '');
-  return /[",\n]/.test(s) ? `"${s.replaceAll('"', '""')}"` : s;
+// ── Reason tags (cheap signal on why a candidate won/lost) ───────────────────
+const REASON_TAGS = [
+  { id: 'ball_location', label: 'Ball location clear' },
+  { id: 'direction', label: 'Direction of attack' },
+  { id: 'key_event', label: 'Key event captured' },
+  { id: 'concise', label: 'Concise for live audio' },
+  { id: 'no_hallucination', label: 'No unsupported claims' },
+  { id: 'player_context', label: 'Player context' },
+];
+
+function renderReasonTags() {
+  const container = $('reasonTags');
+  if (!container) return;
+  container.innerHTML = REASON_TAGS.map(t => `
+    <label class="tag-label">
+      <input type="checkbox" name="reason_tag" value="${t.id}"> ${t.label}
+    </label>`).join('');
 }
 
-function renderCsv() {
-  const rows = [headers.join(','), ...labels.map((r) => headers.map((h) => csvEscape(r[h])).join(','))];
-  $('csvOutput').value = rows.join('\n');
+function getSelectedReasonTags() {
+  return [...document.querySelectorAll('input[name="reason_tag"]:checked')].map(el => el.value);
 }
 
-function getVariations(task) {
-  const variations = task.commentary_variations || task.candidates?.map((c) => ({ id: c.id, label: c.label, text: c.description })) || [];
-  return variations.slice(0, 5);
-}
-
+// ── Ranking list ─────────────────────────────────────────────────────────────
 function updateRankNumbers() {
-  [...$('rankingList').children].forEach((item, index) => {
-    item.querySelector('.rank-number').textContent = `#${index + 1}`;
+  [...$('rankingList').children].forEach((item, i) => {
+    item.querySelector('.rank-number').textContent = `#${i + 1}`;
   });
 }
 
@@ -34,10 +79,10 @@ function moveItem(item, direction) {
 }
 
 function renderRanking(variations) {
-  $('rankingList').innerHTML = variations.map((v, index) => `
-    <li class="ranking-item" draggable="true" data-id="${v.id}" data-text="${csvEscape(v.text)}">
+  $('rankingList').innerHTML = variations.map((v, i) => `
+    <li class="ranking-item" draggable="true" data-id="${v.id}" data-text="${v.text.replace(/"/g, '&quot;')}">
       <div class="rank-meta">
-        <span class="rank-number">#${index + 1}</span>
+        <span class="rank-number">#${i + 1}</span>
         <span class="drag-handle" aria-hidden="true">↕</span>
       </div>
       <div class="rank-body">
@@ -51,31 +96,32 @@ function renderRanking(variations) {
     </li>`).join('');
 
   for (const item of $('rankingList').children) {
-    item.addEventListener('dragstart', () => {
-      draggedId = item.dataset.id;
-      item.classList.add('dragging');
-    });
-    item.addEventListener('dragend', () => {
-      draggedId = null;
-      item.classList.remove('dragging');
-      updateRankNumbers();
-    });
-    item.addEventListener('dragover', (event) => {
-      event.preventDefault();
-      const dragged = [...$('rankingList').children].find((child) => child.dataset.id === draggedId);
+    item.addEventListener('dragstart', () => { draggedId = item.dataset.id; item.classList.add('dragging'); });
+    item.addEventListener('dragend', () => { draggedId = null; item.classList.remove('dragging'); updateRankNumbers(); });
+    item.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      const dragged = [...$('rankingList').children].find(c => c.dataset.id === draggedId);
       if (!dragged || dragged === item) return;
       const rect = item.getBoundingClientRect();
-      const afterMidpoint = event.clientY > rect.top + rect.height / 2;
-      $('rankingList').insertBefore(dragged, afterMidpoint ? item.nextSibling : item);
+      $('rankingList').insertBefore(dragged, e.clientY > rect.top + rect.height / 2 ? item.nextSibling : item);
     });
     item.querySelector('[data-move="up"]').addEventListener('click', () => moveItem(item, -1));
     item.querySelector('[data-move="down"]').addEventListener('click', () => moveItem(item, 1));
   }
 }
 
+function currentRanking() {
+  return [...$('rankingList').children].map(item => ({
+    id: item.dataset.id,
+    text: item.querySelector('p').textContent,
+  }));
+}
+
+// ── Task rendering ────────────────────────────────────────────────────────────
 function renderTask() {
   const task = tasks[$('taskSelect').selectedIndex];
-  selectedTaskId = task.task_id;
+  selectedTask = task;
+
   const clipVideo = $('clipVideo');
   if (task.video_src) {
     clipVideo.src = `${task.video_src}?v=${encodeURIComponent(task.task_id)}`;
@@ -86,52 +132,115 @@ function renderTask() {
     clipVideo.removeAttribute('src');
     clipVideo.hidden = true;
   }
+
   $('clipSummary').textContent = task.clip_summary;
   $('whyBest').value = '';
-  renderRanking(getVariations(task));
+
+  // Reset reason tags
+  document.querySelectorAll('input[name="reason_tag"]').forEach(el => el.checked = false);
+
+  const variations = task.commentary_variations ?? [];
+  renderRanking(variations);
+
+  // Show calibration warning if applicable
+  const calBanner = $('calBanner');
+  if (calBanner) calBanner.hidden = !task.is_calibration;
 }
 
-function currentRanking() {
-  return [...$('rankingList').children].map((item) => ({ id: item.dataset.id, text: item.querySelector('p').textContent }));
+// ── Submission ────────────────────────────────────────────────────────────────
+async function submitLabel(ranking, reasonTags, whyBest) {
+  const task = selectedTask;
+  let calibrationPassed = null;
+
+  if (task.is_calibration) {
+    calibrationPassed = ranking[0]?.id === task.correct_rank_first;
+  }
+
+  const payload = {
+    task_id: task.task_id,
+    ranking,
+    reason_tags: reasonTags,
+    why_best: whyBest,
+    is_calibration: task.is_calibration ?? false,
+    calibration_passed: calibrationPassed,
+    teracSubmissionId: TERAC_SUBMISSION_ID,
+    teracTaskId: TERAC_TASK_ID,
+  };
+
+  try {
+    const res = await fetch('/api/labels', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    return { ok: res.ok, data };
+  } catch (err) {
+    console.warn('API save failed, falling back to localStorage', err);
+    const saved = JSON.parse(localStorage.getItem('matchvision_labels_fallback') || '[]');
+    saved.push({ ...payload, created_at: new Date().toISOString() });
+    localStorage.setItem('matchvision_labels_fallback', JSON.stringify(saved));
+    return { ok: false, fallback: true };
+  }
 }
 
+// ── Show Terac submission ID in UI if present ─────────────────────────────────
+function renderSubmissionBadge() {
+  const badge = $('submissionBadge');
+  if (!badge) return;
+  if (TERAC_SUBMISSION_ID) {
+    badge.textContent = `Terac session: ${TERAC_SUBMISSION_ID.slice(0, 12)}…`;
+    badge.hidden = false;
+  } else {
+    badge.hidden = true;
+  }
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
 async function init() {
-  tasks = await fetch(`data/annotation_tasks.json?v=${Date.now()}`).then((r) => r.json());
+  renderReasonTags();
+  renderSubmissionBadge();
+
+  const regularTasks = await fetch(`data/annotation_tasks.json?v=${Date.now()}`).then(r => r.json());
+
+  // Inject calibration tasks (~12%): roughly 1 calibration per 8 real tasks
+  tasks = [];
+  regularTasks.forEach((task, i) => {
+    tasks.push(task);
+    if ((i + 1) % 8 === 0 && CALIBRATION_TASKS.length > 0) {
+      tasks.push(CALIBRATION_TASKS[Math.floor(i / 8) % CALIBRATION_TASKS.length]);
+    }
+  });
+
   tasks.forEach((task) => {
     const opt = document.createElement('option');
-    opt.textContent = `${task.task_id}: ${task.clip_id} (${task.split})`;
+    opt.textContent = task.is_calibration
+      ? `⚠ Calibration check`
+      : `${task.task_id}: ${task.clip_id} (${task.split})`;
     opt.value = task.task_id;
     $('taskSelect').appendChild(opt);
   });
+
   $('taskSelect').addEventListener('change', renderTask);
-  $('labelForm').addEventListener('submit', (event) => {
-    event.preventDefault();
+
+  $('labelForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = e.currentTarget.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+
     const ranking = currentRanking();
-    const row = {
-      task_id: selectedTaskId,
-      rank_1: ranking[0]?.id,
-      rank_2: ranking[1]?.id,
-      rank_3: ranking[2]?.id,
-      rank_4: ranking[3]?.id,
-      rank_5: ranking[4]?.id,
-      best_commentary: ranking[0]?.text,
-      why_best: $('whyBest').value.trim()
-    };
-    labels.push(row);
-    localStorage.setItem('matchvision_ranking_labels', JSON.stringify(labels));
-    renderCsv();
-    event.currentTarget.querySelector('button[type="submit"]').textContent = 'Saved ranking ✓';
-    setTimeout(() => { event.currentTarget.querySelector('button[type="submit"]').textContent = 'Save ranking locally'; }, 1200);
+    const reasonTags = getSelectedReasonTags();
+    const whyBest = $('whyBest').value.trim();
+
+    const { ok, fallback } = await submitLabel(ranking, reasonTags, whyBest);
+
+    btn.disabled = false;
+    btn.textContent = ok ? 'Saved ✓' : fallback ? 'Saved locally (offline)' : 'Save error – try again';
+    setTimeout(() => { btn.textContent = 'Save ranking'; }, 2000);
   });
-  $('copyBtn').addEventListener('click', async () => navigator.clipboard.writeText($('csvOutput').value));
-  $('clearBtn').addEventListener('click', () => {
-    labels = [];
-    localStorage.removeItem('matchvision_ranking_labels');
-    localStorage.removeItem('matchvision_labels');
-    renderCsv();
-  });
+
   renderTask();
-  renderCsv();
 }
 
 init();

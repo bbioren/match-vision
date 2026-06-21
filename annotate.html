@@ -5,13 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MatchVision Annotation</title>
     <link rel="stylesheet" href="src/styles.css" />
+    <style>
+      .submission-badge {
+        display: inline-block;
+        background: #1a1a2e;
+        color: #7c83fd;
+        font-size: 0.75rem;
+        font-family: monospace;
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-bottom: 8px;
+      }
+      .cal-banner {
+        background: #fff3cd;
+        border: 1px solid #ffc107;
+        border-radius: 6px;
+        padding: 10px 14px;
+        margin-bottom: 12px;
+        font-size: 0.9rem;
+        color: #856404;
+      }
+      .reason-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 10px 0 16px;
+      }
+      .tag-label {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: #f0f0f5;
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        user-select: none;
+      }
+      .tag-label input { accent-color: #7c83fd; }
+    </style>
   </head>
   <body>
     <main class="app">
       <section class="hero">
-        <p class="eyebrow">Terac-ready accessibility labels</p>
+        <p class="eyebrow">Terac-powered accessibility labels</p>
         <h1>Annotation Lab</h1>
-        <p class="tagline">Watch the game clip, then drag the five commentary options into best-to-worst order.</p>
+        <p class="tagline">Watch the clip, then drag the commentary options into best-to-worst order for a blind or low-vision soccer fan.</p>
+        <span id="submissionBadge" class="submission-badge" hidden></span>
         <p><a class="link" href="index.html">← Back to demo</a></p>
       </section>
 
@@ -24,22 +64,23 @@
       </section>
 
       <form id="labelForm" class="card">
+        <div id="calBanner" class="cal-banner" hidden>
+          ⚠ <strong>Calibration check</strong> — one option is clearly much better than the other. Please rank carefully.
+        </div>
+
         <h2>Rank the commentary</h2>
-        <p class="hint">Drag the cards so #1 is the best commentary for a blind or low-vision soccer fan and #5 is the weakest. Rank the commentary text itself, not the prompt style.</p>
+        <p class="hint">Drag so <strong>#1 is the best</strong> commentary for a blind or low-vision fan and <strong>#5 is the weakest</strong>. Judge the text itself, not the style label.</p>
         <ol id="rankingList" class="ranking-list" aria-label="Commentary ranking"></ol>
 
-        <label for="whyBest">Why is your #1 commentary the best? Describe the exact features of the commentary that made it strongest.</label>
-        <textarea id="whyBest" name="why_best" rows="4" required placeholder="Example: It clearly says where the ball is, names the direction of attack, explains nearby pressure, avoids unsupported details, and stays concise enough for live audio."></textarea>
+        <h3 style="margin-top:16px">Why did #1 win? <span style="font-weight:400;font-size:.9rem">(check all that apply)</span></h3>
+        <div id="reasonTags" class="reason-tags"></div>
 
-        <button class="primary" type="submit">Save ranking locally</button>
+        <label for="whyBest">Describe in your own words what made #1 the strongest:</label>
+        <textarea id="whyBest" name="why_best" rows="3" required
+          placeholder="e.g. It clearly said where the ball was, named the direction of attack, and stayed concise enough for live audio."></textarea>
+
+        <button class="primary" type="submit">Save ranking</button>
       </form>
-
-      <section class="card">
-        <h2>Export labels</h2>
-        <p class="hint">Copy this CSV into <code>data/annotations/terac_labels.csv</code>. Each row stores the full ranking plus the explanation for why the top commentary won.</p>
-        <textarea id="csvOutput" rows="8" readonly></textarea>
-        <div class="controls"><button id="copyBtn" type="button">Copy CSV</button><button id="clearBtn" type="button">Clear local labels</button></div>
-      </section>
     </main>
     <script type="module" src="src/annotate.js"></script>
   </body>
