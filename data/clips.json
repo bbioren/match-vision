@@ -41,5 +41,11 @@
     "title": "Turkey vs Italy (Euro 2020) — analytics replay",
     "timeline_asset": "data/analytics/turkey_vs_italy_euro2020_timeline.json",
     "source": "statsbomb-open-data"
+  },
+  {
+    "clip_id": "argentina_vs_france_wc2022_final_analytics",
+    "title": "Argentina vs France (2022 World Cup Final) — analytics replay",
+    "timeline_asset": "data/analytics/argentina_vs_france_wc2022_final_timeline.json",
+    "source": "statsbomb-open-data"
   }
 ]

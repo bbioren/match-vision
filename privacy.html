@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MatchVision Eye Tracker — Privacy Policy</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 20px; line-height: 1.6; color: #1a1a2e; }
+      h1, h2 { color: #1a1a2e; }
+      code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; }
+    </style>
+  </head>
+  <body>
+    <h1>MatchVision Eye Tracker — Privacy Policy</h1>
+    <p><em>Last updated: 2026-06-21</em></p>
+
+    <p>MatchVision Eye Tracker ("the Extension") is an accessibility tool that gives low-vision users gaze-controlled video zoom/pan, plus a voice assistant for hands-free control.</p>
+
+    <h2>What the Extension processes</h2>
+    <ul>
+      <li><strong>Webcam video.</strong> Used entirely in your browser to estimate where you're looking (via WebGazer.js). Webcam frames are never uploaded, stored, or sent to any server — gaze estimation happens locally on your device.</li>
+      <li><strong>Microphone audio.</strong> When you use the voice assistant, your spoken audio is sent to <a href="https://deepgram.com" target="_blank" rel="noopener">Deepgram</a> for speech-to-text, the resulting text is sent to <a href="https://www.anthropic.com" target="_blank" rel="noopener">Anthropic (Claude)</a> to generate a response, and the response may be converted back to speech via Deepgram. See Deepgram's and Anthropic's own privacy policies for how they handle data sent to their APIs.</li>
+      <li><strong>Page content.</strong> The Extension reads the structure of the page you're viewing to locate video elements and can control video playback/fullscreen state. It does not collect or transmit page content elsewhere.</li>
+    </ul>
+
+    <h2>What the Extension does not do</h2>
+    <ul>
+      <li>We do not sell or share your data with advertisers.</li>
+      <li>We do not persist voice conversation history beyond your current browsing session — it lives in memory and clears when you stop the voice assistant or close the tab.</li>
+      <li>We do not track your browsing activity beyond what's needed to operate gaze tracking and voice control on the page you're actively using the Extension on.</li>
+    </ul>
+
+    <h2>Permissions, explained</h2>
+    <ul>
+      <li><strong>Camera / microphone</strong> — required for gaze tracking and voice interaction.</li>
+      <li><strong>Host access (all sites)</strong> — the Extension works on any page with video, so it needs to be able to run wherever you choose to use it.</li>
+      <li><strong><code>debugger</code></strong> — used briefly, only when you ask the voice assistant to make the video fullscreen, to grant the page the same fullscreen permission a real click would. It is not used to inspect, log, or transmit any other browsing activity.</li>
+    </ul>
+
+    <h2>Contact</h2>
+    <p>Questions about this policy: <a href="mailto:ben.bioren@gmail.com">ben.bioren@gmail.com</a></p>
+  </body>
+</html>

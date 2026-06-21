@@ -1,4 +1,6 @@
 // MatchVision background — routes messages + handles Claude voice agent
+importScripts('secrets.js');
+
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === 'get-tab-id') {
     sendResponse({ tabId: sender.tab.id });
@@ -31,7 +33,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
   // Content script finished listening → call Claude
   if (msg.type === 'voice-transcript') {
-    handleVoiceQuery(msg.tabId, msg.text, msg.currentParams, msg.history || []);
+    handleVoiceQuery(msg.tabId, msg.text, msg.currentParams, msg.history || [], !!msg.wakeWordHeard);
     return;
   }
 
@@ -39,15 +41,71 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     chrome.tabs.sendMessage(msg.tabId, { type: 'voice-response', error: msg.error }).catch(() => {});
     return;
   }
+
+  // A voice command has no real user gesture behind it, and Chrome requires
+  // one for element.requestFullscreen(). Grant one for real via the debugger
+  // protocol (a CDP-dispatched input event counts as genuine user activation,
+  // unlike element.click()/dispatchEvent() from JS), then fullscreen the
+  // actual video player.
+  if (msg.type === 'request-video-fullscreen' && sender.tab) {
+    forceVideoFullscreen(sender.tab.id, sender.tab.windowId);
+    return;
+  }
+  if (msg.type === 'restore-window' && sender.tab) {
+    chrome.windows.update(sender.tab.windowId, { state: 'normal' }).catch(() => {});
+    return;
+  }
 });
 
-async function handleVoiceQuery(tabId, transcript, currentParams, history) {
-  const { anthropicApiKey } = await chrome.storage.local.get('anthropicApiKey');
-  console.log('[MV voice] key present:', !!anthropicApiKey, 'prefix:', anthropicApiKey?.slice(0, 12));
+function cdpSend(tabId, method, params) {
+  return new Promise((resolve, reject) => {
+    chrome.debugger.sendCommand({ tabId }, method, params, (result) => {
+      if (chrome.runtime.lastError) reject(new Error(chrome.runtime.lastError.message));
+      else resolve(result);
+    });
+  });
+}
+
+async function forceVideoFullscreen(tabId, windowId) {
+  let attached = false;
+  try {
+    await new Promise((resolve, reject) => {
+      chrome.debugger.attach({ tabId }, '1.3', () => {
+        if (chrome.runtime.lastError) reject(new Error(chrome.runtime.lastError.message));
+        else resolve();
+      });
+    });
+    attached = true;
+
+    // Click a near-corner spot, not the player itself, so we don't accidentally
+    // toggle play/pause — the activation this grants applies to the whole
+    // document, not just the clicked element.
+    await cdpSend(tabId, 'Input.dispatchMouseEvent', { type: 'mousePressed', x: 2, y: 2, button: 'left', clickCount: 1 });
+    await cdpSend(tabId, 'Input.dispatchMouseEvent', { type: 'mouseReleased', x: 2, y: 2, button: 'left', clickCount: 1 });
+
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      func: () => {
+        // YouTube's own player chrome (controls, captions) lives on this wrapper —
+        // fullscreening the bare <video> would lose all of that.
+        const el = document.querySelector('.html5-video-player') || document.querySelector('video');
+        el?.requestFullscreen?.().catch(() => {});
+      },
+    });
+  } catch (err) {
+    console.warn('[MV fullscreen] CDP approach failed, maximizing window instead:', err.message);
+    chrome.windows.update(windowId, { state: 'fullscreen' }).catch(() => {});
+  } finally {
+    if (attached) chrome.debugger.detach({ tabId }).catch(() => {});
+  }
+}
+
+async function handleVoiceQuery(tabId, transcript, currentParams, history, wakeWordHeard) {
+  const anthropicApiKey = MV_ANTHROPIC_KEY;
   if (!anthropicApiKey) {
     chrome.tabs.sendMessage(tabId, {
       type: 'voice-response',
-      error: 'No API key. Enter your Anthropic API key in the panel settings.',
+      error: 'No Anthropic key configured. Add one to extension/secrets.js.',
     }).catch(() => {});
     return;
   }
@@ -58,11 +116,17 @@ WHEN TO IGNORE: Reply with exactly "__ignore__" (nothing else) ONLY if the speec
 
 WHEN TO RESPOND (always respond to these):
 - Any command about zoom, tracking, smoothness, speed, settings
+- Any command about fullscreen (e.g. "go fullscreen", "make it full screen", "exit fullscreen")
 - Any question about how the extension works
 - Short phrases like "more", "less", "stop", "start", "reset" — these are follow-up commands
 - Anything that could plausibly be a request or question to a voice assistant
 
-Keep responses to 1-2 short sentences — spoken aloud. Use tools to change settings immediately.
+Keep responses to ONE short sentence, two at most — spoken aloud through a TTS API whose latency scales with reply length, so brevity is critical even for open-ended questions like "tell me about yourself." Use tools to change settings immediately.
+
+Exception: when the user asks to start tracking (control_tracking action=start), calibration runs first and the user needs to know what to do — your reply must briefly explain it before confirming, e.g. "Starting calibration — nine dots will appear one at a time, look at each one and hold still until it fills in." This is the one case where two sentences is expected, not just allowed.
+
+Your reply is converted directly to speech. Respond in plain spoken language only — no markdown, no asterisks, no bullet points, no headers, no code formatting.
+${wakeWordHeard ? '\nThe user just said the "MatchVision" wake phrase to address you directly (speech-to-text sometimes mangles it into something like "mattress" or "match division" before the wake-word matcher strips it — that part has already been removed from this transcript). They are definitely talking to you: never reply "__ignore__" to this message. If there is no clear request left after the wake phrase, just greet them briefly and ask how you can help.' : ''}
 
 Current settings:
 - Zoom: ${currentParams.zoom?.toFixed(1)}x
@@ -104,14 +168,14 @@ When the user asks to change a setting, use the adjust_params tool. Always confi
     },
     {
       name: 'control_tracking',
-      description: 'Start eye tracking, stop eye tracking, or reset the pan position to center',
+      description: 'Start eye tracking, stop eye tracking, reset the pan position, or toggle fullscreen for the video',
       input_schema: {
         type: 'object',
         properties: {
           action: {
             type: 'string',
-            enum: ['start', 'stop', 'reset_pan'],
-            description: 'start=begin tracking, stop=end tracking, reset_pan=center the view',
+            enum: ['start', 'stop', 'reset_pan', 'fullscreen', 'exit_fullscreen'],
+            description: 'start=begin tracking, stop=end tracking, reset_pan=center the view, fullscreen=make the video fullscreen, exit_fullscreen=leave fullscreen',
           },
         },
         required: ['action'],
@@ -129,8 +193,8 @@ When the user asks to change a setting, use the adjust_params tool. Always confi
         'content-type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 256,
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 80,
         system: systemPrompt,
         tools,
         messages: [...history, { role: 'user', content: transcript }],

@@ -324,12 +324,15 @@ async function renderClip() {
   setReplayIndicator(isAnalyticsReplay, clip);
 
   if (isAnalyticsReplay) {
-    // Ground-truth analytics replay (e.g. StatsBomb/socceraction) — no
-    // broadcast video, no VLM extraction. Load the precomputed moment
-    // timeline directly and reuse the existing live-vision rendering path.
+    // Ground-truth analytics replay (e.g. StatsBomb/socceraction) — no VLM
+    // extraction. Load the precomputed moment timeline directly and reuse
+    // the existing live-vision rendering path. If the clip ALSO has a
+    // video_asset (a real match replay synced to this timeline), play it —
+    // onTimeUpdate/onSeeked drive currentSeconds from video time via
+    // videoToMatchSeconds() instead of doing live frame extraction.
     if ($('clipVideo')) {
-      $('clipVideo').src = '';
-      $('clipVideo').style.display = 'none';
+      $('clipVideo').src = clip.video_asset ? encodeVideoPath(clip.video_asset) : '';
+      $('clipVideo').style.display = clip.video_asset ? 'block' : 'none';
     }
     if ($('clipVisual')) $('clipVisual').style.display = 'none';
     try {
@@ -341,7 +344,9 @@ async function renderClip() {
       timeline = [];
     }
     liveTimeline = timeline;
-    setExtractStatus(`Analytics replay — ${timeline.length} ground-truth moment(s) loaded (no live video or VLM extraction for this clip).`);
+    setExtractStatus(clip.video_asset
+      ? `Analytics replay — ${timeline.length} ground-truth moment(s), synced to real video (no live VLM extraction).`
+      : `Analytics replay — ${timeline.length} ground-truth moment(s) loaded (no live video or VLM extraction for this clip).`);
   } else {
     if ($('clipVideo')) {
       $('clipVideo').src = clip.video_asset ? encodeVideoPath(clip.video_asset) : '';
@@ -366,17 +371,30 @@ function setReplayIndicator(active, clip) {
   if (!el) return;
   if (active) {
     el.style.display = 'block';
-    el.textContent = `📊 Analytics replay — ground-truth match data (${clip?.source || 'statsbomb-open-data'}), not live video.`;
+    el.textContent = clip?.video_asset
+      ? `📊 Analytics replay — ticker driven by ground-truth match data (${clip?.source || 'statsbomb-open-data'}), synced to real video. No live VLM extraction.`
+      : `📊 Analytics replay — ground-truth match data (${clip?.source || 'statsbomb-open-data'}), not live video.`;
   } else {
     el.style.display = 'none';
     el.textContent = '';
   }
 }
 
+// For clips that pair real video with a precomputed timeline_asset (e.g. a
+// full match replay synced to ground-truth analytics), the timeline's
+// atSecond is real match-clock time, but the video itself has pre/post-match
+// padding (walkout, trophy ceremony, etc.) before kickoff. video_offset_seconds
+// is the video-time at which kickoff actually happens, so we can map
+// video.currentTime back to match-clock seconds.
+function videoToMatchSeconds(videoSeconds) {
+  const offset = currentClip()?.video_offset_seconds || 0;
+  return Math.max(0, Math.floor(videoSeconds - offset));
+}
+
 function onTimeUpdate() {
   const video = $('clipVideo');
   if (!video) return;
-  const seconds = Math.floor(video.currentTime);
+  const seconds = isAnalyticsReplay ? videoToMatchSeconds(video.currentTime) : Math.floor(video.currentTime);
   if (seconds === currentSeconds) return;
   currentSeconds = seconds;
   renderMoment();
@@ -387,7 +405,7 @@ function onTimeUpdate() {
 function onSeeked() {
   const video = $('clipVideo');
   if (!video) return;
-  currentSeconds = Math.floor(video.currentTime);
+  currentSeconds = isAnalyticsReplay ? videoToMatchSeconds(video.currentTime) : Math.floor(video.currentTime);
   renderMoment();
   renderMemory();
   clearTimeout(seekTimer);

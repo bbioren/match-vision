@@ -1,13 +1,27 @@
-"""Walk SPADL actions for the target match (3788741, Turkey vs Italy) and emit
-a JSON list of "moment" objects matching the schema used by the live VLM
-pipeline (src/services/match-context.js `interpretMoment()` /
+"""Walk SPADL actions for a StatsBomb open-data match and emit a JSON list of
+"moment" objects matching the schema used by the live VLM pipeline
+(src/services/match-context.js `interpretMoment()` /
 src/services/match-memory.js `formatMemory()`), plus extra ground-truth
 fields (expected_threat_delta, action_vaep_value, momentum, urgency_level).
 
 Run (from analytics/, with the venv active):
     source .venv/bin/activate && python build_state_frames.py
+    source .venv/bin/activate && python build_state_frames.py --match-id 3869685 --out ../data/analytics/argentina_vs_france_wc2022_final_timeline.json
 
+Default (no args): match 3788741, Turkey vs Italy, Euro 2020 group stage.
 Writes ../data/analytics/turkey_vs_italy_euro2020_timeline.json
+
+--- Period durations are real, not assumed -----------------------------------
+Periods are NOT fixed-length. A Euro 2020 group match runs ~52 real minutes
+in period 1 due to stoppage time; a World Cup final with extra time has four
+periods (1-2 regular, 3-4 extra time), each a different real length. atSecond
+is computed as a true continuous match clock by summing each prior period's
+*observed* duration (max time_seconds seen in that period), not a hardcoded
+45-minutes-per-period assumption.
+
+Penalty shootouts (period 5, when present) are filtered out upstream in
+statsbomb_pipeline.py before SPADL conversion — kloppy's coordinate
+transform has no "attacking direction" concept for shootout kicks.
 
 --- Period-aware attacking direction -----------------------------------------
 socceraction.spadl.play_left_to_right(actions, home_team_id) only flips the
@@ -39,6 +53,7 @@ xT *rating* step:
 """
 from __future__ import annotations
 
+import argparse
 import json
 import pickle
 from pathlib import Path
@@ -47,12 +62,12 @@ import pandas as pd
 
 from statsbomb_pipeline import CACHE_DIR, game_series, load_match_actions
 
-MATCH_ID = 3788741  # Turkey vs Italy, Euro 2020
+DEFAULT_MATCH_ID = 3788741  # Turkey vs Italy, Euro 2020
 FIELD_LENGTH = 105.0
 FIELD_WIDTH = 68.0
 MIDFIELD_X = FIELD_LENGTH / 2  # 52.5
 
-OUT_PATH = Path(__file__).parent.parent / "data" / "analytics" / "turkey_vs_italy_euro2020_timeline.json"
+DEFAULT_OUT_PATH = Path(__file__).parent.parent / "data" / "analytics" / "turkey_vs_italy_euro2020_timeline.json"
 
 XT_MODEL_PATH = CACHE_DIR / "xt_model.pkl"
 VAEP_MODEL_PATH = CACHE_DIR / "vaep_model.pkl"
@@ -72,9 +87,21 @@ def compute_attacking_right(actions: pd.DataFrame) -> dict[tuple[str, int], bool
     being attacked, regardless of which side of the pitch the broadcast shows
     as "home" that half).
 
-    Falls back to the team's overall mean start_x trend if it has no shots in
-    a given period (rare, but be defensive for short/weird periods e.g.
-    extra time).
+    If a team has no shots in a period (e.g. it spent the whole half
+    defending deep, like Turkey in period 1 of the Euro 2020 opener — 0
+    shots), its direction is set to the OPPOSITE of the other team's
+    shot-derived direction in that same period. This is a hard constraint of
+    the sport (two teams in the same period always attack opposite ends), and
+    far more reliable than a team's own mean field position: a team parked in
+    a low block has a low mean start_x because it's under sustained pressure
+    in its own half, not because of which goal it's attacking when it does
+    get the ball forward — using its own mean position as a fallback (the
+    previous approach here) gave Turkey "attacking left" in period 1, when in
+    fact Italy's 14 shots that period clearly show Italy attacking left,
+    which means Turkey — defending that goal — was attacking RIGHT.
+
+    Only if NEITHER team in a period has any shots (true edge case) does this
+    fall back to comparing mean start_x between the two teams.
     """
     shots = actions[actions["type_name"].isin(SHOT_TYPES)]
     result: dict[tuple[str, int], bool] = {}
@@ -83,13 +110,21 @@ def compute_attacking_right(actions: pd.DataFrame) -> dict[tuple[str, int], bool
         median_end_x = group["end_x"].median()
         result[(str(team_id), int(period_id))] = bool(median_end_x > MIDFIELD_X)
 
-    # Fallback for (team, period) combos with no shots: use mean start_x of
-    # all that team's actions in that period vs the OTHER team's mean start_x
-    # in the same period — whichever team sits deeper (lower mean start_x) is
-    # generally the one defending that end, so the team with the higher mean
-    # start_x in a period is (weakly) attacking right.
     team_ids = sorted(actions["team_id"].unique(), key=str)
     period_ids = sorted(actions["period_id"].unique())
+
+    # Fill in any team with no shots in a period as the opposite of the other
+    # team's shot-derived direction in that same period.
+    for period_id in period_ids:
+        known = {tid: result[(tid, period_id)] for tid in team_ids if (tid, period_id) in result}
+        if len(known) == 1:
+            known_team, known_right = next(iter(known.items()))
+            for team_id in team_ids:
+                if team_id != known_team:
+                    result[(str(team_id), int(period_id))] = not known_right
+
+    # True edge case: neither team had a single shot in this period. Fall
+    # back to comparing mean start_x (weak signal, better than nothing).
     for period_id in period_ids:
         period_actions = actions[actions["period_id"] == period_id]
         means = period_actions.groupby("team_id")["start_x"].mean()
@@ -204,28 +239,40 @@ def urgency_level(xt_delta: float, is_shot: bool) -> str:
     return "low"
 
 
-def format_timestamp(period_id: int, time_seconds: float) -> str:
-    minute = int(time_seconds // 60)
-    second = int(time_seconds % 60)
-    if period_id >= 2:
-        minute += 45 * (period_id - 1)
+def compute_period_offsets(actions: pd.DataFrame) -> dict[int, float]:
+    """Cumulative real-seconds offset for the START of each period, computed
+    from each prior period's OBSERVED duration (max time_seconds seen in that
+    period) rather than an assumed fixed length. Periods aren't fixed-length:
+    a half can run ~52 real minutes with stoppage time, and extra-time
+    periods (15 real minutes nominal) are shorter than regular halves.
+    """
+    period_ids = sorted(actions["period_id"].unique())
+    durations = {p: float(actions.loc[actions["period_id"] == p, "time_seconds"].max()) for p in period_ids}
+    offsets: dict[int, float] = {}
+    running = 0.0
+    for p in period_ids:
+        offsets[p] = running
+        running += durations[p]
+    return offsets
+
+
+def format_timestamp(total_seconds: float) -> str:
+    minute = int(total_seconds // 60)
+    second = int(total_seconds % 60)
     return f"{minute:02d}:{second:02d}"
 
 
-def at_second(period_id: int, time_seconds: float) -> int:
-    # Continuous match clock across periods, 45 min assumed per period before
-    # this one (sufficient for half 1/2; extra-time periods would need real
-    # period lengths, not needed for this Euro 2020 group match).
-    offset = 45 * 60 * (period_id - 1)
-    return int(offset + time_seconds)
+def at_second(period_id: int, time_seconds: float, period_offsets: dict[int, float]) -> int:
+    return int(period_offsets[period_id] + time_seconds)
 
 
-def main():
-    print(f"Loading actions for match {MATCH_ID}...")
-    actions, meta = load_match_actions(MATCH_ID)
+def build_timeline(match_id: int, out_path: Path):
+    print(f"Loading actions for match {match_id}...")
+    actions, meta = load_match_actions(match_id)
     team_names = meta["team_names"]
     player_names = meta["player_names"]
-    home_team_id = meta["home_team_id"]
+    period_offsets = compute_period_offsets(actions)
+    print("Period offsets (real seconds from kickoff):", period_offsets)
 
     attacking_right = compute_attacking_right(actions)
     print("Attacking direction by (team, period):")
@@ -266,7 +313,7 @@ def main():
         team_name = team_names.get(team_id, f"Team {team_id}")
         player_name = player_names.get(player_id, f"Player {player_id}")
         period_id = int(row["period_id"])
-        sec = at_second(period_id, float(row["time_seconds"]))
+        sec = at_second(period_id, float(row["time_seconds"]), period_offsets)
 
         right_now = attacking_right.get((team_id, period_id))
         zone = zone_for_x(float(row["start_x"]), right_now) if right_now is not None else absolute_third(float(row["start_x"]))
@@ -299,7 +346,7 @@ def main():
 
         moment = {
             "atSecond": sec,
-            "timestamp": format_timestamp(period_id, float(row["time_seconds"])),
+            "timestamp": format_timestamp(sec),
             "match_half": period_id,
             "team_in_possession": team_name,
             "ball_zone": zone,
@@ -317,14 +364,26 @@ def main():
         }
         moments.append(moment)
 
-    OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    OUT_PATH.write_text(json.dumps(moments, indent=2))
-    print(f"\nWrote {len(moments)} moments -> {OUT_PATH}")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(moments, indent=2))
+    print(f"\nWrote {len(moments)} moments -> {out_path}")
 
     goals = [m for m in moments if m["danger_level"] == "high" and "GOAL" in m["event"]]
     print(f"Goals found: {len(goals)}")
     for g in goals:
         print(f"  [{g['timestamp']}] {g['event']}")
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--match-id", type=int, default=DEFAULT_MATCH_ID)
+    parser.add_argument("--out", type=Path, default=None)
+    args = parser.parse_args()
+    out_path = args.out or (
+        DEFAULT_OUT_PATH if args.match_id == DEFAULT_MATCH_ID
+        else Path(__file__).parent.parent / "data" / "analytics" / f"match_{args.match_id}_timeline.json"
+    )
+    build_timeline(args.match_id, out_path)
 
 
 if __name__ == "__main__":

@@ -7,16 +7,77 @@
   // ── State ─────────────────────────────────────────────────────────────────
   let isTracking = false;
   let targetVideo = null;
-  let zoomLevel = 2.0;
+  let zoomLevel = 1.6;
   let smoothX = null, smoothY = null;
   let currentPanX = 0, currentPanY = 0;
   let _pidIntX = 0, _pidIntY = 0;
   let _pidPrevErrX = 0, _pidPrevErrY = 0;
   let _pidLastTime = 0;
   const INT_LIMIT = 3.0;
-  const params = { panSpeed: 6, kP: 0.08, kI: 0.02, kD: 0.04, gazeSmooth: 0.12, yBias: 0, yScale: 1.0 };
+  const params = { panSpeed: 4, kP: 0.34, kI: 0.030, kD: 0.010, gazeSmooth: 0.12, yBias: 130, yScale: 1.05 };
   const voiceHistory = []; // rolling conversation sent to Claude for context
   let voiceBusy = false;  // prevent overlapping Claude calls
+  let micMuteUntil = 0;   // Date.now() timestamp — ignore mic results until then (prevents hearing our own TTS)
+  const TTS_RATE = 1.35;  // playback speed multiplier for all TTS engines
+  let micStream = null;   // raw mic stream, recorded in parallel with SpeechRecognition and sent to Deepgram for the real transcript
+
+  // Browser SpeechRecognition is only used here as a "user started/stopped talking"
+  // signal (it's good at that). The actual transcript comes from Deepgram, which
+  // supports keyword boosting so "MatchVision" gets recognized correctly instead of
+  // being misheard as "mattress" etc.
+  async function transcribeWithDeepgram(blob) {
+    if (!blob || blob.size < 800) return null; // too short to be real speech
+    const key = MV_DEEPGRAM_KEY;
+    if (!key) return null;
+    try {
+      const url = 'https://api.deepgram.com/v1/listen'
+        + '?model=nova-2&smart_format=true&language=en-US'
+        + '&keywords=MatchVision:10&keywords=Match:5&keywords=Vision:5';
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { Authorization: `Token ${key}`, 'Content-Type': 'audio/webm' },
+        body: blob,
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data?.results?.channels?.[0]?.alternatives?.[0]?.transcript?.trim() || null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function stopRecorder(recorder) {
+    return new Promise((resolve) => {
+      if (!recorder || recorder.state !== 'recording') { resolve(null); return; }
+      recorder.onstop = () => resolve(new Blob(recorder._mvChunks, { type: 'audio/webm' }));
+      try { recorder.stop(); } catch (_) { resolve(null); }
+    });
+  }
+
+  // Browser speech recognition frequently mishears "MatchVision" as similar-sounding
+  // phrases. Match those leniently so the wake phrase still works, and strip it off
+  // so Claude sees a clean trailing question instead of the garbled prefix.
+  const WAKE_PATTERNS = [
+    /\bmatch\s*vision\b/i,
+    /\bmatch\s*division\b/i,
+    /\bmatch\s*the\s*vision\b/i,
+    /\bmatch\s*a\s*vision\b/i,
+    /\bmatt\s*vision\b/i,
+    /\bmadge\s*vision\b/i,
+    /\bwatch\s*vision\b/i,
+    /\bmattress\b/i,
+  ];
+
+  function stripWakeWord(text) {
+    for (const re of WAKE_PATTERNS) {
+      const m = text.match(re);
+      if (m) {
+        const rest = text.slice(m.index + m[0].length).replace(/^[\s,.:;-]+/, '');
+        return { matched: true, rest };
+      }
+    }
+    return { matched: false, rest: text };
+  }
   let panInterval = null;
   let calibrationOverlay = null;
   let debugDot = null;
@@ -310,45 +371,31 @@
         </div>
         <hr class="mv-sep">
         <div class="mv-sec">Zoom &amp; Motion</div>
-        <div class="mv-sl"><div class="mv-sl-top"><span>Zoom</span><span id="mv-zm-val">2.0×</span></div>
-          <input type="range" id="mv-zm" min="1.2" max="6" step="0.1" value="2"></div>
-        <div class="mv-sl"><div class="mv-sl-top"><span>Pan speed</span><span id="mv-sp-val">6</span></div>
-          <input type="range" id="mv-sp" min="1" max="20" step="1" value="6"></div>
+        <div class="mv-sl"><div class="mv-sl-top"><span>Zoom</span><span id="mv-zm-val">1.6×</span></div>
+          <input type="range" id="mv-zm" min="1.2" max="6" step="0.1" value="1.6"></div>
+        <div class="mv-sl"><div class="mv-sl-top"><span>Pan speed</span><span id="mv-sp-val">4</span></div>
+          <input type="range" id="mv-sp" min="1" max="20" step="1" value="4"></div>
         <div class="mv-sl"><div class="mv-sl-top"><span>Smoothing</span><span id="mv-sm-val">0.12</span></div>
           <input type="range" id="mv-sm" min="0.02" max="0.5" step="0.01" value="0.12"></div>
         <hr class="mv-sep">
         <div class="mv-sec">PID Controller</div>
-        <div class="mv-sl"><div class="mv-sl-top"><span>kP</span><span id="mv-kp-val">0.08</span></div>
-          <input type="range" id="mv-kp" min="0.01" max="0.5" step="0.01" value="0.08"></div>
-        <div class="mv-sl"><div class="mv-sl-top"><span>kI</span><span id="mv-ki-val">0.020</span></div>
-          <input type="range" id="mv-ki" min="0" max="0.2" step="0.005" value="0.02"></div>
-        <div class="mv-sl"><div class="mv-sl-top"><span>kD</span><span id="mv-kd-val">0.040</span></div>
-          <input type="range" id="mv-kd" min="0" max="0.3" step="0.005" value="0.04"></div>
+        <div class="mv-sl"><div class="mv-sl-top"><span>kP</span><span id="mv-kp-val">0.34</span></div>
+          <input type="range" id="mv-kp" min="0.01" max="0.5" step="0.01" value="0.34"></div>
+        <div class="mv-sl"><div class="mv-sl-top"><span>kI</span><span id="mv-ki-val">0.030</span></div>
+          <input type="range" id="mv-ki" min="0" max="0.2" step="0.005" value="0.03"></div>
+        <div class="mv-sl"><div class="mv-sl-top"><span>kD</span><span id="mv-kd-val">0.010</span></div>
+          <input type="range" id="mv-kd" min="0" max="0.3" step="0.005" value="0.01"></div>
         <hr class="mv-sep">
         <div class="mv-sec">Webcam Correction</div>
-        <div class="mv-sl"><div class="mv-sl-top"><span>Y bias (cam above screen)</span><span id="mv-yb-val">0px</span></div>
-          <input type="range" id="mv-yb" min="-200" max="400" step="5" value="0"></div>
-        <div class="mv-sl"><div class="mv-sl-top"><span>Y scale (vertical sensitivity)</span><span id="mv-ys-val">1.00</span></div>
-          <input type="range" id="mv-ys" min="0.5" max="2.5" step="0.05" value="1.0"></div>
+        <div class="mv-sl"><div class="mv-sl-top"><span>Y bias (cam above screen)</span><span id="mv-yb-val">130px</span></div>
+          <input type="range" id="mv-yb" min="-200" max="400" step="5" value="130"></div>
+        <div class="mv-sl"><div class="mv-sl-top"><span>Y scale (vertical sensitivity)</span><span id="mv-ys-val">1.05</span></div>
+          <input type="range" id="mv-ys" min="0.5" max="2.5" step="0.05" value="1.05"></div>
         <hr class="mv-sep">
         <div class="mv-sec">Voice Agent</div>
         <button class="mv-btn" id="mv-mic">🎤 Wake word: OFF</button>
         <div id="mv-voice-status" style="font-size:10px;color:rgba(255,255,255,.4);margin-bottom:8px;min-height:28px;line-height:1.4">
-          Say <strong style="color:#70e1ff">"Match Vision …"</strong> to talk to Claude
-        </div>
-        <div style="display:flex;gap:6px;align-items:center;margin-bottom:5px">
-          <input id="mv-apikey" type="password" placeholder="Anthropic API key (sk-ant-…)"
-            style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
-                   border-radius:6px;padding:5px 8px;color:#e0e0e0;font-size:10px;outline:none">
-          <button class="mv-btn" id="mv-apikey-save"
-            style="width:auto;padding:5px 10px;margin:0;font-size:10px">Save</button>
-        </div>
-        <div style="display:flex;gap:6px;align-items:center">
-          <input id="mv-eleven-key" type="password" placeholder="ElevenLabs key (natural voice — free at elevenlabs.io)"
-            style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
-                   border-radius:6px;padding:5px 8px;color:#e0e0e0;font-size:10px;outline:none">
-          <button class="mv-btn" id="mv-eleven-save"
-            style="width:auto;padding:5px 10px;margin:0;font-size:10px">Save</button>
+          Say <strong style="color:#70e1ff">"Match Vision …"</strong> to talk to your agent
         </div>
       </div>
       <div id="mv-circle">👁</div>
@@ -397,33 +444,6 @@
     // ── Voice agent ───────────────────────────────────────────────────────
     const micBtn      = root.querySelector('#mv-mic');
     const voiceStatus = root.querySelector('#mv-voice-status');
-    const apikeyInput  = root.querySelector('#mv-apikey');
-    const apikeySave   = root.querySelector('#mv-apikey-save');
-    const elevenInput  = root.querySelector('#mv-eleven-key');
-    const elevenSave   = root.querySelector('#mv-eleven-save');
-
-    chrome.storage.local.get(['anthropicApiKey','elevenLabsKey']).then(({ anthropicApiKey, elevenLabsKey }) => {
-      if (anthropicApiKey) apikeyInput.placeholder = 'Anthropic key saved ✓';
-      if (elevenLabsKey)   elevenInput.placeholder  = 'ElevenLabs key saved ✓';
-    });
-
-    apikeySave.addEventListener('click', () => {
-      const key = apikeyInput.value.trim();
-      if (!key) return;
-      chrome.storage.local.set({ anthropicApiKey: key });
-      apikeyInput.value = ''; apikeyInput.placeholder = 'Anthropic key saved ✓';
-      voiceStatus.textContent = 'Anthropic key saved.';
-      setTimeout(() => { voiceStatus.textContent = ''; }, 2000);
-    });
-
-    elevenSave.addEventListener('click', () => {
-      const key = elevenInput.value.trim();
-      if (!key) return;
-      chrome.storage.local.set({ elevenLabsKey: key });
-      elevenInput.value = ''; elevenInput.placeholder = 'ElevenLabs key saved ✓';
-      voiceStatus.textContent = 'ElevenLabs key saved — natural voice enabled!';
-      setTimeout(() => { voiceStatus.textContent = ''; }, 2000);
-    });
 
     // ── Always-on conversation mode ───────────────────────────────────────
     // Every utterance goes to Claude. Claude decides whether it's being
@@ -431,6 +451,9 @@
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     let listenRec = null;
     let listenOn  = false;
+    let listenGen = 0;            // bumped on every forced restart — stale rec/recorder callbacks check this and no-op
+    let lastRecogActivity = Date.now();
+    let watchdogInterval = null;
 
     function setListenOn(on) {
       listenOn = on;
@@ -445,42 +468,101 @@
 
       function cycle() {
         if (!listenOn) return;
+        const myGen = ++listenGen; // any earlier cycle's rec/recorder becomes stale and no-ops
+        lastRecogActivity = Date.now();
         const rec = new SR();
         rec.lang = 'en-US';
         rec.continuous = false;
         rec.interimResults = false;
         listenRec = rec;
 
-        rec.onresult = (e) => {
-          const text = e.results[0][0].transcript.trim();
-          if (!text) return;
-          console.log('[MV listen] heard:', text);
+        // Record raw audio in parallel — SpeechRecognition only tells us *when*
+        // the user spoke; Deepgram (with keyword boosting) tells us *what* they said.
+        let recorder = null;
+        if (micStream) {
+          try {
+            recorder = new MediaRecorder(micStream, { mimeType: 'audio/webm;codecs=opus' });
+            recorder._mvChunks = [];
+            recorder.ondataavailable = (e) => { if (e.data.size) recorder._mvChunks.push(e.data); };
+            recorder.start();
+          } catch (_) { recorder = null; }
+        }
+
+        rec.onstart = () => { lastRecogActivity = Date.now(); };
+
+        rec.onresult = async (e) => {
+          lastRecogActivity = Date.now();
+          const localRaw = e.results[0][0].transcript.trim();
+          const blob = await stopRecorder(recorder);
+          if (myGen !== listenGen) return; // superseded by a watchdog restart while we were transcribing
+          if (!localRaw && !blob) return;
+          if (Date.now() < micMuteUntil) { console.log('[MV listen] ignoring (TTS playing)'); return; }
+
+          const dgText = await transcribeWithDeepgram(blob);
+          const raw = dgText || localRaw;
+          if (!raw) return;
+
+          const { matched, rest } = stripWakeWord(raw);
+          const text = matched && rest.length > 1 ? rest : raw;
+          console.log('[MV listen] heard:', raw, dgText ? '(via Deepgram)' : '(via browser STT fallback)', matched ? '(wake word matched)' : '');
+
           if (voiceBusy) { console.log('[MV listen] busy, skipping'); return; }
           voiceBusy = true;
           voiceStatus.textContent = `"${text}" — thinking…`;
           chrome.runtime.sendMessage({
             type: 'voice-transcript', tabId, text,
+            wakeWordHeard: matched,
             history: voiceHistory.slice(-10),
             currentParams: { ...params, zoom: zoomLevel, isTracking },
           }).catch(() => { voiceBusy = false; });
         };
 
-        rec.onend   = () => setTimeout(cycle, 80);
+        rec.onend   = () => {
+          lastRecogActivity = Date.now();
+          if (recorder?.state === 'recording') { try { recorder.stop(); } catch (_) {} }
+          if (myGen === listenGen) setTimeout(cycle, 80);
+        };
         rec.onerror = (e) => {
+          lastRecogActivity = Date.now();
+          if (recorder?.state === 'recording') { try { recorder.stop(); } catch (_) {} }
           if (e.error !== 'no-speech' && e.error !== 'aborted')
             console.warn('[MV listen] error:', e.error);
-          setTimeout(cycle, e.error === 'network' ? 2000 : 80);
+          if (myGen === listenGen) setTimeout(cycle, e.error === 'network' ? 2000 : 80);
         };
-        try { rec.start(); } catch (_) { setTimeout(cycle, 400); }
+        try { rec.start(); } catch (_) { if (myGen === listenGen) setTimeout(cycle, 400); }
       }
       cycle();
+
+      // Watchdog: browsers can silently stop delivering recognition events —
+      // e.g. after entering/exiting fullscreen, or when focus moves off the
+      // page — without ever firing onend/onerror. If nothing has happened for
+      // a while, or the mic track itself died, force a fresh restart instead
+      // of staying stuck. Mirrors the recovery behavior already built for the
+      // gaze-tracking camera pipeline.
+      if (watchdogInterval) clearInterval(watchdogInterval);
+      watchdogInterval = setInterval(async () => {
+        if (!listenOn) return;
+        const micDead = micStream && micStream.getAudioTracks().every(t => t.readyState === 'ended');
+        if (micDead) {
+          console.warn('[MV listen] mic stream ended unexpectedly — reacquiring');
+          try { micStream = await navigator.mediaDevices.getUserMedia({ audio: true }); } catch (_) { micStream = null; }
+        }
+        if (micDead || Date.now() - lastRecogActivity > 8000) {
+          console.warn('[MV listen] recognition looked stuck — forcing restart');
+          try { listenRec?.abort(); } catch (_) {}
+          cycle();
+        }
+      }, 4000);
     }
 
     micBtn.addEventListener('click', async () => {
       if (!SR) { voiceStatus.textContent = '⚠ Speech recognition not available.'; return; }
       if (listenOn) {
         listenOn = false;
+        if (watchdogInterval) { clearInterval(watchdogInterval); watchdogInterval = null; }
         try { listenRec?.stop(); } catch (_) {}
+        micStream?.getTracks().forEach(t => t.stop());
+        micStream = null;
         setListenOn(false);
         voiceHistory.length = 0;
       } else {
@@ -492,6 +574,12 @@
           voiceStatus.textContent = '⚠ Reload this tab after updating the extension.';
           return;
         }
+        try {
+          micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        } catch (_) {
+          voiceStatus.textContent = '⚠ Mic permission denied — falling back to browser speech recognition only.';
+          micStream = null;
+        }
         setListenOn(true);
         voiceStatus.textContent = 'Listening — just speak naturally…';
         startListening(tabId);
@@ -499,29 +587,60 @@
     });
   }
 
+  function stripMarkdown(s) {
+    return s
+      .replace(/```[\s\S]*?```/g, '')          // fenced code blocks
+      .replace(/`([^`]*)`/g, '$1')              // inline code
+      .replace(/^#{1,6}\s+/gm, '')               // headers
+      .replace(/\*\*([^*]+)\*\*/g, '$1')         // bold
+      .replace(/__([^_]+)__/g, '$1')             // bold underscore
+      .replace(/\*([^*]+)\*/g, '$1')             // italic
+      .replace(/_([^_]+)_/g, '$1')               // italic underscore
+      .replace(/^[-*+]\s+/gm, '')                // bullet markers
+      .replace(/^\d+\.\s+/gm, '')                // numbered list markers
+      .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')   // links
+      .replace(/[*_#`~]/g, '')                   // any leftover symbols
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+  }
+
   async function speak(text) {
     if (!text) return;
+    text = stripMarkdown(text);
     window.speechSynthesis.cancel();
 
-    // Try ElevenLabs first (natural voice) — falls back to browser TTS
+    // Mute the mic only once audio actually starts playing, so the recognizer
+    // doesn't hear our own TTS and loop it back to Claude. Trailing buffer
+    // after playback ends covers speaker tail + recognition latency. Mic stays
+    // live during the TTS network fetch itself, so a slow fetch doesn't make
+    // the extension look unresponsive.
+    const unmute = () => { micMuteUntil = Date.now() + 700; };
+    function muteForPlayback() {
+      micMuteUntil = Infinity;
+      setTimeout(() => { if (micMuteUntil === Infinity) unmute(); }, 15000); // safety net
+    }
+
+    // Try Deepgram first — falls back to browser TTS
     try {
-      const { elevenLabsKey } = await chrome.storage.local.get('elevenLabsKey');
-      if (elevenLabsKey) {
-        const voiceId = '21m00Tcm4TlvDq8ikWAM'; // Rachel — natural US English
-        const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`, {
+      const deepgramKey = MV_DEEPGRAM_KEY;
+      if (deepgramKey) {
+        const t0 = performance.now();
+        const res = await fetch('https://api.deepgram.com/v1/speak?model=aura-2-thalia-en', {
           method: 'POST',
-          headers: { 'xi-api-key': elevenLabsKey, 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            text,
-            model_id: 'eleven_turbo_v2_5',
-            voice_settings: { stability: 0.5, similarity_boost: 0.75 },
-          }),
+          headers: { Authorization: `Token ${deepgramKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text }),
         });
+        console.log('[MV speak] Deepgram TTS fetch took', Math.round(performance.now() - t0), 'ms');
         if (res.ok) {
           const url = URL.createObjectURL(await res.blob());
           const audio = new Audio(url);
-          audio.onended = () => URL.revokeObjectURL(url);
-          audio.play();
+          audio.playbackRate = TTS_RATE;
+          muteForPlayback();
+          await new Promise((resolve) => {
+            audio.onended = () => { URL.revokeObjectURL(url); unmute(); resolve(); };
+            audio.onerror = () => { unmute(); resolve(); };
+            audio.play();
+          });
           return;
         }
       }
@@ -529,17 +648,22 @@
 
     // Fallback: Web Speech API with best available voice
     const utt = new SpeechSynthesisUtterance(text);
-    utt.rate = 1.0;
-    const pick = () => {
-      const voices = window.speechSynthesis.getVoices();
-      for (const name of ['Samantha','Google US English','Google UK English Female','Karen','Moira']) {
-        const v = voices.find(v => v.name.includes(name));
-        if (v) { utt.voice = v; break; }
-      }
-      window.speechSynthesis.speak(utt);
-    };
-    window.speechSynthesis.getVoices().length ? pick()
-      : (window.speechSynthesis.onvoiceschanged = () => { pick(); window.speechSynthesis.onvoiceschanged = null; });
+    utt.rate = TTS_RATE;
+    muteForPlayback();
+    await new Promise((resolve) => {
+      utt.onend = () => { unmute(); resolve(); };
+      utt.onerror = () => { unmute(); resolve(); };
+      const pick = () => {
+        const voices = window.speechSynthesis.getVoices();
+        for (const name of ['Samantha','Google US English','Google UK English Female','Karen','Moira']) {
+          const v = voices.find(v => v.name.includes(name));
+          if (v) { utt.voice = v; break; }
+        }
+        window.speechSynthesis.speak(utt);
+      };
+      window.speechSynthesis.getVoices().length ? pick()
+        : (window.speechSynthesis.onvoiceschanged = () => { pick(); window.speechSynthesis.onvoiceschanged = null; });
+    });
   }
 
   function updateSlider(id, value, fmt) {
@@ -636,14 +760,37 @@
           if (p.yBias      != null) { params.yBias      = p.yBias;      updateSlider('mv-yb', p.yBias,      v => v + 'px'); }
           if (p.yScale     != null) { params.yScale     = p.yScale;     updateSlider('mv-ys', p.yScale,     v => v.toFixed(2)); }
         }
-        // Execute control actions
-        if (msg.action === 'start')     startFlow();
-        if (msg.action === 'stop')      stopTracking();
-        if (msg.action === 'reset_pan') resetPan();
-
-        if (msg.text) {
-          if (vs) vs.textContent = msg.text;
-          speak(msg.text);
+        // Execute control actions. "start" is special-cased: calibration needs
+        // the user's full attention, so speak the explanation to completion
+        // first and only then kick off the iframe/calibration flow — otherwise
+        // the dots can start appearing mid-sentence (a fixed timeout guards
+        // against ever blocking forever if playback weirdly never resolves).
+        if (msg.action === 'start') {
+          (async () => {
+            if (msg.text) {
+              if (vs) vs.textContent = msg.text;
+              await Promise.race([speak(msg.text), new Promise((r) => setTimeout(r, 8000))]);
+            }
+            startFlow();
+          })();
+        } else {
+          if (msg.action === 'stop')      stopTracking();
+          if (msg.action === 'reset_pan') resetPan();
+          if (msg.action === 'fullscreen') {
+            // Background grants real user activation via chrome.debugger (CDP
+            // input events count as genuine gestures, unlike a JS-dispatched
+            // click), then fullscreens the actual player. Falls back to
+            // maximizing the window if that's unavailable for any reason.
+            chrome.runtime.sendMessage({ type: 'request-video-fullscreen' }).catch(() => {});
+          }
+          if (msg.action === 'exit_fullscreen') {
+            if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+            chrome.runtime.sendMessage({ type: 'restore-window' }).catch(() => {});
+          }
+          if (msg.text) {
+            if (vs) vs.textContent = msg.text;
+            speak(msg.text);
+          }
         }
         break;
       }

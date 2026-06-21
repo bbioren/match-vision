@@ -41,6 +41,10 @@ def load_match_actions(match_id: int) -> tuple[pd.DataFrame, dict]:
         import socceraction.spadl.kloppy as sk
 
         dataset = statsbomb.load_open_data(match_id=match_id)
+        # Period 5 (penalty shootout, when present) has no "attacking direction"
+        # — kloppy's coordinate transform raises OrientationError on it. Shootout
+        # kicks aren't open-play actions anyway, so drop them before conversion.
+        dataset = dataset.filter(lambda e: e.period.id != 5)
         actions = sk.convert_to_actions(dataset, game_id=match_id)
         actions = spadl.add_names(actions)
 
