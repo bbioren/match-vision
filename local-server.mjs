@@ -111,6 +111,7 @@ async function describe(req, res) {
   else result = { fallback: true };
   send(res, 200, JSON.stringify({ provider, ...result }), { 'content-type': 'application/json' });
 }
+
 async function callQwenVision({ imageBase64, frames, atSecond, matchContext, priorMoments }) {
   const apiKey = process.env.DASHSCOPE_API_KEY;
   const frameList = Array.isArray(frames) && frames.length
@@ -187,6 +188,78 @@ async function extract(req, res) {
   send(res, 200, JSON.stringify({ provider: 'qwen-vl', ...result }), { 'content-type': 'application/json' });
 }
 
+function labelSubmissionId(body, req) {
+  if (body.teracSubmissionId) return body.teracSubmissionId;
+  if (body.submissionId) return body.submissionId;
+  try {
+    const ref = new URL(req.headers.referer || '');
+    return ref.searchParams.get('teracSubmissionId') ?? ref.searchParams.get('submissionId') ?? null;
+  } catch {
+    return null;
+  }
+}
+async function readLocalLabels() {
+  try {
+    const raw = await fs.readFile(path.join(root, 'data', 'labels.local.json'), 'utf8');
+    return JSON.parse(raw);
+  } catch (error) {
+    if (error.code === 'ENOENT') return [];
+    throw error;
+  }
+}
+async function writeLocalLabels(rows) {
+  await fs.mkdir(path.join(root, 'data'), { recursive: true });
+  await fs.writeFile(path.join(root, 'data', 'labels.local.json'), JSON.stringify(rows, null, 2));
+}
+async function labels(req, res) {
+  if (req.method === 'POST') {
+    const body = await readJson(req);
+    const submissionId = labelSubmissionId(body, req);
+    const row = {
+      id: `label_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+      annotation_type: body.annotation_type ?? 'ranking',
+      task_id: body.task_id ?? null,
+      clip_id: body.clip_id ?? null,
+      transcription: body.transcription ?? '',
+      ranking: body.ranking ?? [],
+      reason_tags: body.reason_tags ?? [],
+      why_best: body.why_best ?? '',
+      is_calibration: body.is_calibration ?? false,
+      calibration_passed: body.calibration_passed ?? null,
+      terac_submission_id: submissionId,
+      terac_task_id: body.teracTaskId ?? body.taskId ?? null,
+      created_at: new Date().toISOString(),
+    };
+    const rows = await readLocalLabels();
+    rows.unshift(row);
+    await writeLocalLabels(rows);
+    return send(res, 201, JSON.stringify({ ok: true, id: row.id, terac_submission_id: submissionId }), { 'content-type': 'application/json' });
+  }
+  if (req.method === 'GET') {
+    const rows = await readLocalLabels();
+    return send(res, 200, JSON.stringify({ count: rows.length, rows }), { 'content-type': 'application/json' });
+  }
+  send(res, 405, JSON.stringify({ error: 'Method not allowed' }), { 'content-type': 'application/json' });
+}
+async function sessions(req, res) {
+  if (req.method !== 'GET') return send(res, 405, JSON.stringify({ error: 'Method not allowed' }), { 'content-type': 'application/json' });
+  const rows = await readLocalLabels();
+  const bySession = new Map();
+  for (const row of rows) {
+    if (!row.terac_submission_id) continue;
+    const current = bySession.get(row.terac_submission_id) ?? { terac_submission_id: row.terac_submission_id, vote_count: 0, calibration_passed: 0, calibration_failed: 0, last_seen: null };
+    current.vote_count += 1;
+    if (row.is_calibration) current[row.calibration_passed ? 'calibration_passed' : 'calibration_failed'] += 1;
+    if (!current.last_seen || row.created_at > current.last_seen) current.last_seen = row.created_at;
+    bySession.set(row.terac_submission_id, current);
+  }
+  const sessions = [...bySession.values()].map(session => {
+    const total = session.calibration_passed + session.calibration_failed;
+    return { ...session, quality_score: total > 0 ? Number((session.calibration_passed / total).toFixed(2)) : null };
+  });
+  send(res, 200, JSON.stringify({ count: sessions.length, sessions }), { 'content-type': 'application/json' });
+}
+
 async function tts(req, res) {
   const { text } = await readJson(req);
   const apiKey = process.env.DEEPGRAM_API_KEY;
@@ -206,6 +279,8 @@ http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://localhost:${port}`);
     if (req.method === 'POST' && url.pathname === '/api/describe') return await describe(req, res);
     if (req.method === 'POST' && url.pathname === '/api/extract') return await extract(req, res);
+    if (url.pathname === '/api/labels') return await labels(req, res);
+    if (url.pathname === '/api/sessions') return await sessions(req, res);
     if (req.method === 'POST' && url.pathname === '/api/tts') return await tts(req, res);
     const pathname = url.pathname === '/' ? '/index.html' : decodeURIComponent(url.pathname);
     const file = path.normalize(path.join(root, pathname));
