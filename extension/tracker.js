@@ -418,10 +418,13 @@
       rec.lang = 'en-US';
       rec.interimResults = false;
       rec.maxAlternatives = 1;
+      let _fired = false; // Chrome sometimes fires onresult multiple times — deduplicate
       rec.onresult = (e) => {
+        if (_fired) return;
+        _fired = true;
         const text = e.results[0][0].transcript;
         console.log('[MV voice] heard:', text);
-        voiceStatus.textContent = `"${text}"`;
+        voiceStatus.textContent = `"${text}" — asking Claude…`;
         chrome.runtime.sendMessage({
           type: 'voice-transcript', tabId, text,
           currentParams: { ...params, zoom: zoomLevel, isTracking },
@@ -436,7 +439,7 @@
         micBtn.disabled = false;
       };
       rec.onend = () => {
-        if (micBtn.disabled && voiceStatus.textContent === '🎤 Listening…') {
+        if (!_fired) {
           voiceStatus.textContent = '(no speech detected)';
           micBtn.disabled = false;
         }
