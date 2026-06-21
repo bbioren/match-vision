@@ -148,3 +148,4 @@ Every step degrades gracefully without keys: `generate-candidates.mjs --dry-run`
 - [`docs/TERAC_ANNOTATION_PLAN.md`](./docs/TERAC_ANNOTATION_PLAN.md): labeling plan
 - [`docs/TERAC_CENTRAL_STORY.md`](./docs/TERAC_CENTRAL_STORY.md): how Terac labels train the description selector
 - [`docs/DEVPOST_DRAFT.md`](./docs/DEVPOST_DRAFT.md): submission draft
+# Rebuild trigger
