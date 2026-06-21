@@ -336,11 +336,18 @@
         <div id="mv-voice-status" style="font-size:10px;color:rgba(255,255,255,.4);margin-bottom:8px;min-height:28px;line-height:1.4">
           Say <strong style="color:#70e1ff">"Match Vision …"</strong> to talk to Claude
         </div>
-        <div style="display:flex;gap:6px;align-items:center">
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:5px">
           <input id="mv-apikey" type="password" placeholder="Anthropic API key (sk-ant-…)"
             style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
                    border-radius:6px;padding:5px 8px;color:#e0e0e0;font-size:10px;outline:none">
           <button class="mv-btn" id="mv-apikey-save"
+            style="width:auto;padding:5px 10px;margin:0;font-size:10px">Save</button>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <input id="mv-eleven-key" type="password" placeholder="ElevenLabs key (natural voice — free at elevenlabs.io)"
+            style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
+                   border-radius:6px;padding:5px 8px;color:#e0e0e0;font-size:10px;outline:none">
+          <button class="mv-btn" id="mv-eleven-save"
             style="width:auto;padding:5px 10px;margin:0;font-size:10px">Save</button>
         </div>
       </div>
@@ -390,21 +397,31 @@
     // ── Voice agent ───────────────────────────────────────────────────────
     const micBtn      = root.querySelector('#mv-mic');
     const voiceStatus = root.querySelector('#mv-voice-status');
-    const apikeyInput = root.querySelector('#mv-apikey');
-    const apikeySave  = root.querySelector('#mv-apikey-save');
+    const apikeyInput  = root.querySelector('#mv-apikey');
+    const apikeySave   = root.querySelector('#mv-apikey-save');
+    const elevenInput  = root.querySelector('#mv-eleven-key');
+    const elevenSave   = root.querySelector('#mv-eleven-save');
 
-    // Load saved API key placeholder
-    chrome.storage.local.get('anthropicApiKey').then(({ anthropicApiKey }) => {
-      if (anthropicApiKey) apikeyInput.placeholder = 'API key saved ✓';
+    chrome.storage.local.get(['anthropicApiKey','elevenLabsKey']).then(({ anthropicApiKey, elevenLabsKey }) => {
+      if (anthropicApiKey) apikeyInput.placeholder = 'Anthropic key saved ✓';
+      if (elevenLabsKey)   elevenInput.placeholder  = 'ElevenLabs key saved ✓';
     });
 
     apikeySave.addEventListener('click', () => {
       const key = apikeyInput.value.trim();
       if (!key) return;
       chrome.storage.local.set({ anthropicApiKey: key });
-      apikeyInput.value = '';
-      apikeyInput.placeholder = 'API key saved ✓';
-      voiceStatus.textContent = 'API key saved.';
+      apikeyInput.value = ''; apikeyInput.placeholder = 'Anthropic key saved ✓';
+      voiceStatus.textContent = 'Anthropic key saved.';
+      setTimeout(() => { voiceStatus.textContent = ''; }, 2000);
+    });
+
+    elevenSave.addEventListener('click', () => {
+      const key = elevenInput.value.trim();
+      if (!key) return;
+      chrome.storage.local.set({ elevenLabsKey: key });
+      elevenInput.value = ''; elevenInput.placeholder = 'ElevenLabs key saved ✓';
+      voiceStatus.textContent = 'ElevenLabs key saved — natural voice enabled!';
       setTimeout(() => { voiceStatus.textContent = ''; }, 2000);
     });
 
@@ -482,38 +499,47 @@
     });
   }
 
-  function speak(text) {
+  async function speak(text) {
     if (!text) return;
     window.speechSynthesis.cancel();
+
+    // Try ElevenLabs first (natural voice) — falls back to browser TTS
+    try {
+      const { elevenLabsKey } = await chrome.storage.local.get('elevenLabsKey');
+      if (elevenLabsKey) {
+        const voiceId = '21m00Tcm4TlvDq8ikWAM'; // Rachel — natural US English
+        const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`, {
+          method: 'POST',
+          headers: { 'xi-api-key': elevenLabsKey, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text,
+            model_id: 'eleven_turbo_v2_5',
+            voice_settings: { stability: 0.5, similarity_boost: 0.75 },
+          }),
+        });
+        if (res.ok) {
+          const url = URL.createObjectURL(await res.blob());
+          const audio = new Audio(url);
+          audio.onended = () => URL.revokeObjectURL(url);
+          audio.play();
+          return;
+        }
+      }
+    } catch (_) {}
+
+    // Fallback: Web Speech API with best available voice
     const utt = new SpeechSynthesisUtterance(text);
     utt.rate = 1.0;
-    utt.pitch = 1.0;
-
-    // Prefer high-quality neural/system voices over the default robotic one
     const pick = () => {
       const voices = window.speechSynthesis.getVoices();
-      const order = [
-        'Samantha',            // macOS US (Siri-quality)
-        'Google US English',
-        'Google UK English Female',
-        'Karen',               // macOS AU
-        'Moira',               // macOS IE
-        'Tessa',               // macOS ZA
-        'Fiona',               // macOS GB
-      ];
-      for (const name of order) {
+      for (const name of ['Samantha','Google US English','Google UK English Female','Karen','Moira']) {
         const v = voices.find(v => v.name.includes(name));
         if (v) { utt.voice = v; break; }
       }
       window.speechSynthesis.speak(utt);
     };
-
-    // Voices may not be loaded yet on first call
-    if (window.speechSynthesis.getVoices().length) {
-      pick();
-    } else {
-      window.speechSynthesis.onvoiceschanged = () => { pick(); window.speechSynthesis.onvoiceschanged = null; };
-    }
+    window.speechSynthesis.getVoices().length ? pick()
+      : (window.speechSynthesis.onvoiceschanged = () => { pick(); window.speechSynthesis.onvoiceschanged = null; });
   }
 
   function updateSlider(id, value, fmt) {
