@@ -16,6 +16,7 @@
   const INT_LIMIT = 3.0;
   const params = { panSpeed: 6, kP: 0.08, kI: 0.02, kD: 0.04, gazeSmooth: 0.12, yBias: 0, yScale: 1.0 };
   const voiceHistory = []; // rolling conversation sent to Claude for context
+  let voiceBusy = false;  // prevent overlapping Claude calls
   let panInterval = null;
   let calibrationOverlay = null;
   let debugDot = null;
@@ -437,12 +438,14 @@
           const text = e.results[0][0].transcript.trim();
           if (!text) return;
           console.log('[MV listen] heard:', text);
-          voiceStatus.textContent = `"${text}"`;
+          if (voiceBusy) { console.log('[MV listen] busy, skipping'); return; }
+          voiceBusy = true;
+          voiceStatus.textContent = `"${text}" — thinking…`;
           chrome.runtime.sendMessage({
             type: 'voice-transcript', tabId, text,
-            history: voiceHistory.slice(-10), // last 5 exchanges for context
+            history: voiceHistory.slice(-10),
             currentParams: { ...params, zoom: zoomLevel, isTracking },
-          }).catch(() => {});
+          }).catch(() => { voiceBusy = false; });
         };
 
         rec.onend   = () => setTimeout(cycle, 80);
@@ -572,10 +575,12 @@
       case 'voice-response': {
         const vs = document.getElementById('mv-voice-status');
         if (msg.error) {
+          voiceBusy = false;
           if (vs) vs.textContent = '⚠ ' + msg.error;
           speak(msg.error);
           break;
         }
+        voiceBusy = false;
         // Claude decided this wasn't directed at it — stay silent
         if (msg.ignore) {
           if (vs) vs.textContent = 'Listening…';
