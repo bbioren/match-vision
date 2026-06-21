@@ -490,5 +490,149 @@
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
+  },
+  {
+    "task_id": "kaggle_10_000",
+    "clip_id": "kaggle_10_000",
+    "video_src": "clips/kaggle/segments/kaggle_10_000.mp4",
+    "annotation_status": "pending",
+    "clip_summary": null,
+    "reference_description": null
+  },
+  {
+    "task_id": "kaggle_10_001",
+    "clip_id": "kaggle_10_001",
+    "video_src": "clips/kaggle/segments/kaggle_10_001.mp4",
+    "annotation_status": "pending",
+    "clip_summary": null,
+    "reference_description": null
+  },
+  {
+    "task_id": "kaggle_10_002",
+    "clip_id": "kaggle_10_002",
+    "video_src": "clips/kaggle/segments/kaggle_10_002.mp4",
+    "annotation_status": "pending",
+    "clip_summary": null,
+    "reference_description": null
+  },
+  {
+    "task_id": "kaggle_10_003",
+    "clip_id": "kaggle_10_003",
+    "video_src": "clips/kaggle/segments/kaggle_10_003.mp4",
+    "annotation_status": "pending",
+    "clip_summary": null,
+    "reference_description": null
+  },
+  {
+    "task_id": "kaggle_10_004",
+    "clip_id": "kaggle_10_004",
+    "video_src": "clips/kaggle/segments/kaggle_10_004.mp4",
+    "annotation_status": "pending",
+    "clip_summary": null,
+    "reference_description": null
+  },
+  {
+    "task_id": "kaggle_12_000",
+    "clip_id": "kaggle_12_000",
+    "video_src": "clips/kaggle/segments/kaggle_12_000.mp4",
+    "annotation_status": "pending",
+    "clip_summary": null,
+    "reference_description": null
+  },
+  {
+    "task_id": "kaggle_12_001",
+    "clip_id": "kaggle_12_001",
+    "video_src": "clips/kaggle/segments/kaggle_12_001.mp4",
+    "annotation_status": "pending",
+    "clip_summary": null,
+    "reference_description": null
+  },
+  {
+    "task_id": "kaggle_12_002",
+    "clip_id": "kaggle_12_002",
+    "video_src": "clips/kaggle/segments/kaggle_12_002.mp4",
+    "annotation_status": "pending",
+    "clip_summary": null,
+    "reference_description": null
+  },
+  {
+    "task_id": "kaggle_12_003",
+    "clip_id": "kaggle_12_003",
+    "video_src": "clips/kaggle/segments/kaggle_12_003.mp4",
+    "annotation_status": "pending",
+    "clip_summary": null,
+    "reference_description": null
+  },
+  {
+    "task_id": "kaggle_12_004",
+    "clip_id": "kaggle_12_004",
+    "video_src": "clips/kaggle/segments/kaggle_12_004.mp4",
+    "annotation_status": "pending",
+    "clip_summary": null,
+    "reference_description": null
+  },
+  {
+    "task_id": "kaggle_12_005",
+    "clip_id": "kaggle_12_005",
+    "video_src": "clips/kaggle/segments/kaggle_12_005.mp4",
+    "annotation_status": "pending",
+    "clip_summary": null,
+    "reference_description": null
+  },
+  {
+    "task_id": "kaggle_12_006",
+    "clip_id": "kaggle_12_006",
+    "video_src": "clips/kaggle/segments/kaggle_12_006.mp4",
+    "annotation_status": "pending",
+    "clip_summary": null,
+    "reference_description": null
+  },
+  {
+    "task_id": "kaggle_13_000",
+    "clip_id": "kaggle_13_000",
+    "video_src": "clips/kaggle/segments/kaggle_13_000.mp4",
+    "annotation_status": "pending",
+    "clip_summary": null,
+    "reference_description": null
+  },
+  {
+    "task_id": "kaggle_13_001",
+    "clip_id": "kaggle_13_001",
+    "video_src": "clips/kaggle/segments/kaggle_13_001.mp4",
+    "annotation_status": "pending",
+    "clip_summary": null,
+    "reference_description": null
+  },
+  {
+    "task_id": "kaggle_13_002",
+    "clip_id": "kaggle_13_002",
+    "video_src": "clips/kaggle/segments/kaggle_13_002.mp4",
+    "annotation_status": "pending",
+    "clip_summary": null,
+    "reference_description": null
+  },
+  {
+    "task_id": "kaggle_13_003",
+    "clip_id": "kaggle_13_003",
+    "video_src": "clips/kaggle/segments/kaggle_13_003.mp4",
+    "annotation_status": "pending",
+    "clip_summary": null,
+    "reference_description": null
+  },
+  {
+    "task_id": "kaggle_13_004",
+    "clip_id": "kaggle_13_004",
+    "video_src": "clips/kaggle/segments/kaggle_13_004.mp4",
+    "annotation_status": "pending",
+    "clip_summary": null,
+    "reference_description": null
+  },
+  {
+    "task_id": "kaggle_13_005",
+    "clip_id": "kaggle_13_005",
+    "video_src": "clips/kaggle/segments/kaggle_13_005.mp4",
+    "annotation_status": "pending",
+    "clip_summary": null,
+    "reference_description": null
   }
 ]
