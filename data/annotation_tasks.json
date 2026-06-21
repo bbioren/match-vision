@@ -441,62 +441,62 @@
     "task_id": "yt_eng_cro_12",
     "clip_id": "england_vs_croatia_extended_highlights_2026_fifa_world_cup_012",
     "video_src": "clips/youtube/segments/england_vs_croatia_extended_highlights_2026_fifa_world_cup_012.mp4",
-    "clip_summary": "Broadcast gameplay segment with England attacking down the right side near the penalty area and Croatia defending compactly.",
-    "baseline": "England are attacking on the right side.",
-    "improved": "England attack near the right edge of Croatia’s penalty area, with blue shirts compact in front of goal and a cross or cutback available.",
+    "clip_summary": "Harry Kane prepares to take a free kick for England just outside Croatia's penalty area. Players from both teams are lined up: defenders form a wall in front of the Croatian goal while England attackers position for runs. Kane steps back and sets himself over the ball.",
+    "baseline": "England have a free kick near Croatia's goal.",
+    "improved": "Harry Kane stands over a free kick just outside Croatia's penalty area. Croatia's wall is set and defenders mark runners, while Kane measures his run-up — a direct shot on goal or a precise delivery into the crowded box is seconds away.",
     "candidates": [
       {
         "id": "a",
-        "label": "Right-side attack",
-        "description": "England attack near the right edge of Croatia’s penalty area, with blue shirts compact in front of goal and a cross or cutback available."
+        "label": "Kane free kick",
+        "description": "Harry Kane stands over a free kick just outside Croatia's penalty area. Croatia's wall is set and defenders mark runners, while Kane measures his run-up — a direct shot on goal or a precise delivery into the crowded box is seconds away."
       },
       {
         "id": "b",
         "label": "Concise live",
-        "description": "England are wide right near the box, looking for a ball into the crowded area."
+        "description": "England free kick near the box: Kane is over the ball, the wall is up, and Croatia are set to defend."
       },
       {
         "id": "c",
         "label": "Spatial",
-        "description": "The ball is near the right side of the penalty area, while Croatia’s defenders protect the center of the box."
+        "description": "The ball is placed just outside Croatia's penalty area. A defensive wall of four or five players blocks the near post, with Kane preparing to shoot or bend it around."
       },
       {
         "id": "d",
         "label": "Generic",
-        "description": "England are attacking on the right side."
+        "description": "England have a free kick near Croatia's goal."
       },
       {
         "id": "e",
         "label": "Tactical",
-        "description": "The wide position pulls Croatia sideways, creating a possible crossing lane or cutback toward the middle."
+        "description": "A free kick in this position is a high-danger set piece: Kane can go directly at goal over the wall, or lay it off for a runner arriving late into the box."
       }
     ],
     "split": "heldout",
     "commentary_variations": [
       {
         "id": "a",
-        "label": "Right-side attack",
-        "text": "England attack near the right edge of Croatia’s penalty area, with blue shirts compact in front of goal and a cross or cutback available."
+        "label": "Kane free kick",
+        "text": "Harry Kane stands over a free kick just outside Croatia's penalty area. Croatia's wall is set and defenders mark runners, while Kane measures his run-up — a direct shot on goal or a precise delivery into the crowded box is seconds away."
       },
       {
         "id": "b",
         "label": "Concise live",
-        "text": "England are wide right near the box, looking for a ball into the crowded area."
+        "text": "England free kick near the box: Kane is over the ball, the wall is up, and Croatia are set to defend."
       },
       {
         "id": "c",
         "label": "Spatial",
-        "text": "The ball is near the right side of the penalty area, while Croatia’s defenders protect the center of the box."
+        "text": "The ball is placed just outside Croatia's penalty area. A defensive wall of four or five players blocks the near post, with Kane preparing to shoot or bend it around."
       },
       {
         "id": "d",
         "label": "Generic",
-        "text": "England are attacking on the right side."
+        "text": "England have a free kick near Croatia's goal."
       },
       {
         "id": "e",
         "label": "Tactical",
-        "text": "The wide position pulls Croatia sideways, creating a possible crossing lane or cutback toward the middle."
+        "text": "A free kick in this position is a high-danger set piece: Kane can go directly at goal over the wall, or lay it off for a runner arriving late into the box."
       }
     ]
   }
