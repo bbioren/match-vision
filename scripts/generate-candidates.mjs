@@ -4,8 +4,8 @@
  *
  * For each clip in annotation_tasks.json:
  *   1. Extract 4 frames from the video with ffmpeg
- *   2. Send frames to Claude vision to auto-generate clip_summary
- *   3. Call Claude 5× with different prompt strategies to generate
+ *   2. Send frames to Gemini vision to auto-generate clip_summary
+ *   3. Call Gemini 5× with different prompt strategies to generate
  *      real AI commentary candidates
  *   4. Write results back to annotation_tasks.json
  *
@@ -20,39 +20,38 @@ import path from 'node:path';
 import { execSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
-const MODEL = 'claude-opus-4-5';
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 const DRY_RUN = process.argv.includes('--dry-run');
 const clipFlagIdx = process.argv.indexOf('--clip');
 const ONLY_CLIP = clipFlagIdx !== -1 ? process.argv[clipFlagIdx + 1] : null;
 
-if (!ANTHROPIC_API_KEY) {
-  console.error('ANTHROPIC_API_KEY required');
+if (!GEMINI_API_KEY && !DRY_RUN) {
+  console.error('GEMINI_API_KEY or GOOGLE_API_KEY required');
   process.exit(1);
 }
 
-// ── Claude API call ──────────────────────────────────────────────────────────
-async function claude(system, userContent) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+// ── Gemini API call ──────────────────────────────────────────────────────────
+async function gemini(system, userContent) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(MODEL)}:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
+  const parts = Array.isArray(userContent) ? userContent : [{ text: userContent }];
+  const res = await fetch(url, {
     method: 'POST',
-    headers: {
-      'x-api-key': ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json',
-    },
+    headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
-      model: MODEL,
-      max_tokens: 512,
-      system,
-      messages: [{ role: 'user', content: userContent }],
+      systemInstruction: { parts: [{ text: system }] },
+      contents: [{ role: 'user', parts }],
+      generationConfig: { maxOutputTokens: 512, temperature: 0.15 },
     }),
   });
   if (!res.ok) {
     const err = await res.text();
-    throw new Error(`Claude API error ${res.status}: ${err}`);
+    throw new Error(`Gemini API error ${res.status}: ${err}`);
   }
   const data = await res.json();
-  return data.content[0].text.trim();
+  const text = data.candidates?.[0]?.content?.parts?.map(part => part.text || '').join('\n').trim();
+  if (!text) throw new Error(`Gemini returned no text: ${JSON.stringify(data)}`);
+  return text;
 }
 
 // ── Extract frames from video ─────────────────────────────────────────────────
@@ -74,14 +73,12 @@ function extractFrames(videoPath, count = 4) {
 // ── Build vision content blocks ───────────────────────────────────────────────
 function framesToContent(frames, text) {
   const imageBlocks = frames.map(f => ({
-    type: 'image',
-    source: {
-      type: 'base64',
-      media_type: 'image/jpeg',
+    inlineData: {
+      mimeType: 'image/jpeg',
       data: fs.readFileSync(f).toString('base64'),
     },
   }));
-  return [...imageBlocks, { type: 'text', text }];
+  return [...imageBlocks, { text }];
 }
 
 // ── Step 1: Auto-generate clip_summary from frames ───────────────────────────
@@ -95,7 +92,7 @@ or decision point. Be factual and specific. Do not editorialize.`;
     'These are 4 evenly-spaced frames from a 10-second soccer clip. Describe what is happening.'
   );
 
-  return claude(system, content);
+  return gemini(system, content);
 }
 
 // ── Shared anti-hallucination rule injected into every strategy ───────────────
@@ -165,7 +162,7 @@ async function generateCandidates(clipSummary, frames, manualSummary = false) {
   for (const strategy of STRATEGIES) {
     process.stdout.write(`    [${strategy.id}] ${strategy.label}... `);
     try {
-      const text = await claude(strategy.system, userPrompt);
+      const text = await gemini(strategy.system, userPrompt);
       results.push({ id: strategy.id, label: strategy.label, text });
       console.log('✓');
     } catch (err) {
@@ -204,7 +201,7 @@ async function run() {
     }
 
     if (DRY_RUN) {
-      console.log('  [dry-run] would extract frames and call Claude');
+      console.log('  [dry-run] would extract frames and call Gemini');
       continue;
     }
 

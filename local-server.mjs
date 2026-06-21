@@ -35,9 +35,29 @@ function send(res, status, body, headers = {}) {
 function resolveProvider() {
   const explicit = (process.env.LLM_PROVIDER || '').toLowerCase();
   if (explicit) return explicit;
+  if (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY) return 'gemini';
   if (process.env.DASHSCOPE_API_KEY) return 'qwen';
   if (process.env.ANTHROPIC_API_KEY) return 'anthropic';
   return 'fallback';
+}
+
+async function callGemini({ system, prompt, maxTokens }) {
+  const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+  if (!apiKey) return { fallback: true };
+  const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      systemInstruction: system ? { parts: [{ text: system }] } : undefined,
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: { maxOutputTokens: maxTokens, temperature: 0.2, thinkingConfig: { thinkingBudget: 0 } }
+    })
+  });
+  if (!r.ok) return { fallback: true, error: await r.text() };
+  const data = await r.json();
+  return { description: data.candidates?.[0]?.content?.parts?.map((part) => part.text || '').join('\n').trim() || null };
 }
 
 async function callQwen({ system, prompt, maxTokens }) {
@@ -85,7 +105,8 @@ async function describe(req, res) {
   const maxTokens = Number(body.maxTokens) || 200;
   const args = { system: body.system, prompt: body.prompt, maxTokens };
   let result;
-  if (provider === 'qwen') result = await callQwen(args);
+  if (provider === 'gemini') result = await callGemini(args);
+  else if (provider === 'qwen') result = await callQwen(args);
   else if (provider === 'anthropic') result = await callAnthropic(args);
   else result = { fallback: true };
   send(res, 200, JSON.stringify({ provider, ...result }), { 'content-type': 'application/json' });

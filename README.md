@@ -18,7 +18,7 @@ No install is required for the current static MVP. It uses browser speech APIs a
 
 - **Terac:** custom annotation task drag-ranking five commentary variations per clip, then before/after metrics.
 - **Deepgram:** voice-first user questions and spoken answers.
-- **Anthropic:** accessible description generation and natural-language Q&A.
+- **Gemini:** accessible vision description generation and natural-language Q&A.
 - **Redis:** match memory and user preference modes.
 - **Arize:** evaluation evidence for helpfulness, event coverage, and hallucination reduction.
 
@@ -38,6 +38,18 @@ No install is required for the current static MVP. It uses browser speech APIs a
 npm run check
 node scripts/compute-metrics.mjs
 ```
+
+## AI generation credentials
+
+For the annotation candidate generator and `/api/describe`, use a Google Gemini API key:
+
+```bash
+GEMINI_API_KEY=your_google_ai_studio_key
+# optional, defaults to gemini-2.5-flash
+GEMINI_MODEL=gemini-2.5-flash
+```
+
+`GOOGLE_API_KEY` is also accepted as an alias for `GEMINI_API_KEY`.
 
 ## Key docs
 
