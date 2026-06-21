@@ -17,6 +17,8 @@
   const params = { panSpeed: 6, kP: 0.08, kI: 0.02, kD: 0.04, gazeSmooth: 0.12, yBias: 0, yScale: 1.0 };
   const voiceHistory = []; // rolling conversation sent to Claude for context
   let voiceBusy = false;  // prevent overlapping Claude calls
+  let micMuteUntil = 0;   // Date.now() timestamp — ignore mic results until then (prevents hearing our own TTS)
+  const TTS_RATE = 1.15;  // playback speed multiplier for all TTS engines
   let panInterval = null;
   let calibrationOverlay = null;
   let debugDot = null;
@@ -473,6 +475,7 @@
         rec.onresult = (e) => {
           const text = e.results[0][0].transcript.trim();
           if (!text) return;
+          if (Date.now() < micMuteUntil) { console.log('[MV listen] ignoring (TTS playing):', text); return; }
           console.log('[MV listen] heard:', text);
           if (voiceBusy) { console.log('[MV listen] busy, skipping'); return; }
           voiceBusy = true;
@@ -540,6 +543,13 @@
     text = stripMarkdown(text);
     window.speechSynthesis.cancel();
 
+    // Mute the mic for the whole time we're speaking, so the recognizer
+    // doesn't hear our own TTS and loop it back to Claude. Trailing buffer
+    // after playback ends covers speaker tail + recognition latency.
+    micMuteUntil = Infinity;
+    const unmute = () => { micMuteUntil = Date.now() + 700; };
+    setTimeout(() => { if (micMuteUntil === Infinity) unmute(); }, 15000); // safety net
+
     // Try Deepgram first, then ElevenLabs (natural voice) — falls back to browser TTS
     try {
       const { deepgramKey } = await chrome.storage.local.get('deepgramKey');
@@ -552,7 +562,9 @@
         if (res.ok) {
           const url = URL.createObjectURL(await res.blob());
           const audio = new Audio(url);
-          audio.onended = () => URL.revokeObjectURL(url);
+          audio.playbackRate = TTS_RATE;
+          audio.onended = () => { URL.revokeObjectURL(url); unmute(); };
+          audio.onerror = unmute;
           audio.play();
           return;
         }
@@ -575,7 +587,9 @@
         if (res.ok) {
           const url = URL.createObjectURL(await res.blob());
           const audio = new Audio(url);
-          audio.onended = () => URL.revokeObjectURL(url);
+          audio.playbackRate = TTS_RATE;
+          audio.onended = () => { URL.revokeObjectURL(url); unmute(); };
+          audio.onerror = unmute;
           audio.play();
           return;
         }
@@ -584,7 +598,9 @@
 
     // Fallback: Web Speech API with best available voice
     const utt = new SpeechSynthesisUtterance(text);
-    utt.rate = 1.0;
+    utt.rate = TTS_RATE;
+    utt.onend = unmute;
+    utt.onerror = unmute;
     const pick = () => {
       const voices = window.speechSynthesis.getVoices();
       for (const name of ['Samantha','Google US English','Google UK English Female','Karen','Moira']) {
