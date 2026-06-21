@@ -6,6 +6,15 @@ for (const [i, clip] of clips.entries()) {
   for (const key of clipRequired) {
     if (!(key in clip)) throw new Error(`clips[${i}] missing ${key}`);
   }
+  if (clip.match_context) {
+    if (!clip.match_context.teams) throw new Error(`clips[${i}] match_context missing teams`);
+    if (!clip.match_context.halves?.length) throw new Error(`clips[${i}] match_context missing halves`);
+    for (const [name, team] of Object.entries(clip.match_context.teams)) {
+      if (!team.outfield_kit && !team.kit_color) {
+        throw new Error(`clips[${i}] team ${name} missing outfield_kit`);
+      }
+    }
+  }
 }
 
 const tasks = JSON.parse(fs.readFileSync('data/annotation_tasks.json', 'utf8'));

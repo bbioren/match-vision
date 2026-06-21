@@ -25,9 +25,10 @@
           <img id="clipVisual" class="clip-visual" alt="Simplified soccer field diagram for selected match moment" />
           <label class="live-toggle">
             <input id="liveExtractToggle" type="checkbox" checked />
-            Live vision extraction (Qwen-VL analyzes frames while video plays)
+            Live vision extraction (Qwen-VL: 5 frames + prior memory, every 2s)
           </label>
           <p id="extractStatus" class="hint">Press play — match memory builds live from the video</p>
+          <p id="matchContext" class="hint context-line"></p>
           <div class="match-state" id="matchState"></div>
         </section>
 
@@ -60,7 +61,7 @@
 
       <section class="card">
         <h2>Match memory</h2>
-        <p class="hint">Rolling structured match state up to the current video time. The ADC and Q&amp;A answer from this memory, not the raw video.</p>
+        <p class="hint">Rolling structured match state up to the current video time. Visual perception (kit colors, screen position) is merged with half-aware team context (Conquerors vs State) before narration.</p>
         <ul id="memoryList" class="memory-list"></ul>
       </section>
 
@@ -100,6 +101,10 @@
       // Use the cloud LLM for ADC + Q&A. The server routes to Qwen (DashScope)
       // or Anthropic based on .env; falls back to local generation if no key.
       window.MATCHVISION_USE_LLM = true;
+      window.MATCHVISION_EXTRACT_INTERVAL = 2;
+      window.MATCHVISION_VISION_FRAME_COUNT = 5;
+      window.MATCHVISION_VISION_FRAME_INTERVAL = 30;
+      window.MATCHVISION_VIDEO_FPS = 30;
     </script>
     <script type="module" src="src/app.js"></script>
   </body>

@@ -2,6 +2,7 @@ import http from 'node:http';
 import fs from 'node:fs/promises';
 import fsSync from 'node:fs';
 import path from 'node:path';
+import { buildVisionPrompt, interpretMoment, resolveContextAt, sanitizeVlmOutput } from './src/services/match-context.js';
 
 // Load .env without external dependencies (gitignored; keys stay local).
 try {
@@ -89,34 +90,43 @@ async function describe(req, res) {
   else result = { fallback: true };
   send(res, 200, JSON.stringify({ provider, ...result }), { 'content-type': 'application/json' });
 }
-async function callQwenVision({ imageBase64, atSecond }) {
+async function callQwenVision({ imageBase64, frames, atSecond, matchContext, priorMoments }) {
   const apiKey = process.env.DASHSCOPE_API_KEY;
-  if (!apiKey || !imageBase64) return { fallback: true };
+  const frameList = Array.isArray(frames) && frames.length
+    ? frames
+    : (imageBase64 ? [{ atSecond, imageBase64, is_current: true, timestamp: `${atSecond}s` }] : []);
+  if (!apiKey || !frameList.length) return { fallback: true };
+
   const base = process.env.DASHSCOPE_BASE_URL || 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1';
-  const prompt = `You extract soccer match state for a blind/low-vision accessibility assistant.
+  const resolved = matchContext?.teams ? matchContext : null;
+  const prompt = resolved
+    ? buildVisionPrompt(resolved, { priorMoments: priorMoments || [], frames: frameList })
+    : buildVisionPromptFallback(priorMoments, frameList);
 
-Look at this frame and output JSON only (no markdown). Fields:
-- team_in_possession (string or "unknown")
-- direction (string or "unknown")
-- ball_location (string or "unknown")
-- event (string, what is happening)
-- danger_level ("low" | "medium" | "high" | "unknown")
-- summary (one sentence a blind fan would need)
+  const content = [];
+  const currentAt = frameList[frameList.length - 1].atSecond;
+  for (let i = 0; i < frameList.length; i += 1) {
+    const frame = frameList[i];
+    const stamp = frame.timestamp || `${frame.atSecond}s`;
+    const secondsAgo = Math.max(0, Math.round((currentAt - frame.atSecond) * 10) / 10);
+    const label = frame.is_current
+      ? `Image ${i + 1}/${frameList.length} — CURRENT moment (${stamp}, now):`
+      : `Image ${i + 1}/${frameList.length} — ${secondsAgo}s in the PAST (${stamp}):`;
+    content.push({ type: 'text', text: label });
+    content.push({
+      type: 'image_url',
+      image_url: { url: `data:image/jpeg;base64,${frame.imageBase64}` }
+    });
+  }
+  content.push({ type: 'text', text: prompt });
 
-Do not invent team names or player names. Use "unknown" if unclear.`;
   const r = await fetch(`${base}/chat/completions`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', authorization: `Bearer ${apiKey}` },
     body: JSON.stringify({
       model: process.env.QWEN_VL_MODEL || 'qwen3-vl-plus',
-      max_tokens: 350,
-      messages: [{
-        role: 'user',
-        content: [
-          { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${imageBase64}` } },
-          { type: 'text', text: prompt }
-        ]
-      }]
+      max_tokens: 500,
+      messages: [{ role: 'user', content }]
     })
   });
   if (!r.ok) return { fallback: true, error: await r.text() };
@@ -124,18 +134,35 @@ Do not invent team names or player names. Use "unknown" if unclear.`;
   const raw = data.choices?.[0]?.message?.content?.trim() || '';
   const jsonText = raw.replace(/^```json?\s*/i, '').replace(/\s*```$/i, '').trim();
   try {
-    const moment = JSON.parse(jsonText);
-    moment.atSecond = Number(atSecond) || 0;
-    moment.source = 'live-vision';
-    return { moment, raw };
+    const vlm = JSON.parse(jsonText);
+    vlm.atSecond = Number(atSecond) || 0;
+    vlm.source = 'live-vision';
+    vlm.frame_count = frameList.length;
+    const cleaned = resolved ? sanitizeVlmOutput(vlm, resolved) : vlm;
+    const moment = resolved ? interpretMoment(cleaned, resolved) : cleaned;
+    return { moment, raw, vlm: cleaned };
   } catch {
     return { fallback: true, error: 'invalid JSON from vision model', raw };
   }
 }
 
+function buildVisionPromptFallback(priorMoments, frames) {
+  const prior = priorMoments?.length
+    ? `\nRecent memory:\n${priorMoments.map((m) => `- ${m.summary || m.event || ''}`).join('\n')}\n`
+    : '';
+  const multi = frames.length > 1
+    ? `You receive ${frames.length} frames oldest-first. The LAST image is current.\n`
+    : '';
+  return `${multi}${prior}Extract visual soccer cues. Output JSON only with possession_kit, ball_screen_x, ball_screen_zone, play_moving, visual_event, danger_level, visual_summary.`;
+}
+
 async function extract(req, res) {
   const body = await readJson(req);
-  const result = await callQwenVision(body);
+  const atSecond = Number(body.atSecond) || 0;
+  const matchContext = body.matchContext?.teams
+    ? body.matchContext
+    : (body.matchContextRaw ? resolveContextAt(body.matchContextRaw, atSecond) : null);
+  const result = await callQwenVision({ ...body, matchContext });
   send(res, 200, JSON.stringify({ provider: 'qwen-vl', ...result }), { 'content-type': 'application/json' });
 }
 

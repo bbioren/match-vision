@@ -29,10 +29,14 @@ export function currentMoment(timeline, seconds) {
 }
 
 // A rolling window of recent moments near `seconds`, oldest first.
-export function memoryAt(timeline, seconds, windowSize = 4, windowSeconds = 16) {
+export function memoryAt(timeline, seconds, windowSize = 4, windowSeconds = 16, matchHalf = null) {
   if (!timeline?.length) return [];
   const minSecond = Math.max(0, seconds - windowSeconds);
-  const seen = timeline.filter((entry) => entry.atSecond <= seconds && entry.atSecond >= minSecond);
+  let seen = timeline.filter((entry) => entry.atSecond <= seconds && entry.atSecond >= minSecond);
+  if (matchHalf != null) {
+    const halfFiltered = seen.filter((entry) => entry.match_half === matchHalf || entry.match_half == null);
+    if (halfFiltered.length) seen = halfFiltered;
+  }
   const window = seen.length ? seen : timeline.filter((entry) => entry.atSecond <= seconds).slice(-1);
   return window.filter(Boolean).slice(-windowSize);
 }
@@ -47,8 +51,13 @@ export function formatMemory(entries) {
       if (m.timestamp) parts.push(`[${m.timestamp}]`);
       if (m.summary) parts.push(m.summary);
       const detail = [];
-      if (m.ball_location) detail.push(`ball: ${m.ball_location}`);
-      if (m.direction) detail.push(`direction: ${m.direction}`);
+      if (m.team_in_possession && m.team_in_possession !== 'unknown') {
+        detail.push(`possession: ${m.team_in_possession}`);
+      }
+      if (m.ball_zone && m.ball_zone !== 'unknown') detail.push(`ball_zone: ${m.ball_zone}`);
+      else if (m.ball_location && m.ball_location !== 'unknown') detail.push(`ball: ${m.ball_location}`);
+      if (m.phase && m.phase !== 'unknown') detail.push(`phase: ${m.phase}`);
+      if (m.direction && m.direction !== 'unknown') detail.push(`direction: ${m.direction}`);
       if (m.danger_level && m.danger_level !== 'unknown') detail.push(`danger: ${m.danger_level}`);
       if (detail.length) parts.push(`(${detail.join('; ')})`);
       return `- ${parts.join(' ')}`;

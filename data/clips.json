@@ -1,7 +1,39 @@
 [
   {
-    "clip_id": "kentwood_stadium_first_9_mins",
-    "title": "Kentwood vs Stadium — first 9 minutes",
-    "video_asset": "clips/real/first 9 mins.mp4"
+    "clip_id": "conquerors_vs_state_first_9_mins",
+    "title": "Conquerors vs State — first 9 minutes",
+    "video_asset": "clips/real/first 9 mins.mp4",
+    "match_context": {
+      "camera_view": "broadcast sideline",
+      "halftime_at_second": 2700,
+      "teams": {
+        "Conquerors": {
+          "short_name": "Conquerors",
+          "outfield_kit": "white",
+          "goalkeeper_kit": "grey"
+        },
+        "State": {
+          "short_name": "State",
+          "outfield_kit": "blue",
+          "goalkeeper_kit": "orange"
+        }
+      },
+      "halves": [
+        {
+          "half": 1,
+          "from_second": 0,
+          "until_second": 2699,
+          "Conquerors": { "attacking_direction": "left", "defending_goal": "right" },
+          "State": { "attacking_direction": "right", "defending_goal": "left" }
+        },
+        {
+          "half": 2,
+          "from_second": 2700,
+          "until_second": null,
+          "Conquerors": { "attacking_direction": "right", "defending_goal": "left" },
+          "State": { "attacking_direction": "left", "defending_goal": "right" }
+        }
+      ]
+    }
   }
 ]

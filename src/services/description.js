@@ -1,16 +1,21 @@
 // ADC (audio-descriptive commentary) and Q&A generation.
 //
-// Architecture: visual understanding is separated from commentary generation.
-// Upstream produces structured match memory (JSON); this module turns that
-// memory into accessible spoken language via a cloud LLM, with a deterministic
-// local fallback so the demo always works without credentials.
+// Pipeline: VLM visual cues + structured match context → interpreted memory → narration.
 
 import { formatMemory } from './match-memory.js';
+import { formatContextForPrompt, formatKitRulesForNarration } from './match-context.js';
 
 const IMPROVED_SYSTEM = `You are MatchVision, a voice-first accessibility assistant for blind and low-vision soccer fans.
-Use only the match memory provided. Do not invent players, positions, or events.
+
+You receive structured match memory that already combines visual perception with half-aware team context.
+Use only the match memory and match context provided. Do not invent players, positions, or events.
+Do NOT infer attacking direction from visual descriptions alone — use ball_zone, phase, and possession fields.
+Always use labeled team names (Conquerors, State), not kit colors, when speaking to the fan.
+Never mention "red kit" or any kit color not listed in the match kit rules.
+Goalkeepers wear different colors than outfield players — never assign possession based on a goalkeeper jersey.
+If possession is unknown in memory, say so rather than guessing a team or color.
 If something is unknown, say what is unknown and give the last known information.
-Always include ball location and attacking direction when they are known.
+Always include ball zone and which team has possession when known.
 Prioritize spatial clarity. Keep responses short enough to be spoken during live play.`;
 
 const BASE_SYSTEM = `You are a soccer commentator. Briefly describe what is happening in one short sentence.`;
@@ -27,15 +32,25 @@ function modeLine(mode) {
   return MODE_GUIDANCE[mode] || MODE_GUIDANCE.balanced;
 }
 
-export function buildAdcPrompt(memoryEntries, mode) {
-  return `Current match memory:
-${formatMemory(memoryEntries)}
+function contextBlock(matchContext) {
+  if (!matchContext) return '';
+  return `\nMatch context (ground truth for team direction and field reference):\n${formatContextForPrompt(matchContext)}
 
-Generate a concise, accessibility-first description of the current moment for someone who cannot see the match. ${modeLine(mode)}`;
+Kit rules (authoritative — do not contradict):
+${formatKitRulesForNarration(matchContext)}\n`;
 }
 
-export function buildQnaPrompt(question, memoryEntries, mode) {
-  return `Current match memory:
+export function buildAdcPrompt(memoryEntries, mode, matchContext) {
+  return `${contextBlock(matchContext)}Current match memory:
+${formatMemory(memoryEntries)}
+
+Generate a concise, accessibility-first description of the current moment for someone who cannot see the match.
+Use team names and ball zones from memory (e.g. "State have the ball in Conquerors' defensive third").
+${modeLine(mode)}`;
+}
+
+export function buildQnaPrompt(question, memoryEntries, mode, matchContext) {
+  return `${contextBlock(matchContext)}Current match memory:
 ${formatMemory(memoryEntries)}
 
 User question: ${question}
@@ -43,8 +58,6 @@ User question: ${question}
 ${modeLine(mode)}`;
 }
 
-// Generic prompt from a single match state, used for the Terac base-vs-improved
-// comparison (both variants receive the exact same structured state).
 export function buildComparisonPrompt(moment) {
   return `Match state:
 ${formatMemory([moment])}
@@ -70,15 +83,22 @@ async function generate({ system, prompt, maxTokens = 200, fallback }) {
   }
 }
 
-export async function generateAdc({ memoryEntries, mode, fallback }) {
-  return generate({ system: IMPROVED_SYSTEM, prompt: buildAdcPrompt(memoryEntries, mode), fallback });
+export async function generateAdc({ memoryEntries, mode, matchContext, fallback }) {
+  return generate({
+    system: IMPROVED_SYSTEM,
+    prompt: buildAdcPrompt(memoryEntries, mode, matchContext),
+    fallback
+  });
 }
 
-export async function generateQnaAnswer({ question, memoryEntries, mode, fallback }) {
-  return generate({ system: IMPROVED_SYSTEM, prompt: buildQnaPrompt(question, memoryEntries, mode), fallback });
+export async function generateQnaAnswer({ question, memoryEntries, mode, matchContext, fallback }) {
+  return generate({
+    system: IMPROVED_SYSTEM,
+    prompt: buildQnaPrompt(question, memoryEntries, mode, matchContext),
+    fallback
+  });
 }
 
-// Generate a single variant ("base" or "improved") for the Terac comparison.
 export async function generateComparison({ moment, variant, fallback }) {
   const system = variant === 'base' ? BASE_SYSTEM : IMPROVED_SYSTEM;
   return generate({ system, prompt: buildComparisonPrompt(moment), maxTokens: 200, fallback });
