@@ -29,7 +29,7 @@ const TASK_DURATION_MINUTES = Number(process.env.TERAC_TASK_DURATION_MINUTES || 
 
 const TASK_BRIEF = `MatchVision is collecting high-quality soccer audio-description commentary for blind and low-vision fans.
 
-Annotators will watch 10-second soccer clips and write voice-ready commentary that can later be spoken by a voice AI. The commentary should be enthusiastic, natural, and useful, while staying factual.
+You'll watch 10-second clips from England vs Croatia (FIFA World Cup 2026, first 9 minutes) and write voice-ready commentary. The commentary should be enthusiastic, natural, and useful, while staying factual.
 
 Quality requirements:
 - Write 2-4 concise sentences per clip.
@@ -38,7 +38,7 @@ Quality requirements:
 - Do not invent outcomes after the clip ends. If the clip ends before a shot, pass, foul call, or goal is resolved, say so.
 - Make it engaging enough for a fan, not a dry object label. This will be used downstream in voice AI for blind/low-vision soccer accessibility.
 
-The task page includes two examples written by the requester, followed by the clips that need expert commentary.`;
+The task page includes two expert examples (penalty setup + corner kick scramble), followed by 52 clips that need your commentary. Full context guide available in the task interface.`;
 
 if (!TERAC_API_KEY) {
   console.error('TERAC_API_KEY is required. Set it in .env.local or environment.');

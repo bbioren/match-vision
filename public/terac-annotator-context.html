@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MatchVision Annotator Context Guide</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+      color: #333;
+      background: #f9f9f9;
+    }
+    h1 {
+      color: #1a1a1a;
+      border-bottom: 3px solid #0066cc;
+      padding-bottom: 10px;
+    }
+    h2 {
+      color: #0066cc;
+      margin-top: 30px;
+    }
+    h3 {
+      color: #006699;
+    }
+    .hero {
+      background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+    }
+    .hero h2 {
+      color: white;
+      margin-top: 0;
+    }
+    .example-box {
+      background: #e8f4f8;
+      border-left: 4px solid #0066cc;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 4px;
+    }
+    .good {
+      background: #e8f5e9;
+      border-left: 4px solid #4caf50;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    .bad {
+      background: #ffebee;
+      border-left: 4px solid #f44336;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    .checklist {
+      background: #fff8e1;
+      border-left: 4px solid #ffc107;
+      padding: 15px;
+      border-radius: 4px;
+    }
+    .checklist ul {
+      margin: 10px 0;
+    }
+    .rubric-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+    .rubric-table th, .rubric-table td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+    .rubric-table th {
+      background: #0066cc;
+      color: white;
+    }
+    .rubric-table tr:nth-child(even) {
+      background: #f5f5f5;
+    }
+    code {
+      background: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+    .match-details {
+      background: #f0f7ff;
+      padding: 20px;
+      border-radius: 8px;
+      border: 2px solid #0066cc;
+    }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <h2>🎥 MatchVision Annotator Guide</h2>
+    <p><strong>Your mission</strong>: Create voice-ready audio-description commentary for blind and low-vision soccer fans.</p>
+    <p>Each 10-second video clip needs vivid, factual, enthusiastic commentary that adds the missing visual layer to standard radio commentary.</p>
+  </div>
+
+  <h2>📍 The Match</h2>
+  <div class="match-details">
+    <strong>England vs Croatia | FIFA World Cup 2026 | Group L</strong><br>
+    <strong>What you're annotating</strong>: First 9 minutes of the match (52 clips, 10 seconds each)<br>
+    <strong>Scene</strong>: Both teams settling in, establishing play patterns, early positioning<br>
+    <strong>Two example clips</strong>: Penalty setup (Kane) + corner kick scramble (early pressure)
+  </div>
+
+  <h2>📋 Two Example Clips (Read-Only Reference)</h2>
+
+  <h3>Example 1: Penalty Setup</h3>
+  <div class="example-box">
+    <strong>Harry Kane preparing to take a penalty kick for England against Croatia</strong><br>
+    • Close-up: Kane composing himself<br>
+    • Penalty spot: Ball positioned on the mark<br>
+    • Opposition: Croatian goalkeeper on the goal line<br>
+    • <strong>Key detail</strong>: The clip ENDS before the kick is taken—you're in the anticipation moment
+  </div>
+  <p><strong>Why this matters</strong>: Describe the tension, the goalkeeper's positioning, and explicitly state the action hasn't completed yet. Don't invent the outcome.</p>
+
+  <h3>Example 2: Corner Kick Scramble</h3>
+  <div class="example-box">
+    <strong>England delivers a corner into Croatia's penalty area (8th minute, 0-0 score)</strong><br>
+    • Corner taker: Plays the ball into the crowded box<br>
+    • Defenders: Mix of England (white) and Croatia (blue) players<br>
+    • Goalkeeper: Croatian keeper in pink, positioned on the line<br>
+    • Outcome: Referee stops play, likely for a foul—appeals are made
+  </div>
+  <p><strong>Why this matters</strong>: Describe the chaos, the spatial positioning (near the six-yard box), and let the referee's decision end the sequence. Don't guess what the foul was.</p>
+
+  <h2>💬 Guidelines for Your Commentaries</h2>
+
+  <h3>Structure (aim for 2-4 sentences)</h3>
+  <ol>
+    <li><strong>What's happening</strong> (action + ball location)</li>
+    <li><strong>Who's involved</strong> (shirt color, position, or player name if visible)</li>
+    <li><strong>Where it matters</strong> (field zone, defensive/attacking third)</li>
+    <li><strong>Why it's interesting</strong> (crowd reaction, danger level, tactical significance)</li>
+  </ol>
+
+  <h3>Tone</h3>
+  <ul>
+    <li><strong>Enthusiastic</strong> (match the energy of the moment)</li>
+    <li><strong>Factual</strong> (no guessing, no inventing outcomes)</li>
+    <li><strong>Spatial</strong> (use directions: left, right, far post, near post, top of the box, etc.)</li>
+    <li><strong>Specific</strong> (numbers, positions: "left back," "right winger," not generic "the team")</li>
+  </ul>
+
+  <h3>Player Identification</h3>
+  <ul>
+    <li>If you see a <strong>shirt number</strong>: use it ("the #9 with the ball")</li>
+    <li>If you see a <strong>position/role</strong>: describe it ("the left back in blue")</li>
+    <li>If you know a <strong>player name</strong>: use it confidently</li>
+    <li><strong>Never invent</strong> a player name you can't confirm from the footage</li>
+  </ul>
+
+  <h3>When Action Doesn't Complete</h3>
+  <ul>
+    <li>If a shot ends before the save: "The ball is heading for goal..." (don't say if it scores)</li>
+    <li>If a foul is called mid-play: "The referee has whistled..." (don't explain why)</li>
+    <li>If the clip cuts off: Be honest: "...as the play continues out of frame"</li>
+  </ul>
+
+  <h2>✅ Examples of Good & Bad Commentary</h2>
+
+  <div class="good">
+    <strong>✓ Good:</strong> "England's right winger plays a low cross into the six-yard box. Croatia's defender slides in to clear, but the ball ricochets toward the near post where an England striker waits to pounce. The crowd roars as he strikes it!"
+  </div>
+
+  <div class="good">
+    <strong>✓ Good:</strong> "A loose ball near the center circle. England's midfielder intercepts and drives forward. Croatia's defense retreats, opening space on the left flank. The left winger accelerates into the gap."
+  </div>
+
+  <div class="bad">
+    <strong>✗ Not good:</strong> "England scores a beautiful goal." (You don't know the outcome until the shot is taken)
+  </div>
+
+  <div class="bad">
+    <strong>✗ Not good:</strong> "The player in white..." (use the number or position)
+  </div>
+
+  <h2>🎯 Your 7-Point Rubric</h2>
+  <p>You'll rate each clip on these dimensions (1-7 scale):</p>
+  <table class="rubric-table">
+    <thead>
+      <tr>
+        <th>Dimension</th>
+        <th>What to Evaluate</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Factual Accuracy</strong></td>
+        <td>Does the commentary match what's visible? No invented details or false assumptions?</td>
+      </tr>
+      <tr>
+        <td><strong>Spatial Clarity</strong></td>
+        <td>Can a blind listener visualize the field zones? Left/right, near/far, tactical areas named?</td>
+      </tr>
+      <tr>
+        <td><strong>Player/Team ID</strong></td>
+        <td>Clear who has the ball and what color shirt? Numbered or positioned players, not vague?</td>
+      </tr>
+      <tr>
+        <td><strong>Moment Significance</strong></td>
+        <td>Does it explain <em>why</em> this matters tactically? Danger level, crowd energy, or key moment noted?</td>
+      </tr>
+      <tr>
+        <td><strong>Tone/Enthusiasm</strong></td>
+        <td>Does it match the intensity of the moment? Passive clips sound calm, dangerous moves sound urgent?</td>
+      </tr>
+      <tr>
+        <td><strong>Completeness</strong></td>
+        <td>Does it use the full 10 seconds of footage? No rushing through important details?</td>
+      </tr>
+      <tr>
+        <td><strong>Hallucination-Free</strong></td>
+        <td>Zero invented outcomes, players, or events? Honest about what you actually see?</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>⚽ Context Clues for the First 9 Minutes</h2>
+  <ul>
+    <li><strong>Early settling phase</strong>: Teams are still establishing their formation and rhythm</li>
+    <li><strong>No goals yet</strong>: You're in the competitive, probing phase of the match</li>
+    <li><strong>Both teams cautious</strong>: No wild desperation plays—teams are testing each other</li>
+    <li><strong>Possession-focused</strong>: Look for passing patterns, positional shifts, initial tactical instructions</li>
+    <li><strong>Common moments</strong>: throw-ins, corner kicks, early fouls, midfield transitions, defensive shape-building</li>
+  </ul>
+
+  <h2>🌟 Your Impact</h2>
+  <p>Every commentary you write will be:</p>
+  <ol>
+    <li><strong>Evaluated</strong> for accuracy and helpfulness</li>
+    <li><strong>Fed into</strong> our AI system as training data</li>
+    <li><strong>Tested</strong> with real blind and low-vision fans</li>
+    <li><strong>Published</strong> as part of World Cup accessibility infrastructure</li>
+  </ol>
+  <p><em>Your work directly improves the experience for millions of excluded fans. Precision and empathy matter.</em></p>
+
+  <h2>✔️ Quick Checklist for Each Clip</h2>
+  <div class="checklist">
+    <ul>
+      <li>☐ Action clearly described (no guessing outcomes)</li>
+      <li>☐ Ball location named</li>
+      <li>☐ Players identified by shirt color, number, or position</li>
+      <li>☐ Field zone clear (attacking/defending third, flank/center)</li>
+      <li>☐ Tone matches the moment</li>
+      <li>☐ 2-4 sentences, voice-ready (reads naturally aloud)</li>
+      <li>☐ No invented details</li>
+    </ul>
+  </div>
+
+  <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin-top: 30px; text-align: center;">
+    <p><strong>Questions?</strong> If a clip is too unclear, too fast, or has audio issues, you can mark it and skip. <strong>Quality over quantity.</strong></p>
+    <p style="font-size: 18px; color: #0066cc;"><strong>Good luck. You're building accessibility.</strong></p>
+  </div>
+</body>
+</html>
