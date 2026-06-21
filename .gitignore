@@ -29,3 +29,7 @@ clips/youtube/*.mp4
 clips/youtube/segments/*.mp4
 clips/youtube/segments/manifest.json
 .vercel
+
+# large local media (keep on disk, too big for GitHub's 100MB limit)
+clips/real/*.mp4
+*.part
