@@ -16,13 +16,51 @@ for (const [i, clip] of clips.entries()) {
     }
   }
 }
+console.log(`OK: ${clips.length} clips validated`);
 
-const tasks = JSON.parse(fs.readFileSync('data/annotation_tasks.json', 'utf8'));
-const taskRequired = ['task_id', 'clip_id', 'baseline', 'improved', 'candidates'];
-for (const [i, task] of tasks.entries()) {
-  for (const key of taskRequired) {
-    if (!(key in task)) throw new Error(`annotation_tasks[${i}] missing ${key}`);
+const tasksPath = 'data/annotation_tasks.json';
+if (fs.existsSync(tasksPath)) {
+  const tasks = JSON.parse(fs.readFileSync(tasksPath, 'utf8'));
+  for (const [taskIndex, task] of tasks.entries()) {
+    if (task.annotation_type === 'visual_transcription') {
+      for (const key of ['task_id', 'clip_id', 'video_src', 'annotation_status']) {
+        if (!task[key]) throw new Error(`annotation_tasks[${taskIndex}] missing ${key}`);
+      }
+      if (!['example', 'todo'].includes(task.annotation_status)) {
+        throw new Error(`annotation_tasks[${taskIndex}] has invalid annotation_status ${task.annotation_status}`);
+      }
+      if (task.annotation_status === 'example' && String(task.reference_description || '').length < 80) {
+        throw new Error(`annotation_tasks[${taskIndex}] example must include reference_description`);
+      }
+      if (task.annotation_status === 'todo' && task.reference_description) {
+        throw new Error(`annotation_tasks[${taskIndex}] todo task should not include a reference description`);
+      }
+      continue;
+    }
+
+    const candidates = task.commentary_variations || task.candidates;
+    if (!Array.isArray(candidates) || candidates.length !== 5) {
+      throw new Error(`annotation_tasks[${taskIndex}] ${task.task_id || task.clip_id} must have 5 candidates`);
+    }
+
+    for (const [candidateIndex, candidate] of candidates.entries()) {
+      const text = candidate.text || candidate.description || '';
+      if (text.includes('[generation failed:') || text.includes('Gemini API error')) {
+        throw new Error(`annotation_tasks[${taskIndex}].candidates[${candidateIndex}] contains generation failure text`);
+      }
+      if (text.length < 20) {
+        throw new Error(`annotation_tasks[${taskIndex}].candidates[${candidateIndex}] is suspiciously short`);
+      }
+      if (!/[.!?]$/.test(text.trim()) || /["'“‘]$/.test(text.trim())) {
+        throw new Error(`annotation_tasks[${taskIndex}].candidates[${candidateIndex}] appears truncated: ${text}`);
+      }
+      if (/\b(scores?|saves?|shoots?|strikes?|converts?|misses?)\b/i.test(text) && /clip ends before/i.test(task.clip_summary || '')) {
+        throw new Error(`annotation_tasks[${taskIndex}].candidates[${candidateIndex}] may describe an unseen penalty outcome: ${text}`);
+      }
+      if (/\{\s*"error"\s*:/.test(text)) {
+        throw new Error(`annotation_tasks[${taskIndex}].candidates[${candidateIndex}] contains raw API error JSON`);
+      }
+    }
   }
+  console.log(`OK: ${tasks.length} annotation tasks validated`);
 }
-
-console.log(`OK: ${clips.length} clips, ${tasks.length} annotation tasks validated`);

@@ -8,6 +8,7 @@ __pycache__/
 # env/secrets
 .env
 .env.local
+.env*
 *.pem
 
 # build outputs
@@ -15,6 +16,7 @@ dist/
 build/
 .next/
 .vercel/
+.vercel
 
 # OS/editor
 .DS_Store
@@ -28,8 +30,10 @@ clips/kaggle/
 clips/youtube/*.mp4
 clips/youtube/segments/*.mp4
 clips/youtube/segments/manifest.json
-.vercel
 
 # large local media (keep on disk, too big for GitHub's 100MB limit)
 clips/real/*.mp4
 *.part
+
+# local annotation smoke-test output
+data/labels.local.json

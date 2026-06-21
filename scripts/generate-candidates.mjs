@@ -22,6 +22,7 @@ import { tmpdir } from 'node:os';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
 const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+const GEMINI_REQUEST_DELAY_MS = Number(process.env.GEMINI_REQUEST_DELAY_MS || 13000);
 const DRY_RUN = process.argv.includes('--dry-run');
 const clipFlagIdx = process.argv.indexOf('--clip');
 const ONLY_CLIP = clipFlagIdx !== -1 ? process.argv[clipFlagIdx + 1] : null;
@@ -32,7 +33,7 @@ if (!GEMINI_API_KEY && !DRY_RUN) {
 }
 
 // ── Gemini API call ──────────────────────────────────────────────────────────
-async function gemini(system, userContent) {
+async function gemini(system, userContent, attempt = 1) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(MODEL)}:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
   const parts = Array.isArray(userContent) ? userContent : [{ text: userContent }];
   const res = await fetch(url, {
@@ -46,6 +47,11 @@ async function gemini(system, userContent) {
   });
   if (!res.ok) {
     const err = await res.text();
+    if ([429, 500, 502, 503, 504].includes(res.status) && attempt < 4) {
+      const delayMs = 1000 * 2 ** (attempt - 1);
+      await new Promise(r => setTimeout(r, delayMs));
+      return gemini(system, userContent, attempt + 1);
+    }
     throw new Error(`Gemini API error ${res.status}: ${err}`);
   }
   const data = await res.json();
@@ -159,6 +165,7 @@ async function generateCandidates(clipSummary, frames, manualSummary = false) {
       );
 
   const results = [];
+  const errors = [];
   for (const strategy of STRATEGIES) {
     process.stdout.write(`    [${strategy.id}] ${strategy.label}... `);
     try {
@@ -167,10 +174,13 @@ async function generateCandidates(clipSummary, frames, manualSummary = false) {
       console.log('✓');
     } catch (err) {
       console.log(`✗ ${err.message}`);
-      results.push({ id: strategy.id, label: strategy.label, text: `[generation failed: ${err.message}]` });
+      errors.push(`${strategy.id}/${strategy.label}: ${err.message}`);
     }
-    // Small delay to avoid rate limiting
-    await new Promise(r => setTimeout(r, 500));
+    // Gemini free tier is commonly 5 requests/min/model, so pace calls by default.
+    await new Promise(r => setTimeout(r, GEMINI_REQUEST_DELAY_MS));
+  }
+  if (errors.length) {
+    throw new Error(`Candidate generation failed; not writing partial output. ${errors.join(' | ')}`);
   }
   return results;
 }
