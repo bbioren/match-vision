@@ -17,11 +17,10 @@ Expected `/api/describe` response:
 
 ## Deepgram
 
-Current seam: `src/services/voice.js`.
+Wired: `src/services/voice.js` + `/api/tts` in `local-server.mjs`.
 
-- Browser speech recognition/TTS works now as fallback.
-- For real Deepgram TTS, enable `window.MATCHVISION_USE_DEEPGRAM` and implement `/api/tts` returning audio bytes.
-- For real Deepgram STT, replace `setupSpeechRecognition()` internals with Deepgram streaming or prerecorded audio upload.
+- TTS is live: `window.MATCHVISION_USE_DEEPGRAM = true` (set in `index.html`) routes spoken answers through `POST /api/tts`, which calls Deepgram's `speak` endpoint (`aura-2-thalia-en`) when `DEEPGRAM_API_KEY` is set in `.env`. Falls back to browser TTS if the key is missing or the call fails.
+- STT is still browser `SpeechRecognition` only (`setupSpeechRecognition()`). Real Deepgram STT would mean capturing a `MediaRecorder` blob and POSTing it to a new transcribe route — not done.
 
 ## Redis
 

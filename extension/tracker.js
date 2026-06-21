@@ -343,11 +343,18 @@
           <button class="mv-btn" id="mv-apikey-save"
             style="width:auto;padding:5px 10px;margin:0;font-size:10px">Save</button>
         </div>
-        <div style="display:flex;gap:6px;align-items:center">
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:5px">
           <input id="mv-eleven-key" type="password" placeholder="ElevenLabs key (natural voice — free at elevenlabs.io)"
             style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
                    border-radius:6px;padding:5px 8px;color:#e0e0e0;font-size:10px;outline:none">
           <button class="mv-btn" id="mv-eleven-save"
+            style="width:auto;padding:5px 10px;margin:0;font-size:10px">Save</button>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <input id="mv-deepgram-key" type="password" placeholder="Deepgram key (TTS — console.deepgram.com)"
+            style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
+                   border-radius:6px;padding:5px 8px;color:#e0e0e0;font-size:10px;outline:none">
+          <button class="mv-btn" id="mv-deepgram-save"
             style="width:auto;padding:5px 10px;margin:0;font-size:10px">Save</button>
         </div>
       </div>
@@ -401,10 +408,13 @@
     const apikeySave   = root.querySelector('#mv-apikey-save');
     const elevenInput  = root.querySelector('#mv-eleven-key');
     const elevenSave   = root.querySelector('#mv-eleven-save');
+    const deepgramInput = root.querySelector('#mv-deepgram-key');
+    const deepgramSave  = root.querySelector('#mv-deepgram-save');
 
-    chrome.storage.local.get(['anthropicApiKey','elevenLabsKey']).then(({ anthropicApiKey, elevenLabsKey }) => {
+    chrome.storage.local.get(['anthropicApiKey','elevenLabsKey','deepgramKey']).then(({ anthropicApiKey, elevenLabsKey, deepgramKey }) => {
       if (anthropicApiKey) apikeyInput.placeholder = 'Anthropic key saved ✓';
       if (elevenLabsKey)   elevenInput.placeholder  = 'ElevenLabs key saved ✓';
+      if (deepgramKey)     deepgramInput.placeholder = 'Deepgram key saved ✓';
     });
 
     apikeySave.addEventListener('click', () => {
@@ -422,6 +432,15 @@
       chrome.storage.local.set({ elevenLabsKey: key });
       elevenInput.value = ''; elevenInput.placeholder = 'ElevenLabs key saved ✓';
       voiceStatus.textContent = 'ElevenLabs key saved — natural voice enabled!';
+      setTimeout(() => { voiceStatus.textContent = ''; }, 2000);
+    });
+
+    deepgramSave.addEventListener('click', () => {
+      const key = deepgramInput.value.trim();
+      if (!key) return;
+      chrome.storage.local.set({ deepgramKey: key });
+      deepgramInput.value = ''; deepgramInput.placeholder = 'Deepgram key saved ✓';
+      voiceStatus.textContent = 'Deepgram key saved — Deepgram voice enabled!';
       setTimeout(() => { voiceStatus.textContent = ''; }, 2000);
     });
 
@@ -503,7 +522,25 @@
     if (!text) return;
     window.speechSynthesis.cancel();
 
-    // Try ElevenLabs first (natural voice) — falls back to browser TTS
+    // Try Deepgram first, then ElevenLabs (natural voice) — falls back to browser TTS
+    try {
+      const { deepgramKey } = await chrome.storage.local.get('deepgramKey');
+      if (deepgramKey) {
+        const res = await fetch('https://api.deepgram.com/v1/speak?model=aura-2-thalia-en', {
+          method: 'POST',
+          headers: { Authorization: `Token ${deepgramKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text }),
+        });
+        if (res.ok) {
+          const url = URL.createObjectURL(await res.blob());
+          const audio = new Audio(url);
+          audio.onended = () => URL.revokeObjectURL(url);
+          audio.play();
+          return;
+        }
+      }
+    } catch (_) {}
+
     try {
       const { elevenLabsKey } = await chrome.storage.local.get('elevenLabsKey');
       if (elevenLabsKey) {
