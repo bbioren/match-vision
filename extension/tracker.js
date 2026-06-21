@@ -19,6 +19,40 @@
   let voiceBusy = false;  // prevent overlapping Claude calls
   let micMuteUntil = 0;   // Date.now() timestamp — ignore mic results until then (prevents hearing our own TTS)
   const TTS_RATE = 1.15;  // playback speed multiplier for all TTS engines
+  let micStream = null;   // raw mic stream, recorded in parallel with SpeechRecognition and sent to Deepgram for the real transcript
+
+  // Browser SpeechRecognition is only used here as a "user started/stopped talking"
+  // signal (it's good at that). The actual transcript comes from Deepgram, which
+  // supports keyword boosting so "MatchVision" gets recognized correctly instead of
+  // being misheard as "mattress" etc.
+  async function transcribeWithDeepgram(blob) {
+    if (!blob || blob.size < 800) return null; // too short to be real speech
+    const key = MV_DEEPGRAM_KEY;
+    if (!key) return null;
+    try {
+      const url = 'https://api.deepgram.com/v1/listen'
+        + '?model=nova-2&smart_format=true&language=en-US'
+        + '&keywords=MatchVision:10&keywords=Match:5&keywords=Vision:5';
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { Authorization: `Token ${key}`, 'Content-Type': 'audio/webm' },
+        body: blob,
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data?.results?.channels?.[0]?.alternatives?.[0]?.transcript?.trim() || null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function stopRecorder(recorder) {
+    return new Promise((resolve) => {
+      if (!recorder || recorder.state !== 'recording') { resolve(null); return; }
+      recorder.onstop = () => resolve(new Blob(recorder._mvChunks, { type: 'audio/webm' }));
+      try { recorder.stop(); } catch (_) { resolve(null); }
+    });
+  }
 
   // Browser speech recognition frequently mishears "MatchVision" as similar-sounding
   // phrases. Match those leniently so the wake phrase still works, and strip it off
@@ -437,14 +471,31 @@
         rec.interimResults = false;
         listenRec = rec;
 
-        rec.onresult = (e) => {
-          const raw = e.results[0][0].transcript.trim();
+        // Record raw audio in parallel — SpeechRecognition only tells us *when*
+        // the user spoke; Deepgram (with keyword boosting) tells us *what* they said.
+        let recorder = null;
+        if (micStream) {
+          try {
+            recorder = new MediaRecorder(micStream, { mimeType: 'audio/webm;codecs=opus' });
+            recorder._mvChunks = [];
+            recorder.ondataavailable = (e) => { if (e.data.size) recorder._mvChunks.push(e.data); };
+            recorder.start();
+          } catch (_) { recorder = null; }
+        }
+
+        rec.onresult = async (e) => {
+          const localRaw = e.results[0][0].transcript.trim();
+          const blob = await stopRecorder(recorder);
+          if (!localRaw && !blob) return;
+          if (Date.now() < micMuteUntil) { console.log('[MV listen] ignoring (TTS playing)'); return; }
+
+          const dgText = await transcribeWithDeepgram(blob);
+          const raw = dgText || localRaw;
           if (!raw) return;
-          if (Date.now() < micMuteUntil) { console.log('[MV listen] ignoring (TTS playing):', raw); return; }
 
           const { matched, rest } = stripWakeWord(raw);
           const text = matched && rest.length > 1 ? rest : raw;
-          console.log('[MV listen] heard:', raw, matched ? '(wake word matched)' : '');
+          console.log('[MV listen] heard:', raw, dgText ? '(via Deepgram)' : '(via browser STT fallback)', matched ? '(wake word matched)' : '');
 
           if (voiceBusy) { console.log('[MV listen] busy, skipping'); return; }
           voiceBusy = true;
@@ -457,8 +508,9 @@
           }).catch(() => { voiceBusy = false; });
         };
 
-        rec.onend   = () => setTimeout(cycle, 80);
+        rec.onend   = () => { if (recorder?.state === 'recording') { try { recorder.stop(); } catch (_) {} } setTimeout(cycle, 80); };
         rec.onerror = (e) => {
+          if (recorder?.state === 'recording') { try { recorder.stop(); } catch (_) {} }
           if (e.error !== 'no-speech' && e.error !== 'aborted')
             console.warn('[MV listen] error:', e.error);
           setTimeout(cycle, e.error === 'network' ? 2000 : 80);
@@ -473,6 +525,8 @@
       if (listenOn) {
         listenOn = false;
         try { listenRec?.stop(); } catch (_) {}
+        micStream?.getTracks().forEach(t => t.stop());
+        micStream = null;
         setListenOn(false);
         voiceHistory.length = 0;
       } else {
@@ -483,6 +537,12 @@
         } catch (_) {
           voiceStatus.textContent = '⚠ Reload this tab after updating the extension.';
           return;
+        }
+        try {
+          micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        } catch (_) {
+          voiceStatus.textContent = '⚠ Mic permission denied — falling back to browser speech recognition only.';
+          micStream = null;
         }
         setListenOn(true);
         voiceStatus.textContent = 'Listening — just speak naturally…';
