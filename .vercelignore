@@ -1,4 +1,12 @@
-clips/
+# Don't blanket-exclude clips/ -- build-static.mjs needs specific files from
+# inside it (clip_*.svg, clips/real's tracked clip, clips/survey, the 5
+# youtube segments). Only exclude the untracked full-match originals that
+# are too large to ever ship (these aren't in git anyway, so this only
+# matters for CLI-based deploys that upload the local directory directly).
+clips/real/argentina_vs_france_wc2022_final_full.mp4
+clips/youtube/brazil_vs_haiti_2026_world_cup.mp4
+clips/raw/
+clips/kaggle/
 downloads/
 dist/
 node_modules/.cache/
