@@ -98,6 +98,7 @@ When the user asks to change a setting, use the adjust_params tool. Always confi
       headers: {
         'x-api-key': anthropicApiKey,
         'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
         'content-type': 'application/json',
       },
       body: JSON.stringify({
