@@ -83,18 +83,21 @@ async function submitTranscription(transcription) {
   };
 
   try {
+    console.log('[MatchVision] Submitting commentary:', { taskId: task.task_id, teracSubmissionId: TERAC_SUBMISSION_ID });
     const res = await fetch('/api/labels', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
     const data = await res.json();
+    console.log('[MatchVision] Submit response:', { status: res.status, ok: res.ok, data });
     return { ok: res.ok, data };
   } catch (err) {
-    console.warn('API save failed, falling back to localStorage', err);
+    console.error('[MatchVision] API save failed:', err);
     const saved = JSON.parse(localStorage.getItem('matchvision_transcriptions_fallback') || '[]');
     saved.push({ ...payload, created_at: new Date().toISOString() });
     localStorage.setItem('matchvision_transcriptions_fallback', JSON.stringify(saved));
+    console.warn('[MatchVision] Saved to localStorage fallback. Count:', saved.length);
     return { ok: false, fallback: true };
   }
 }
