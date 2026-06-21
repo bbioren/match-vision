@@ -336,28 +336,7 @@
         <div class="mv-sec">Voice Agent</div>
         <button class="mv-btn" id="mv-mic">🎤 Wake word: OFF</button>
         <div id="mv-voice-status" style="font-size:10px;color:rgba(255,255,255,.4);margin-bottom:8px;min-height:28px;line-height:1.4">
-          Say <strong style="color:#70e1ff">"Match Vision …"</strong> to talk to Claude
-        </div>
-        <div style="display:flex;gap:6px;align-items:center;margin-bottom:5px">
-          <input id="mv-apikey" type="password" placeholder="Anthropic API key (sk-ant-…)"
-            style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
-                   border-radius:6px;padding:5px 8px;color:#e0e0e0;font-size:10px;outline:none">
-          <button class="mv-btn" id="mv-apikey-save"
-            style="width:auto;padding:5px 10px;margin:0;font-size:10px">Save</button>
-        </div>
-        <div style="display:flex;gap:6px;align-items:center;margin-bottom:5px">
-          <input id="mv-eleven-key" type="password" placeholder="ElevenLabs key (natural voice — free at elevenlabs.io)"
-            style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
-                   border-radius:6px;padding:5px 8px;color:#e0e0e0;font-size:10px;outline:none">
-          <button class="mv-btn" id="mv-eleven-save"
-            style="width:auto;padding:5px 10px;margin:0;font-size:10px">Save</button>
-        </div>
-        <div style="display:flex;gap:6px;align-items:center">
-          <input id="mv-deepgram-key" type="password" placeholder="Deepgram key (TTS — console.deepgram.com)"
-            style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
-                   border-radius:6px;padding:5px 8px;color:#e0e0e0;font-size:10px;outline:none">
-          <button class="mv-btn" id="mv-deepgram-save"
-            style="width:auto;padding:5px 10px;margin:0;font-size:10px">Save</button>
+          Say <strong style="color:#70e1ff">"Match Vision …"</strong> to talk to your agent
         </div>
       </div>
       <div id="mv-circle">👁</div>
@@ -406,45 +385,6 @@
     // ── Voice agent ───────────────────────────────────────────────────────
     const micBtn      = root.querySelector('#mv-mic');
     const voiceStatus = root.querySelector('#mv-voice-status');
-    const apikeyInput  = root.querySelector('#mv-apikey');
-    const apikeySave   = root.querySelector('#mv-apikey-save');
-    const elevenInput  = root.querySelector('#mv-eleven-key');
-    const elevenSave   = root.querySelector('#mv-eleven-save');
-    const deepgramInput = root.querySelector('#mv-deepgram-key');
-    const deepgramSave  = root.querySelector('#mv-deepgram-save');
-
-    chrome.storage.local.get(['anthropicApiKey','elevenLabsKey','deepgramKey']).then(({ anthropicApiKey, elevenLabsKey, deepgramKey }) => {
-      if (anthropicApiKey) apikeyInput.placeholder = 'Anthropic key saved ✓';
-      if (elevenLabsKey)   elevenInput.placeholder  = 'ElevenLabs key saved ✓';
-      if (deepgramKey)     deepgramInput.placeholder = 'Deepgram key saved ✓';
-    });
-
-    apikeySave.addEventListener('click', () => {
-      const key = apikeyInput.value.trim();
-      if (!key) return;
-      chrome.storage.local.set({ anthropicApiKey: key });
-      apikeyInput.value = ''; apikeyInput.placeholder = 'Anthropic key saved ✓';
-      voiceStatus.textContent = 'Anthropic key saved.';
-      setTimeout(() => { voiceStatus.textContent = ''; }, 2000);
-    });
-
-    elevenSave.addEventListener('click', () => {
-      const key = elevenInput.value.trim();
-      if (!key) return;
-      chrome.storage.local.set({ elevenLabsKey: key });
-      elevenInput.value = ''; elevenInput.placeholder = 'ElevenLabs key saved ✓';
-      voiceStatus.textContent = 'ElevenLabs key saved — natural voice enabled!';
-      setTimeout(() => { voiceStatus.textContent = ''; }, 2000);
-    });
-
-    deepgramSave.addEventListener('click', () => {
-      const key = deepgramInput.value.trim();
-      if (!key) return;
-      chrome.storage.local.set({ deepgramKey: key });
-      deepgramInput.value = ''; deepgramInput.placeholder = 'Deepgram key saved ✓';
-      voiceStatus.textContent = 'Deepgram key saved — Deepgram voice enabled!';
-      setTimeout(() => { voiceStatus.textContent = ''; }, 2000);
-    });
 
     // ── Always-on conversation mode ───────────────────────────────────────
     // Every utterance goes to Claude. Claude decides whether it's being
@@ -550,39 +490,14 @@
     const unmute = () => { micMuteUntil = Date.now() + 700; };
     setTimeout(() => { if (micMuteUntil === Infinity) unmute(); }, 15000); // safety net
 
-    // Try Deepgram first, then ElevenLabs (natural voice) — falls back to browser TTS
+    // Try Deepgram first — falls back to browser TTS
     try {
-      const { deepgramKey } = await chrome.storage.local.get('deepgramKey');
+      const deepgramKey = MV_DEEPGRAM_KEY;
       if (deepgramKey) {
         const res = await fetch('https://api.deepgram.com/v1/speak?model=aura-2-thalia-en', {
           method: 'POST',
           headers: { Authorization: `Token ${deepgramKey}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({ text }),
-        });
-        if (res.ok) {
-          const url = URL.createObjectURL(await res.blob());
-          const audio = new Audio(url);
-          audio.playbackRate = TTS_RATE;
-          audio.onended = () => { URL.revokeObjectURL(url); unmute(); };
-          audio.onerror = unmute;
-          audio.play();
-          return;
-        }
-      }
-    } catch (_) {}
-
-    try {
-      const { elevenLabsKey } = await chrome.storage.local.get('elevenLabsKey');
-      if (elevenLabsKey) {
-        const voiceId = '21m00Tcm4TlvDq8ikWAM'; // Rachel — natural US English
-        const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`, {
-          method: 'POST',
-          headers: { 'xi-api-key': elevenLabsKey, 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            text,
-            model_id: 'eleven_turbo_v2_5',
-            voice_settings: { stability: 0.5, similarity_boost: 0.75 },
-          }),
         });
         if (res.ok) {
           const url = URL.createObjectURL(await res.blob());

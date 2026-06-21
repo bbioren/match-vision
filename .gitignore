@@ -10,6 +10,7 @@ __pycache__/
 .env.local
 .env*
 *.pem
+extension/secrets.js
 
 # build outputs
 dist/

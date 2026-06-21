@@ -1,4 +1,6 @@
 // MatchVision background — routes messages + handles Claude voice agent
+importScripts('secrets.js');
+
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === 'get-tab-id') {
     sendResponse({ tabId: sender.tab.id });
@@ -42,12 +44,11 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 });
 
 async function handleVoiceQuery(tabId, transcript, currentParams, history) {
-  const { anthropicApiKey } = await chrome.storage.local.get('anthropicApiKey');
-  console.log('[MV voice] key present:', !!anthropicApiKey, 'prefix:', anthropicApiKey?.slice(0, 12));
+  const anthropicApiKey = MV_ANTHROPIC_KEY;
   if (!anthropicApiKey) {
     chrome.tabs.sendMessage(tabId, {
       type: 'voice-response',
-      error: 'No API key. Enter your Anthropic API key in the panel settings.',
+      error: 'No Anthropic key configured. Add one to extension/secrets.js.',
     }).catch(() => {});
     return;
   }

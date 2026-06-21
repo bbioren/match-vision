@@ -8,7 +8,7 @@ MatchVision is a voice-first accessibility companion that gives blind and low-vi
 
 Two parts that share one accessibility mission:
 
-1. **Chrome extension (`extension/`)** — a gaze-controlled zoom/pan tracker that works on *any* web video, plus an always-on Claude voice agent. Say "Match Vision, what just happened?" and Claude answers out loud (Deepgram TTS if a key is set, else ElevenLabs, else browser TTS), and can drive the tracker itself (zoom in, reset, follow the ball) via tool calls.
+1. **Chrome extension (`extension/`)** — a gaze-controlled zoom/pan tracker that works on *any* web video, plus an always-on Claude voice agent. Say "Match Vision, what just happened?" and Claude answers out loud via Deepgram TTS (browser TTS as fallback), and can drive the tracker itself (zoom in, reset, follow the ball) via tool calls.
 2. **Web app (`src/`, `local-server.mjs`)** — the original ADC (audio description) demo: structured match-moment timelines, a voice/text Q&A flow, a Terac annotation lab for collecting human accessibility labels, and an eval dashboard showing measured improvement from those labels.
 
 ## Run the demo
@@ -29,10 +29,10 @@ No install or API keys required for the static MVP — it falls back to a determ
 
 ### Chrome extension
 
-1. Open `chrome://extensions`, enable Developer Mode, "Load unpacked", select `extension/`.
-2. Open any page with video (YouTube, a broadcast stream, etc.) and click the MatchVision icon.
-3. Enter an Anthropic API key, and optionally a Deepgram and/or ElevenLabs key for natural voice, in the panel.
-4. Click the mic button and talk — Claude answers, and can zoom/pan/reset the tracker for you.
+1. `cp extension/secrets.example.js extension/secrets.js` and fill in `MV_ANTHROPIC_KEY`/`MV_DEEPGRAM_KEY`. `extension/secrets.js` is gitignored — it's never committed, so real keys never hit GitHub.
+2. Open `chrome://extensions`, enable Developer Mode, "Load unpacked", select `extension/`.
+3. Open any page with video (YouTube, a broadcast stream, etc.) and click the MatchVision icon.
+4. Click the mic button and talk — Claude answers (spoken via Deepgram, falling back to browser TTS), and can zoom/pan/reset the tracker for you.
 
 ## Current status
 
@@ -84,7 +84,7 @@ ANTHROPIC_MODEL=claude-haiku-4-5-20251001   # optional, this is the default
 
 `GOOGLE_API_KEY` is also accepted as an alias for `GEMINI_API_KEY`. Set `LLM_PROVIDER=gemini` or `LLM_PROVIDER=anthropic` to force one; otherwise both `local-server.mjs` and `generate-candidates.mjs` auto-detect (Gemini first if both keys are set).
 
-The Chrome extension's voice agent calls the Anthropic API directly from the browser using a key you enter in its panel (stored in `chrome.storage.local`). TTS tries Deepgram first if a key is saved, then ElevenLabs, then falls back to browser TTS.
+The Chrome extension's voice agent calls the Anthropic API directly from the browser using `MV_ANTHROPIC_KEY` from `extension/secrets.js` (gitignored — see `extension/secrets.example.js`). TTS uses `MV_DEEPGRAM_KEY` from the same file, falling back to browser TTS if it's unset or the call fails.
 
 ## Terac fine-tune pipeline (human labels → better commentary prompt)
 

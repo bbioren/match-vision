@@ -22,6 +22,13 @@ Wired: `src/services/voice.js` + `/api/tts` in `local-server.mjs`.
 - TTS is live: `window.MATCHVISION_USE_DEEPGRAM = true` (set in `index.html`) routes spoken answers through `POST /api/tts`, which calls Deepgram's `speak` endpoint (`aura-2-thalia-en`) when `DEEPGRAM_API_KEY` is set in `.env`. Falls back to browser TTS if the key is missing or the call fails.
 - STT is still browser `SpeechRecognition` only (`setupSpeechRecognition()`). Real Deepgram STT would mean capturing a `MediaRecorder` blob and POSTing it to a new transcribe route — not done.
 
+## Extension voice agent (Claude + Deepgram)
+
+Separate from the web app — `extension/background.js` and `extension/tracker.js`.
+
+- Keys come from `extension/secrets.js` (`MV_ANTHROPIC_KEY`, `MV_DEEPGRAM_KEY`), gitignored. Copy `extension/secrets.example.js` to `extension/secrets.js` and fill them in; no UI key entry, no `chrome.storage` involved.
+- `background.js` calls `api.anthropic.com` directly with `MV_ANTHROPIC_KEY`. `tracker.js`'s `speak()` calls Deepgram's `speak` endpoint with `MV_DEEPGRAM_KEY`, falling back to browser TTS if unset or the call fails.
+
 ## Redis
 
 Current seam: `src/services/memory.js`.
