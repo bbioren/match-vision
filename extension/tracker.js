@@ -465,9 +465,16 @@
         listenOn = false;
         try { listenRec?.stop(); } catch (_) {}
         setListenOn(false);
-        voiceHistory.length = 0; // clear conversation on stop
+        voiceHistory.length = 0;
       } else {
-        const { tabId } = await chrome.runtime.sendMessage({ type: 'get-tab-id' });
+        let tabId;
+        try {
+          const resp = await chrome.runtime.sendMessage({ type: 'get-tab-id' });
+          tabId = resp?.tabId;
+        } catch (_) {
+          voiceStatus.textContent = '⚠ Reload this tab after updating the extension.';
+          return;
+        }
         setListenOn(true);
         voiceStatus.textContent = 'Listening — just speak naturally…';
         startListening(tabId);
