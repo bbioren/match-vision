@@ -206,6 +206,13 @@
     isTracking = true;
     createDebugDot();
     panInterval = setInterval(() => { if (isTracking) pidUpdate(); }, 50);
+    // Expose params to the iframe via a shared key the iframe's voice handler reads
+    setInterval(() => {
+      const frame = document.getElementById('mv-tracker-frame');
+      if (frame) {
+        try { frame.contentWindow._mvCurrentParams = { ...params, zoom: zoomLevel, isTracking }; } catch (_) {}
+      }
+    }, 500);
     setUiStatus('Tracking — look at the video.', 'active');
     setUiTrackingBtn(true);
   }
@@ -321,6 +328,17 @@
           <input type="range" id="mv-yb" min="-200" max="400" step="5" value="0"></div>
         <div class="mv-sl"><div class="mv-sl-top"><span>Y scale (vertical sensitivity)</span><span id="mv-ys-val">1.00</span></div>
           <input type="range" id="mv-ys" min="0.5" max="2.5" step="0.05" value="1.0"></div>
+        <hr class="mv-sep">
+        <div class="mv-sec">Voice Agent</div>
+        <button class="mv-btn" id="mv-mic">🎤 Ask Claude</button>
+        <div id="mv-voice-status" style="font-size:10px;color:rgba(255,255,255,.4);margin-bottom:8px;min-height:14px;line-height:1.4"></div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <input id="mv-apikey" type="password" placeholder="Anthropic API key (sk-ant-…)"
+            style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
+                   border-radius:6px;padding:5px 8px;color:#e0e0e0;font-size:10px;outline:none">
+          <button class="mv-btn" id="mv-apikey-save"
+            style="width:auto;padding:5px 10px;margin:0;font-size:10px">Save</button>
+        </div>
       </div>
       <div id="mv-circle">👁</div>
     `;
@@ -364,6 +382,49 @@
     wireSlider('mv-kd', 'mv-kd-val', v => v.toFixed(3), v => { params.kD = v; });
     wireSlider('mv-yb', 'mv-yb-val', v => v + 'px',    v => { params.yBias  = v; });
     wireSlider('mv-ys', 'mv-ys-val', v => v.toFixed(2), v => { params.yScale = v; });
+
+    // ── Voice agent ───────────────────────────────────────────────────────
+    const micBtn      = root.querySelector('#mv-mic');
+    const voiceStatus = root.querySelector('#mv-voice-status');
+    const apikeyInput = root.querySelector('#mv-apikey');
+    const apikeySave  = root.querySelector('#mv-apikey-save');
+
+    // Load saved API key placeholder
+    chrome.storage.local.get('anthropicApiKey').then(({ anthropicApiKey }) => {
+      if (anthropicApiKey) apikeyInput.placeholder = 'API key saved ✓';
+    });
+
+    apikeySave.addEventListener('click', () => {
+      const key = apikeyInput.value.trim();
+      if (!key) return;
+      chrome.storage.local.set({ anthropicApiKey: key });
+      apikeyInput.value = '';
+      apikeyInput.placeholder = 'API key saved ✓';
+      voiceStatus.textContent = 'API key saved.';
+      setTimeout(() => { voiceStatus.textContent = ''; }, 2000);
+    });
+
+    micBtn.addEventListener('click', async () => {
+      const { tabId } = await chrome.runtime.sendMessage({ type: 'get-tab-id' });
+      micBtn.disabled = true;
+      voiceStatus.textContent = '🎤 Listening…';
+      chrome.runtime.sendMessage({ type: 'start-voice', tabId }).catch(() => {});
+    });
+  }
+
+  function speak(text) {
+    if (!text) return;
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.rate = 1.1;
+    window.speechSynthesis.speak(utt);
+  }
+
+  function updateSlider(id, value, fmt) {
+    const sl = document.getElementById(id);
+    const vl = document.getElementById(id + '-val');
+    if (sl) sl.value = value;
+    if (vl) vl.textContent = fmt(value);
   }
 
   function setUiStatus(msg, cls = '') {
@@ -422,6 +483,33 @@
       case 'remove-tracker-frame':
         document.getElementById('mv-tracker-frame')?.remove();
         break;
+      case 'voice-response': {
+        const micBtn2 = document.getElementById('mv-mic');
+        const vs      = document.getElementById('mv-voice-status');
+        if (micBtn2) micBtn2.disabled = false;
+        if (msg.error) {
+          if (vs) vs.textContent = '⚠ ' + msg.error;
+          speak(msg.error);
+          break;
+        }
+        // Apply param changes from Claude tool call
+        if (msg.params) {
+          const p = msg.params;
+          if (p.zoom       != null) applyZoom(p.zoom);
+          if (p.panSpeed   != null) { params.panSpeed   = p.panSpeed;   updateSlider('mv-sp', p.panSpeed,   v => v); }
+          if (p.gazeSmooth != null) { params.gazeSmooth = p.gazeSmooth; updateSlider('mv-sm', p.gazeSmooth, v => v.toFixed(2)); }
+          if (p.kP         != null) { params.kP         = p.kP;         updateSlider('mv-kp', p.kP,         v => v.toFixed(2)); }
+          if (p.kI         != null) { params.kI         = p.kI;         updateSlider('mv-ki', p.kI,         v => v.toFixed(3)); }
+          if (p.kD         != null) { params.kD         = p.kD;         updateSlider('mv-kd', p.kD,         v => v.toFixed(3)); }
+          if (p.yBias      != null) { params.yBias      = p.yBias;      updateSlider('mv-yb', p.yBias,      v => v + 'px'); }
+          if (p.yScale     != null) { params.yScale     = p.yScale;     updateSlider('mv-ys', p.yScale,     v => v.toFixed(2)); }
+        }
+        if (msg.text) {
+          if (vs) vs.textContent = msg.text;
+          speak(msg.text);
+        }
+        break;
+      }
       case 'run-calibration':
         console.log('[MV] run-calibration received');
         setUiStatus('Calibrating — look at each dot…', 'loading');

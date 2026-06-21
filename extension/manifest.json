@@ -4,7 +4,7 @@
   "version": "1.6.0",
   "description": "Gaze-controlled zoom & pan for any web video. Accessibility tool for low-vision users.",
 
-  "permissions": ["activeTab", "tabs"],
+  "permissions": ["activeTab", "tabs", "storage"],
   "host_permissions": ["<all_urls>"],
 
   "content_security_policy": {

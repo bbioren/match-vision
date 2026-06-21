@@ -1,12 +1,10 @@
-// MatchVision background — routes messages between content script and tracker iframe
+// MatchVision background — routes messages + handles Claude voice agent
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  // Content script asks for its own tab ID (content scripts can't get this directly)
   if (msg.type === 'get-tab-id') {
     sendResponse({ tabId: sender.tab.id });
     return true;
   }
 
-  // Forward calibration points from content script → tracker iframe
   if (msg.type === 'calibration-point' || msg.type === 'calibration-done') {
     chrome.runtime.sendMessage({ target: 'tracker-window', ...msg }).catch(() => {});
     if (msg.type === 'calibration-done') {
@@ -15,26 +13,120 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return;
   }
 
-  // Tracker iframe is ready → trigger calibration on the YouTube tab
   if (msg.type === 'tracker-window-ready') {
-    chrome.tabs.sendMessage(msg.tabId, { type: 'run-calibration' }).catch(e => {
-      console.error('[MV bg] run-calibration failed:', e.message);
-    });
+    chrome.tabs.sendMessage(msg.tabId, { type: 'run-calibration' }).catch(() => {});
     return;
   }
 
-  // Tracker iframe sends gaze → forward to content script
   if (msg.type === 'gaze-from-tracker') {
     chrome.tabs.sendMessage(msg.tabId, { type: 'gaze', x: msg.x, y: msg.y }).catch(() => {});
     return;
   }
 
-  // Stop: remove iframe via message to content script
   if (msg.type === 'stop-tracker-window') {
     chrome.runtime.sendMessage({ target: 'tracker-window', type: 'stop-gaze' }).catch(() => {});
-    if (msg.tabId) {
-      chrome.tabs.sendMessage(msg.tabId, { type: 'remove-tracker-frame' }).catch(() => {});
-    }
+    if (msg.tabId) chrome.tabs.sendMessage(msg.tabId, { type: 'remove-tracker-frame' }).catch(() => {});
+    return;
+  }
+
+  // Content script asks tracker-window to start listening
+  if (msg.type === 'start-voice') {
+    chrome.runtime.sendMessage({ target: 'tracker-window', type: 'start-voice', tabId: msg.tabId }).catch(() => {});
+    return;
+  }
+
+  // Tracker-window finished listening → call Claude
+  if (msg.type === 'voice-transcript') {
+    handleVoiceQuery(msg.tabId, msg.text, msg.currentParams);
+    return;
+  }
+
+  if (msg.type === 'voice-error') {
+    chrome.tabs.sendMessage(msg.tabId, { type: 'voice-response', error: msg.error }).catch(() => {});
     return;
   }
 });
+
+async function handleVoiceQuery(tabId, transcript, currentParams) {
+  const { anthropicApiKey } = await chrome.storage.local.get('anthropicApiKey');
+  if (!anthropicApiKey) {
+    chrome.tabs.sendMessage(tabId, {
+      type: 'voice-response',
+      error: 'No API key. Enter your Anthropic API key in the panel settings.',
+    }).catch(() => {});
+    return;
+  }
+
+  const systemPrompt = `You are the MatchVision voice assistant — a Chrome extension that helps low-vision users control gaze-based video zoom and pan with their eyes. Respond in 1-2 short sentences since your response will be spoken aloud.
+
+Current settings:
+- Zoom: ${currentParams.zoom?.toFixed(1)}x
+- Pan speed: ${currentParams.panSpeed}
+- Gaze smoothing: ${currentParams.gazeSmooth?.toFixed(2)}
+- kP: ${currentParams.kP?.toFixed(2)}, kI: ${currentParams.kI?.toFixed(3)}, kD: ${currentParams.kD?.toFixed(3)}
+- Y bias: ${currentParams.yBias}px, Y scale: ${currentParams.yScale?.toFixed(2)}
+- Tracking: ${currentParams.isTracking ? 'active' : 'stopped'}
+
+Parameter guide:
+- zoom (1.2–6): video magnification level
+- panSpeed (1–20): how fast the view follows your gaze
+- gazeSmooth (0.02–0.5): 0.02=jittery but instant, 0.5=very smooth but laggy
+- kP: how aggressively it follows gaze (raise if sluggish)
+- kI: corrects drift (lower if tracking feels sticky)
+- kD: dampens overshoot (raise if panning oscillates)
+- yBias (-200 to 400px): shift gaze estimate downward (increase if webcam above screen makes tracking run high)
+- yScale (0.5–2.5): amplify vertical gaze range (increase if you feel insensitive to looking down)
+
+When the user asks to change a setting, use the adjust_params tool. Always confirm what you changed.`;
+
+  const tools = [{
+    name: 'adjust_params',
+    description: 'Adjust one or more eye-tracking parameters in real time',
+    input_schema: {
+      type: 'object',
+      properties: {
+        zoom:        { type: 'number', description: 'Zoom level 1.2–6' },
+        panSpeed:    { type: 'number', description: 'Pan speed 1–20' },
+        gazeSmooth:  { type: 'number', description: 'Gaze smoothing 0.02–0.5' },
+        kP:          { type: 'number', description: 'Proportional gain 0.01–0.5' },
+        kI:          { type: 'number', description: 'Integral gain 0–0.2' },
+        kD:          { type: 'number', description: 'Derivative gain 0–0.3' },
+        yBias:       { type: 'number', description: 'Y offset in pixels -200 to 400' },
+        yScale:      { type: 'number', description: 'Y scale factor 0.5–2.5' },
+      },
+    },
+  }];
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': anthropicApiKey,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 256,
+        system: systemPrompt,
+        tools,
+        messages: [{ role: 'user', content: transcript }],
+      }),
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+
+    let text = '';
+    let paramChanges = {};
+    for (const block of data.content || []) {
+      if (block.type === 'text') text = block.text;
+      if (block.type === 'tool_use' && block.name === 'adjust_params') paramChanges = block.input;
+    }
+    if (!text && Object.keys(paramChanges).length) text = 'Done, settings updated.';
+
+    chrome.tabs.sendMessage(tabId, { type: 'voice-response', text, params: paramChanges }).catch(() => {});
+  } catch (err) {
+    chrome.tabs.sendMessage(tabId, { type: 'voice-response', error: 'Claude error: ' + err.message }).catch(() => {});
+  }
+}
