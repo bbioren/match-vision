@@ -761,16 +761,11 @@
         if (msg.action === 'stop')      stopTracking();
         if (msg.action === 'reset_pan') resetPan();
         if (msg.action === 'fullscreen') {
-          const v = targetVideo || findBestVideo();
-          const req = v?.requestFullscreen?.();
-          if (req?.catch) {
-            // No direct user gesture behind a voice command — Chrome rejects
-            // element fullscreen in that case. Fall back to maximizing the
-            // browser window instead, which the extension can always do.
-            req.catch(() => { chrome.runtime.sendMessage({ type: 'force-window-fullscreen' }).catch(() => {}); });
-          } else if (!v) {
-            chrome.runtime.sendMessage({ type: 'force-window-fullscreen' }).catch(() => {});
-          }
+          // Background grants real user activation via chrome.debugger (CDP
+          // input events count as genuine gestures, unlike a JS-dispatched
+          // click), then fullscreens the actual player. Falls back to
+          // maximizing the window if that's unavailable for any reason.
+          chrome.runtime.sendMessage({ type: 'request-video-fullscreen' }).catch(() => {});
         }
         if (msg.action === 'exit_fullscreen') {
           if (document.fullscreenElement) document.exitFullscreen().catch(() => {});

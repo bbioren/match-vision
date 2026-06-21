@@ -42,12 +42,13 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return;
   }
 
-  // Fallback when the page can't call element.requestFullscreen() itself —
-  // the Fullscreen API requires a direct user gesture, which a voice command
-  // (async round-trip through Claude) doesn't carry. Maximizing the browser
-  // window via the extension's privileged API has no such restriction.
-  if (msg.type === 'force-window-fullscreen' && sender.tab) {
-    chrome.windows.update(sender.tab.windowId, { state: 'fullscreen' }).catch(() => {});
+  // A voice command has no real user gesture behind it, and Chrome requires
+  // one for element.requestFullscreen(). Grant one for real via the debugger
+  // protocol (a CDP-dispatched input event counts as genuine user activation,
+  // unlike element.click()/dispatchEvent() from JS), then fullscreen the
+  // actual video player.
+  if (msg.type === 'request-video-fullscreen' && sender.tab) {
+    forceVideoFullscreen(sender.tab.id, sender.tab.windowId);
     return;
   }
   if (msg.type === 'restore-window' && sender.tab) {
@@ -55,6 +56,49 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return;
   }
 });
+
+function cdpSend(tabId, method, params) {
+  return new Promise((resolve, reject) => {
+    chrome.debugger.sendCommand({ tabId }, method, params, (result) => {
+      if (chrome.runtime.lastError) reject(new Error(chrome.runtime.lastError.message));
+      else resolve(result);
+    });
+  });
+}
+
+async function forceVideoFullscreen(tabId, windowId) {
+  let attached = false;
+  try {
+    await new Promise((resolve, reject) => {
+      chrome.debugger.attach({ tabId }, '1.3', () => {
+        if (chrome.runtime.lastError) reject(new Error(chrome.runtime.lastError.message));
+        else resolve();
+      });
+    });
+    attached = true;
+
+    // Click a near-corner spot, not the player itself, so we don't accidentally
+    // toggle play/pause — the activation this grants applies to the whole
+    // document, not just the clicked element.
+    await cdpSend(tabId, 'Input.dispatchMouseEvent', { type: 'mousePressed', x: 2, y: 2, button: 'left', clickCount: 1 });
+    await cdpSend(tabId, 'Input.dispatchMouseEvent', { type: 'mouseReleased', x: 2, y: 2, button: 'left', clickCount: 1 });
+
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      func: () => {
+        // YouTube's own player chrome (controls, captions) lives on this wrapper —
+        // fullscreening the bare <video> would lose all of that.
+        const el = document.querySelector('.html5-video-player') || document.querySelector('video');
+        el?.requestFullscreen?.().catch(() => {});
+      },
+    });
+  } catch (err) {
+    console.warn('[MV fullscreen] CDP approach failed, maximizing window instead:', err.message);
+    chrome.windows.update(windowId, { state: 'fullscreen' }).catch(() => {});
+  } finally {
+    if (attached) chrome.debugger.detach({ tabId }).catch(() => {});
+  }
+}
 
 async function handleVoiceQuery(tabId, transcript, currentParams, history, wakeWordHeard) {
   const anthropicApiKey = MV_ANTHROPIC_KEY;
