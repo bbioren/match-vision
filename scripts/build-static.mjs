@@ -9,6 +9,7 @@ const include = [
   'eyetrack.html',
   'survey.html',
   'gaze-results.html',
+  'privacy.html',
   'src',
   'data',
   'public',

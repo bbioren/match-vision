@@ -27,11 +27,37 @@ const clipDirs = [
   'clips/kaggle/segments',
 ];
 
+// Standalone clip files that don't live in one of the segment directories
+// above (e.g. full StatsBomb-timeline-tied clips referenced directly from
+// data/clips.json).
+const individualFiles = [
+  'clips/real/argentina_vs_france_wc2022_h2_kickoff_5min.mp4',
+];
+
 async function uploadClips() {
   console.log('Uploading clips to Vercel Blob Storage...\n');
-  
+
   let uploadedCount = 0;
   let failedCount = 0;
+
+  for (const relPath of individualFiles) {
+    const fullPath = path.join(__dirname, '..', relPath);
+    if (!fs.existsSync(fullPath)) {
+      console.log(`⚠ File not found: ${relPath}`);
+      continue;
+    }
+    const blobPath = `match-vision-clips/${relPath}`;
+    try {
+      console.log(`📄 Uploading ${relPath}...`);
+      const fileContent = fs.readFileSync(fullPath);
+      const result = await put(blobPath, fileContent, { access: 'public', token: TOKEN });
+      console.log(`  ✓ ${result.url}`);
+      uploadedCount++;
+    } catch (error) {
+      console.error(`  ✗ Failed to upload ${relPath}: ${error.message}`);
+      failedCount++;
+    }
+  }
 
   for (const dir of clipDirs) {
     const fullPath = path.join(__dirname, '..', dir);
