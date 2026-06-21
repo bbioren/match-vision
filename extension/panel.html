@@ -11,7 +11,7 @@
       font-family: system-ui, sans-serif;
       font-size: 13px;
       padding: 16px;
-      min-height: 100vh;
+      width: 380px;
     }
     h1 { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
     .subtitle { color: rgba(255,255,255,.4); font-size: 11px; margin-bottom: 16px; }
@@ -59,7 +59,7 @@
 </head>
 <body>
   <h1>👁️ MatchVision</h1>
-  <div class="subtitle">Gaze-controlled video zoom &amp; pan</div>
+  <div class="subtitle">Gaze-controlled video zoom &amp; pan — keep this popup open while tracking</div>
 
   <div id="status">Open a video tab, then click Start.</div>
   <button id="toggle">Start Eye Tracking</button>
@@ -94,11 +94,11 @@
     <input type="range" id="kp" min="0.01" max="0.5" step="0.01" value="0.08">
   </div>
   <div class="sl">
-    <div class="sl-top"><span>kI — integral</span><span id="ki-val">0.02</span></div>
+    <div class="sl-top"><span>kI — integral</span><span id="ki-val">0.020</span></div>
     <input type="range" id="ki" min="0" max="0.2" step="0.005" value="0.02">
   </div>
   <div class="sl">
-    <div class="sl-top"><span>kD — derivative</span><span id="kd-val">0.04</span></div>
+    <div class="sl-top"><span>kD — derivative</span><span id="kd-val">0.040</span></div>
     <input type="range" id="kd" min="0" max="0.3" step="0.005" value="0.04">
   </div>
 

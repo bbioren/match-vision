@@ -2,25 +2,29 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>MatchVision — Eye Tracker</title>
+  <title>MatchVision</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #000; overflow: hidden; }
+    body { background: #000; overflow: hidden; width: 160px; height: 120px; }
+    #cam-wrap { width: 160px; height: 120px; position: relative; }
     #cam-wrap video {
-      width: 100% !important; height: auto !important;
-      position: relative !important; top: auto !important; left: auto !important;
-      display: block;
+      width: 100% !important; height: 100% !important; object-fit: cover;
+      position: absolute !important; top: 0 !important; left: 0 !important; display: block;
     }
-    #status {
-      color: #4eff88; font-family: system-ui, sans-serif; font-size: 11px;
-      padding: 4px 8px; background: #0a0a1a; text-align: center;
+    #dot {
+      position: absolute; bottom: 4px; right: 4px;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: #4eff88; box-shadow: 0 0 6px #4eff88;
     }
     #webgazerFaceOverlay, #webgazerFaceFeedbackBox { display: none !important; }
   </style>
 </head>
 <body>
-  <div id="status">👁 Tracking active — minimize this window</div>
-  <div id="cam-wrap"></div>
+  <div id="cam-wrap">
+    <div id="dot" style="background:#666;box-shadow:none"></div>
+  </div>
+  <!-- raf-override.js MUST be first — replaces rAF with setTimeout before WebGazer loads -->
+  <script src="raf-override.js"></script>
   <script src="model-interceptor.js"></script>
   <script src="webgazer.min.js"></script>
   <script src="tracker-window.js"></script>

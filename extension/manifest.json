@@ -1,10 +1,10 @@
 {
   "manifest_version": 3,
   "name": "MatchVision Eye Tracker",
-  "version": "1.4.0",
+  "version": "1.6.0",
   "description": "Gaze-controlled zoom & pan for any web video. Accessibility tool for low-vision users.",
 
-  "permissions": ["sidePanel", "activeTab"],
+  "permissions": ["activeTab", "tabs"],
   "host_permissions": ["<all_urls>"],
 
   "content_security_policy": {
@@ -13,10 +13,6 @@
 
   "background": {
     "service_worker": "background.js"
-  },
-
-  "side_panel": {
-    "default_path": "panel.html"
   },
 
   "content_scripts": [
@@ -33,7 +29,8 @@
 
   "web_accessible_resources": [
     {
-      "resources": ["models/*"],
+      "resources": ["models/*", "tracker-window.html", "tracker-window.js",
+                    "raf-override.js", "model-interceptor.js", "webgazer.min.js"],
       "matches": ["<all_urls>"]
     }
   ]
