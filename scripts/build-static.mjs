@@ -7,6 +7,7 @@ const include = [
   'annotate.html',
   'eval.html',
   'eyetrack.html',
+  'eyetrack-webgazer.html',
   'survey.html',
   'gaze-results.html',
   'privacy.html',
