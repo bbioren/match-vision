@@ -7,14 +7,14 @@
   // ── State ─────────────────────────────────────────────────────────────────
   let isTracking = false;
   let targetVideo = null;
-  let zoomLevel = 2.0;
+  let zoomLevel = 1.6;
   let smoothX = null, smoothY = null;
   let currentPanX = 0, currentPanY = 0;
   let _pidIntX = 0, _pidIntY = 0;
   let _pidPrevErrX = 0, _pidPrevErrY = 0;
   let _pidLastTime = 0;
   const INT_LIMIT = 3.0;
-  const params = { panSpeed: 6, kP: 0.08, kI: 0.02, kD: 0.04, gazeSmooth: 0.12, yBias: 0, yScale: 1.0 };
+  const params = { panSpeed: 4, kP: 0.34, kI: 0.030, kD: 0.010, gazeSmooth: 0.12, yBias: 130, yScale: 1.05 };
   const voiceHistory = []; // rolling conversation sent to Claude for context
   let voiceBusy = false;  // prevent overlapping Claude calls
   let micMuteUntil = 0;   // Date.now() timestamp — ignore mic results until then (prevents hearing our own TTS)
@@ -371,26 +371,26 @@
         </div>
         <hr class="mv-sep">
         <div class="mv-sec">Zoom &amp; Motion</div>
-        <div class="mv-sl"><div class="mv-sl-top"><span>Zoom</span><span id="mv-zm-val">2.0×</span></div>
-          <input type="range" id="mv-zm" min="1.2" max="6" step="0.1" value="2"></div>
-        <div class="mv-sl"><div class="mv-sl-top"><span>Pan speed</span><span id="mv-sp-val">6</span></div>
-          <input type="range" id="mv-sp" min="1" max="20" step="1" value="6"></div>
+        <div class="mv-sl"><div class="mv-sl-top"><span>Zoom</span><span id="mv-zm-val">1.6×</span></div>
+          <input type="range" id="mv-zm" min="1.2" max="6" step="0.1" value="1.6"></div>
+        <div class="mv-sl"><div class="mv-sl-top"><span>Pan speed</span><span id="mv-sp-val">4</span></div>
+          <input type="range" id="mv-sp" min="1" max="20" step="1" value="4"></div>
         <div class="mv-sl"><div class="mv-sl-top"><span>Smoothing</span><span id="mv-sm-val">0.12</span></div>
           <input type="range" id="mv-sm" min="0.02" max="0.5" step="0.01" value="0.12"></div>
         <hr class="mv-sep">
         <div class="mv-sec">PID Controller</div>
-        <div class="mv-sl"><div class="mv-sl-top"><span>kP</span><span id="mv-kp-val">0.08</span></div>
-          <input type="range" id="mv-kp" min="0.01" max="0.5" step="0.01" value="0.08"></div>
-        <div class="mv-sl"><div class="mv-sl-top"><span>kI</span><span id="mv-ki-val">0.020</span></div>
-          <input type="range" id="mv-ki" min="0" max="0.2" step="0.005" value="0.02"></div>
-        <div class="mv-sl"><div class="mv-sl-top"><span>kD</span><span id="mv-kd-val">0.040</span></div>
-          <input type="range" id="mv-kd" min="0" max="0.3" step="0.005" value="0.04"></div>
+        <div class="mv-sl"><div class="mv-sl-top"><span>kP</span><span id="mv-kp-val">0.34</span></div>
+          <input type="range" id="mv-kp" min="0.01" max="0.5" step="0.01" value="0.34"></div>
+        <div class="mv-sl"><div class="mv-sl-top"><span>kI</span><span id="mv-ki-val">0.030</span></div>
+          <input type="range" id="mv-ki" min="0" max="0.2" step="0.005" value="0.03"></div>
+        <div class="mv-sl"><div class="mv-sl-top"><span>kD</span><span id="mv-kd-val">0.010</span></div>
+          <input type="range" id="mv-kd" min="0" max="0.3" step="0.005" value="0.01"></div>
         <hr class="mv-sep">
         <div class="mv-sec">Webcam Correction</div>
-        <div class="mv-sl"><div class="mv-sl-top"><span>Y bias (cam above screen)</span><span id="mv-yb-val">0px</span></div>
-          <input type="range" id="mv-yb" min="-200" max="400" step="5" value="0"></div>
-        <div class="mv-sl"><div class="mv-sl-top"><span>Y scale (vertical sensitivity)</span><span id="mv-ys-val">1.00</span></div>
-          <input type="range" id="mv-ys" min="0.5" max="2.5" step="0.05" value="1.0"></div>
+        <div class="mv-sl"><div class="mv-sl-top"><span>Y bias (cam above screen)</span><span id="mv-yb-val">130px</span></div>
+          <input type="range" id="mv-yb" min="-200" max="400" step="5" value="130"></div>
+        <div class="mv-sl"><div class="mv-sl-top"><span>Y scale (vertical sensitivity)</span><span id="mv-ys-val">1.05</span></div>
+          <input type="range" id="mv-ys" min="0.5" max="2.5" step="0.05" value="1.05"></div>
         <hr class="mv-sep">
         <div class="mv-sec">Voice Agent</div>
         <button class="mv-btn" id="mv-mic">🎤 Wake word: OFF</button>
