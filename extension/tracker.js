@@ -330,8 +330,10 @@
           <input type="range" id="mv-ys" min="0.5" max="2.5" step="0.05" value="1.0"></div>
         <hr class="mv-sep">
         <div class="mv-sec">Voice Agent</div>
-        <button class="mv-btn" id="mv-mic">🎤 Ask Claude</button>
-        <div id="mv-voice-status" style="font-size:10px;color:rgba(255,255,255,.4);margin-bottom:8px;min-height:14px;line-height:1.4"></div>
+        <button class="mv-btn" id="mv-mic">🎤 Wake word: OFF</button>
+        <div id="mv-voice-status" style="font-size:10px;color:rgba(255,255,255,.4);margin-bottom:8px;min-height:28px;line-height:1.4">
+          Say <strong style="color:#70e1ff">"Match Vision …"</strong> to talk to Claude
+        </div>
         <div style="display:flex;gap:6px;align-items:center">
           <input id="mv-apikey" type="password" placeholder="Anthropic API key (sk-ant-…)"
             style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
@@ -404,47 +406,77 @@
       setTimeout(() => { voiceStatus.textContent = ''; }, 2000);
     });
 
-    micBtn.addEventListener('click', async () => {
-      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SR) {
-        voiceStatus.textContent = '⚠ Speech recognition not supported.';
-        return;
-      }
-      const { tabId } = await chrome.runtime.sendMessage({ type: 'get-tab-id' });
-      micBtn.disabled = true;
-      voiceStatus.textContent = '🎤 Listening…';
+    // ── Always-on wake word ("Match Vision …") ───────────────────────────
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let wakeRec = null;
+    let wakeOn  = false;
+    let lastQuery = '', lastQueryTime = 0;
 
-      const rec = new SR();
-      rec.lang = 'en-US';
-      rec.interimResults = false;
-      rec.maxAlternatives = 1;
-      let _fired = false; // Chrome sometimes fires onresult multiple times — deduplicate
-      rec.onresult = (e) => {
-        if (_fired) return;
-        _fired = true;
-        const text = e.results[0][0].transcript;
-        console.log('[MV voice] heard:', text);
-        voiceStatus.textContent = `"${text}" — asking Claude…`;
-        chrome.runtime.sendMessage({
-          type: 'voice-transcript', tabId, text,
-          currentParams: { ...params, zoom: zoomLevel, isTracking },
-        }).catch(err => {
-          voiceStatus.textContent = '⚠ ' + err.message;
-          micBtn.disabled = false;
-        });
-      };
-      rec.onerror = (e) => {
-        console.warn('[MV voice] error:', e.error);
-        voiceStatus.textContent = '⚠ Mic error: ' + e.error;
-        micBtn.disabled = false;
-      };
-      rec.onend = () => {
-        if (!_fired) {
-          voiceStatus.textContent = '(no speech detected)';
-          micBtn.disabled = false;
+    function setVoiceOn(on) {
+      wakeOn = on;
+      micBtn.textContent = on ? '🎤 Wake word: ON' : '🎤 Wake word: OFF';
+      micBtn.style.background = on ? '#4eff88' : '';
+      micBtn.style.color      = on ? '#000'    : '';
+      if (!on) {
+        voiceStatus.innerHTML = 'Say <strong style="color:#70e1ff">"Match Vision …"</strong> to talk to Claude';
+      }
+    }
+
+    function startWake(tabId) {
+      if (!SR) { voiceStatus.textContent = '⚠ Speech recognition not available.'; return; }
+      wakeRec = new SR();
+      wakeRec.lang = 'en-US';
+      wakeRec.continuous = true;
+      wakeRec.interimResults = false;
+
+      wakeRec.onresult = (e) => {
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          if (!e.results[i].isFinal) continue;
+          const text = e.results[i][0].transcript;
+          console.log('[MV wake] heard:', text);
+
+          // Detect wake word (fuzzy: "match vision", "match mission", etc.)
+          const m = text.match(/match\s*(?:vision|fission|mission|physician)\s+([\s\S]+)/i);
+          if (!m) continue;
+
+          const query = m[1].trim();
+          const now = Date.now();
+          if (query === lastQuery && now - lastQueryTime < 4000) continue; // dedupe
+          lastQuery = query; lastQueryTime = now;
+
+          console.log('[MV wake] wake word → query:', query);
+          voiceStatus.textContent = `"${query}" — asking Claude…`;
+          chrome.runtime.sendMessage({
+            type: 'voice-transcript', tabId, text: query,
+            currentParams: { ...params, zoom: zoomLevel, isTracking },
+          }).catch(() => {});
         }
       };
-      rec.start();
+
+      // Auto-restart on end (Chrome stops after silence)
+      wakeRec.onend = () => { if (wakeOn) setTimeout(() => { try { wakeRec.start(); } catch(_){} }, 200); };
+      wakeRec.onerror = (e) => {
+        if (e.error === 'no-speech' || e.error === 'aborted') return; // normal
+        console.warn('[MV wake] error:', e.error);
+        if (wakeOn) setTimeout(() => { try { wakeRec.start(); } catch(_){} }, 1000);
+      };
+      wakeRec.start();
+    }
+
+    micBtn.addEventListener('click', async () => {
+      if (!SR) { voiceStatus.textContent = '⚠ Speech recognition not available.'; return; }
+      if (wakeOn) {
+        // Turn off
+        wakeOn = false;
+        try { wakeRec?.stop(); } catch(_) {}
+        setVoiceOn(false);
+      } else {
+        // Turn on
+        const { tabId } = await chrome.runtime.sendMessage({ type: 'get-tab-id' });
+        setVoiceOn(true);
+        voiceStatus.textContent = 'Listening for "Match Vision …"';
+        startWake(tabId);
+      }
     });
   }
 
@@ -520,9 +552,7 @@
         document.getElementById('mv-tracker-frame')?.remove();
         break;
       case 'voice-response': {
-        const micBtn2 = document.getElementById('mv-mic');
-        const vs      = document.getElementById('mv-voice-status');
-        if (micBtn2) micBtn2.disabled = false;
+        const vs = document.getElementById('mv-voice-status');
         if (msg.error) {
           if (vs) vs.textContent = '⚠ ' + msg.error;
           speak(msg.error);
