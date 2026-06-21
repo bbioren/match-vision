@@ -28,3 +28,4 @@ clips/kaggle/
 clips/youtube/*.mp4
 clips/youtube/segments/*.mp4
 clips/youtube/segments/manifest.json
+.vercel
