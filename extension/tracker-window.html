@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>MatchVision — Eye Tracker</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #000; overflow: hidden; }
+    #cam-wrap video {
+      width: 100% !important; height: auto !important;
+      position: relative !important; top: auto !important; left: auto !important;
+      display: block;
+    }
+    #status {
+      color: #4eff88; font-family: system-ui, sans-serif; font-size: 11px;
+      padding: 4px 8px; background: #0a0a1a; text-align: center;
+    }
+    #webgazerFaceOverlay, #webgazerFaceFeedbackBox { display: none !important; }
+  </style>
+</head>
+<body>
+  <div id="status">👁 Tracking active — minimize this window</div>
+  <div id="cam-wrap"></div>
+  <script src="model-interceptor.js"></script>
+  <script src="webgazer.min.js"></script>
+  <script src="tracker-window.js"></script>
+</body>
+</html>

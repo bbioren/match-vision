@@ -3,23 +3,27 @@ let facemesh = null;
 let cameraVideo = null;
 let currentZoomLevel = 2.0;
 
-// Smoothed raw gaze signal
 let gazeX = 0.5;
 let gazeY = 0.5;
-// Accumulated pan position (% of scaled video size)
 let currentPanX = 0;
 let currentPanY = 0;
 
 let lastEyeDetection = 0;
 let lastUpdateTime = 0;
-let debugLogged = false;
+let firstFaceLogged = false;
+let debugDotEl = null;
+let hudEl = null;
 
-// Iris moves ~15-25% of eye-socket width for a natural in-frame glance.
-const SENSITIVITY = 8;
-const SMOOTH = 0.2;
-// How fast the video pans per frame at max gaze offset (% of max pan range per frame).
-// Lower = slower/smoother. At 30fps, PAN_SPEED=3 means full range in ~0.55s at max offset.
-const PAN_SPEED = 3;
+// Module-level debug state updated every frame — safe to read from setInterval
+let _dbg = { irisY: 0, lSocketH: 0, lRatio: 0, rRatio: 0, rawY: 0 };
+
+const params = {
+  sensitivityX: 30,
+  sensitivityY: 8,
+  smooth:       0.1,
+  panSpeed:     6,
+  biasY:        0.0,  // start at 0 — tune up if video drifts when eyes are centered
+};
 
 function get(p, axis) {
   if (!p) return null;
@@ -27,63 +31,61 @@ function get(p, axis) {
 }
 
 function extractGaze(keypoints) {
-  // Eye socket corners — always available in both 468 and 478 point models
-  const leftEyeL  = keypoints[33];   // outer corner left eye
-  const leftEyeR  = keypoints[133];  // inner corner left eye
-  const leftEyeT  = keypoints[159];  // top lid left
-  const leftEyeB  = keypoints[145];  // bottom lid left
-  const rightEyeL = keypoints[362];  // inner corner right eye
-  const rightEyeR = keypoints[263];  // outer corner right eye
+  const leftEyeL  = keypoints[33];
+  const leftEyeR  = keypoints[133];
+  const leftEyeT  = keypoints[159];
+  const leftEyeB  = keypoints[145];
+  const rightEyeL = keypoints[362];
+  const rightEyeR = keypoints[263];
   const rightEyeT = keypoints[386];
   const rightEyeB = keypoints[374];
 
   if (!leftEyeL || !leftEyeR) return null;
 
-  // Iris centers — landmark 468/473 only exist when refineLandmarks:true
-  // and only when ml5 exposes all 478 points
   const leftIris  = keypoints[468];
   const rightIris = keypoints[473];
   const hasIris   = !!(leftIris && rightIris &&
                        get(leftIris,'x') !== undefined &&
-                       get(leftIris,'x') !== get(leftEyeL,'x')); // not a dup
+                       get(leftIris,'x') !== get(leftEyeL,'x'));
 
   let rawX, rawY;
 
   if (hasIris) {
-    // X: iris offset within eye socket — reliable, eye is wide enough for good signal
-    const lCX = (get(leftEyeL,'x')  + get(leftEyeR,'x'))  / 2;
+    // X: iris offset from socket center, normalised by half-socket-width
+    const lCX = (get(leftEyeL,'x') + get(leftEyeR,'x')) / 2;
     const rCX = (get(rightEyeL,'x') + get(rightEyeR,'x')) / 2;
-    const lHW = Math.abs(get(leftEyeR,'x')  - get(leftEyeL,'x'))  / 2 || 1;
+    const lHW = Math.abs(get(leftEyeR,'x') - get(leftEyeL,'x')) / 2 || 1;
     const rHW = Math.abs(get(rightEyeR,'x') - get(rightEyeL,'x')) / 2 || 1;
     rawX = ((get(leftIris,'x') - lCX) / lHW + (get(rightIris,'x') - rCX) / rHW) / 2;
 
-    // Y: socket-relative iris Y is nearly zero (socket height ~10px, iris barely moves).
-    // Use absolute iris Y position in the frame instead — responds to head/eye tilt.
-    const avgIrisY = (get(leftIris,'y') + get(rightIris,'y')) / 2;
-    // Auto-detect pixel coords (>2) vs normalised (0-1)
-    const frameH = get(leftEyeL,'y') > 2 ? 480 : 1;
-    // Faces typically sit in the 0.25–0.75 range of frame height → scale to -1…1
-    rawY = (avgIrisY / frameH - 0.5) * 4;
+    // Y: lid-gap ratio — iris vertical position within the eye opening.
+    // Eyelids follow the iris but less than the iris itself moves, so the
+    // ratio shifts ~0.1-0.2 for a full glance. 0=iris at top, 1=iris at bottom.
+    const lSocketH = (get(leftEyeB,'y')  - get(leftEyeT,'y'))  || 1;
+    const rSocketH = (get(rightEyeB,'y') - get(rightEyeT,'y')) || 1;
+    const lRatio   = (get(leftIris,'y')  - get(leftEyeT,'y'))  / lSocketH;
+    const rRatio   = (get(rightIris,'y') - get(rightEyeT,'y')) / rSocketH;
+    rawY = -((lRatio - 0.5) + (rRatio - 0.5)) / 2; // negated: up=negative, down=positive
 
-    if (!debugLogged) console.log('✅ Using iris X + absolute Y for gaze');
+    // Update module-level debug state (closure-safe for intervals)
+    _dbg.irisY    = get(leftIris, 'y');
+    _dbg.lSocketH = lSocketH;
+    _dbg.lRatio   = lRatio;
+    _dbg.rRatio   = rRatio;
+    _dbg.rawY     = rawY;
   } else {
-    // Fallback: use nose tip (1) and eye midpoint as head-direction proxy
-    // This is head tracking but better than nothing
-    const nose = keypoints[1];
+    // Fallback: head position proxy
     const midX = (get(leftEyeL,'x') + get(rightEyeR,'x')) / 2;
     const midY = (get(leftEyeL,'y') + get(rightEyeR,'y')) / 2;
-
-    // Normalise to roughly 0-1 (keypoints may be in 0-1 or pixel coords)
     const scaleX = get(leftEyeL,'x') > 1 ? 640 : 1;
     const scaleY = get(leftEyeL,'y') > 1 ? 480 : 1;
-    rawX = midX / scaleX - 0.5; // -0.5…0.5 from centre
+    rawX = midX / scaleX - 0.5;
     rawY = midY / scaleY - 0.5;
-    if (!debugLogged) console.log('⚠️ Iris landmarks unavailable, using head position fallback');
+    if (!firstFaceLogged) console.log('⚠️ Iris landmarks unavailable, using head position fallback');
   }
 
-  // Map raw offset → 0-1 with sensitivity amplification
-  const x = Math.max(0, Math.min(1, 0.5 + rawX * SENSITIVITY * 0.5));
-  const y = Math.max(0, Math.min(1, 0.5 + rawY * SENSITIVITY * 0.5));
+  const x = Math.max(0, Math.min(1, 0.5 + rawX * params.sensitivityX * 0.5));
+  const y = Math.max(0, Math.min(1, 0.5 + rawY * params.sensitivityY * 0.5));
   return { x, y };
 }
 
@@ -100,26 +102,24 @@ function handleResults(results, videoElement) {
   const keypoints = face.keypoints || face.landmarks || face.scaledMesh;
   if (!keypoints || keypoints.length === 0) return;
 
-  // Log keypoint structure once so we can see what ml5 actually returns
-  if (!debugLogged) {
-    debugLogged = true;
+  if (!firstFaceLogged) {
+    firstFaceLogged = true;
     console.log(`👁️ Face detected! keypoints.length=${keypoints.length}`);
-    console.log('keypoints[0]:', keypoints[0]);
-    console.log('keypoints[33]:', keypoints[33]);   // eye corner
-    console.log('keypoints[468]:', keypoints[468]);  // iris center (if available)
-    console.log('face keys:', Object.keys(face));
+    console.log('keypoints[33] (eye corner):', keypoints[33]);
+    console.log('keypoints[159] (top lid):', keypoints[159]);
+    console.log('keypoints[145] (bot lid):', keypoints[145]);
+    console.log('keypoints[468] (iris):', keypoints[468]);
   }
 
   const gaze = extractGaze(keypoints);
   if (!gaze) return;
 
-  // Exponential smoothing to reduce jitter
-  gazeX = gazeX + SMOOTH * (gaze.x - gazeX);
-  gazeY = gazeY + SMOOTH * (gaze.y - gazeY);
+  gazeX = gazeX + params.smooth * (gaze.x - gazeX);
+  gazeY = gazeY + params.smooth * (gaze.y - gazeY);
   lastEyeDetection = Date.now();
 
   const now = Date.now();
-  if (now - lastUpdateTime > 50) { // ~20 fps
+  if (now - lastUpdateTime > 50) {
     updateVideoZoom(videoElement, currentZoomLevel);
     lastUpdateTime = now;
   }
@@ -128,19 +128,27 @@ function handleResults(results, videoElement) {
 function updateVideoZoom(videoElement, zoomLevel) {
   if (!videoElement || !isTracking) return;
 
-  // Max pan in each direction so edge of zoomed video aligns with container edge
   const edge = (zoomLevel - 1) / zoomLevel * 50;
+  const offsetX = 0.5 - gazeX;
+  const offsetY = (0.5 + params.biasY) - gazeY;
 
-  // Velocity-based: gaze offset from center drives pan speed, not absolute position.
-  // Eyes centered (0.5) → no movement. Eyes off-center → pan toward that side.
-  // X: look right (gazeX > 0.5) → pan left (negative). Y: inverted per camera orientation.
-  const offsetX = 0.5 - gazeX;   // positive = look left → pan right
-  const offsetY = gazeY - 0.5;   // inverted: positive = look down → pan down
-
-  currentPanX = Math.max(-edge, Math.min(edge, currentPanX + offsetX * PAN_SPEED));
-  currentPanY = Math.max(-edge, Math.min(edge, currentPanY + offsetY * PAN_SPEED));
+  currentPanX = Math.max(-edge, Math.min(edge, currentPanX + offsetX * params.panSpeed));
+  currentPanY = Math.max(-edge, Math.min(edge, currentPanY + offsetY * params.panSpeed));
 
   videoElement.style.transform = `scale(${zoomLevel}) translate(${currentPanX}%, ${currentPanY}%)`;
+
+  if (debugDotEl) {
+    const container = videoElement.parentElement;
+    debugDotEl.style.left = `${gazeX * container.offsetWidth}px`;
+    debugDotEl.style.top  = `${gazeY * container.offsetHeight}px`;
+  }
+
+  if (hudEl) {
+    hudEl.textContent =
+      `gaze X=${gazeX.toFixed(2)} Y=${gazeY.toFixed(2)} | ` +
+      `rawY=${_dbg.rawY.toFixed(3)} lR=${_dbg.lRatio.toFixed(2)} rR=${_dbg.rRatio.toFixed(2)} ` +
+      `sockH=${_dbg.lSocketH.toFixed(0)}px irisY=${_dbg.irisY.toFixed(0)}px`;
+  }
 }
 
 export async function initEyeTracking(videoElement, zoomLevel = 2.0) {
@@ -151,7 +159,6 @@ export async function initEyeTracking(videoElement, zoomLevel = 2.0) {
     console.log('📹 Loading ml5.js...');
     if (typeof ml5 === 'undefined') await loadML5();
 
-    // width/height attributes required by MediaPipe to read video frames
     cameraVideo = document.createElement('video');
     cameraVideo.setAttribute('width', '640');
     cameraVideo.setAttribute('height', '480');
@@ -171,7 +178,16 @@ export async function initEyeTracking(videoElement, zoomLevel = 2.0) {
 
     facemesh = await ml5.faceMesh({ maxFaces: 1, refineLandmarks: true, flipped: true });
 
-    // rAF loop with Promise-based detect — 60fps attempts, fastest acquisition
+    // Log live values every 500ms — reads module-level _dbg so values are always current
+    const logInterval = setInterval(() => {
+      if (!isTracking) { clearInterval(logInterval); return; }
+      console.log(
+        `irisY=${_dbg.irisY.toFixed(1)}  sockH=${_dbg.lSocketH.toFixed(1)}  ` +
+        `lRatio=${_dbg.lRatio.toFixed(3)}  rawY=${_dbg.rawY.toFixed(4)}  ` +
+        `gazeY=${gazeY.toFixed(3)}  panY=${currentPanY.toFixed(1)}`
+      );
+    }, 500);
+
     const loop = async () => {
       if (!isTracking) return;
       try {
@@ -182,7 +198,7 @@ export async function initEyeTracking(videoElement, zoomLevel = 2.0) {
     };
     loop();
 
-    console.log('✅ Eye tracking active');
+    console.log('✅ Eye tracking active — watch console for live irisY / rawY values');
     return true;
   } catch (err) {
     console.error('❌ Eye tracking failed:', err);
@@ -197,10 +213,10 @@ export async function stopEyeTracking() {
   if (cameraVideo?.srcObject) cameraVideo.srcObject.getTracks().forEach(t => t.stop());
   if (cameraVideo?.parentElement) cameraVideo.remove();
   cameraVideo = null;
-  gazeX = 0.5;
-  gazeY = 0.5;
-  currentPanX = 0;
-  currentPanY = 0;
+  gazeX = 0.5; gazeY = 0.5;
+  currentPanX = 0; currentPanY = 0;
+  firstFaceLogged = false;
+  _dbg = { irisY: 0, lSocketH: 0, lRatio: 0, rRatio: 0, rawY: 0 };
 }
 
 export async function toggleEyeTracking(videoElement, zoomLevel = 2.0) {
@@ -212,19 +228,25 @@ export async function toggleEyeTracking(videoElement, zoomLevel = 2.0) {
   return await initEyeTracking(videoElement, zoomLevel);
 }
 
-// Called by the zoom buttons — updates the live zoom level immediately
 export function updateZoom(videoElement, zoomLevel) {
   currentZoomLevel = zoomLevel;
   updateVideoZoom(videoElement, zoomLevel);
 }
 
-export function setZoomLevel(videoElement, zoomLevel) {
-  updateZoom(videoElement, zoomLevel);
-}
-
+export function setZoomLevel(videoElement, zoomLevel) { updateZoom(videoElement, zoomLevel); }
 export function isTrackingActive() { return isTracking; }
 export function isTracking_fn()    { return isTracking; }
 export function getGazePosition()  { return { x: gazeX, y: gazeY }; }
+export function setDebugDot(el)    { debugDotEl = el; }
+export function setDebugHud(el)    { hudEl = el; }
+
+export function setParams({ sensitivityX, sensitivityY, smooth, panSpeed, biasY } = {}) {
+  if (sensitivityX !== undefined) params.sensitivityX = sensitivityX;
+  if (sensitivityY !== undefined) params.sensitivityY = sensitivityY;
+  if (smooth       !== undefined) params.smooth       = smooth;
+  if (panSpeed     !== undefined) params.panSpeed     = panSpeed;
+  if (biasY        !== undefined) params.biasY        = biasY;
+}
 
 function loadML5() {
   return new Promise((resolve, reject) => {

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>MatchVision</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0a0a1a;
+      color: #e0e0e0;
+      font-family: system-ui, sans-serif;
+      font-size: 13px;
+      padding: 16px;
+      min-height: 100vh;
+    }
+    h1 { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+    .subtitle { color: rgba(255,255,255,.4); font-size: 11px; margin-bottom: 16px; }
+    #status {
+      font-size: 12px; color: rgba(255,255,255,.45);
+      min-height: 32px; margin-bottom: 12px; line-height: 1.5;
+    }
+    #status.active  { color: #4eff88; }
+    #status.error   { color: #ff6b6b; }
+    #status.loading { color: #70e1ff; }
+    button {
+      width: 100%; padding: 9px; border: none; border-radius: 8px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      background: rgba(255,255,255,.1); color: #e0e0e0;
+      margin-bottom: 8px; transition: background .15s;
+    }
+    button:hover  { background: rgba(255,255,255,.18); }
+    button:disabled { opacity: .4; cursor: not-allowed; }
+    #toggle.on { background: #4eff88; color: #000; }
+    .row { display: flex; gap: 6px; margin-bottom: 8px; }
+    .row button { margin-bottom: 0; }
+    .sep { border: none; border-top: 1px solid rgba(255,255,255,.08); margin: 12px 0; }
+    .sl { margin-bottom: 10px; }
+    .sl-top {
+      display: flex; justify-content: space-between;
+      font-size: 11px; color: rgba(255,255,255,.4); margin-bottom: 4px;
+    }
+    input[type=range] { width: 100%; accent-color: #70e1ff; cursor: pointer; }
+    .section-label {
+      font-size: 10px; font-weight: 600; letter-spacing: .08em;
+      text-transform: uppercase; color: rgba(255,255,255,.25);
+      margin-bottom: 8px;
+    }
+    #cam-wrap {
+      margin-top: 14px; border-radius: 8px; overflow: hidden;
+      background: #111; min-height: 0;
+    }
+    #cam-wrap video {
+      width: 100% !important; height: auto !important;
+      position: relative !important; top: auto !important; left: auto !important;
+      display: block;
+    }
+    #webgazerFaceOverlay, #webgazerFaceFeedbackBox { display: none !important; }
+  </style>
+</head>
+<body>
+  <h1>👁️ MatchVision</h1>
+  <div class="subtitle">Gaze-controlled video zoom &amp; pan</div>
+
+  <div id="status">Open a video tab, then click Start.</div>
+  <button id="toggle">Start Eye Tracking</button>
+
+  <div class="row">
+    <button id="zout">🔍−</button>
+    <button id="zin">🔍+</button>
+    <button id="zreset">↺ Reset</button>
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">Zoom &amp; Motion</div>
+  <div class="sl">
+    <div class="sl-top"><span>Zoom</span><span id="zm-val">2.0×</span></div>
+    <input type="range" id="zm" min="1.2" max="6" step="0.1" value="2">
+  </div>
+  <div class="sl">
+    <div class="sl-top"><span>Pan speed</span><span id="sp-val">6</span></div>
+    <input type="range" id="sp" min="1" max="20" step="1" value="6">
+  </div>
+  <div class="sl">
+    <div class="sl-top"><span>Gaze smoothing</span><span id="sm-val">0.12</span></div>
+    <input type="range" id="sm" min="0.02" max="0.5" step="0.01" value="0.12">
+  </div>
+
+  <hr class="sep">
+
+  <div class="section-label">PID Controller</div>
+  <div class="sl">
+    <div class="sl-top"><span>kP — proportional</span><span id="kp-val">0.08</span></div>
+    <input type="range" id="kp" min="0.01" max="0.5" step="0.01" value="0.08">
+  </div>
+  <div class="sl">
+    <div class="sl-top"><span>kI — integral</span><span id="ki-val">0.02</span></div>
+    <input type="range" id="ki" min="0" max="0.2" step="0.005" value="0.02">
+  </div>
+  <div class="sl">
+    <div class="sl-top"><span>kD — derivative</span><span id="kd-val">0.04</span></div>
+    <input type="range" id="kd" min="0" max="0.3" step="0.005" value="0.04">
+  </div>
+
+  <div id="cam-wrap"></div>
+
+  <script src="model-interceptor.js"></script>
+  <script src="webgazer.min.js"></script>
+  <script src="panel.js"></script>
+</body>
+</html>

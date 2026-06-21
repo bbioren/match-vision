@@ -44,12 +44,39 @@
       </section>
 
       <section class="card" style="margin-bottom: 18px;">
-        <div id="eyetrack-player"></div>
+        <div id="eyetrack-player" style="position:relative;">
+          <div id="gaze-hud" style="
+            display: none;
+            position: absolute;
+            bottom: 6px; left: 6px;
+            background: rgba(0,0,0,.75);
+            color: #7ff;
+            font: 11px/1.4 monospace;
+            padding: 4px 8px;
+            border-radius: 6px;
+            pointer-events: none;
+            z-index: 200;
+            white-space: nowrap;
+          "></div>
+          <div id="gaze-dot" style="
+            display: none;
+            position: absolute;
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            background: rgba(255,80,80,0.85);
+            border: 2px solid #fff;
+            box-shadow: 0 0 8px rgba(255,80,80,0.8);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            transition: left 0.05s, top 0.05s;
+          "></div>
         <div class="eyetrack-controls">
           <button id="et-toggle" type="button">👁️ Enable Eye Tracking</button>
           <button id="et-zoomin" type="button">🔍+ Zoom In</button>
           <button id="et-zoomout" type="button">🔍− Zoom Out</button>
           <button id="et-reset" type="button">↺ Reset</button>
+          <button id="et-debug" type="button">🔴 Show gaze dot</button>
         </div>
         <div class="eyetrack-status" id="et-status">
           Click <strong>Enable Eye Tracking</strong> to start. Your browser will ask for camera access — all processing stays on your device.
@@ -64,8 +91,16 @@
             <input type="range" id="ctrl-speed" min="0.5" max="10" step="0.5" value="3" style="margin-top:8px;">
           </label>
           <label style="margin:0;">
-            <span style="color:var(--muted); font-size:.85rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em;">Sensitivity <span id="val-sens">8</span></span>
-            <input type="range" id="ctrl-sens" min="1" max="20" step="0.5" value="8" style="margin-top:8px;">
+            <span style="color:var(--muted); font-size:.85rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em;">Sensitivity X <span id="val-sensX">30</span></span>
+            <input type="range" id="ctrl-sensX" min="1" max="80" step="1" value="30" style="margin-top:8px;">
+          </label>
+          <label style="margin:0;">
+            <span style="color:var(--muted); font-size:.85rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em;">Sensitivity Y <span id="val-sensY">8</span></span>
+            <input type="range" id="ctrl-sensY" min="1" max="400" step="1" value="8" style="margin-top:8px;">
+          </label>
+          <label style="margin:0;">
+            <span style="color:var(--muted); font-size:.85rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em;">Y bias (camera height) <span id="val-biasY">0.15</span></span>
+            <input type="range" id="ctrl-biasY" min="-0.5" max="0.5" step="0.01" value="0.15" style="margin-top:8px;">
           </label>
           <label style="margin:0;">
             <span style="color:var(--muted); font-size:.85rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em;">Smoothing <span id="val-smooth">0.2</span></span>
@@ -102,6 +137,7 @@
 
     <script type="module">
       import { EyeTrackingVideoPlayer } from './src/services/eyetrack-player.js';
+      import { setParams, setDebugDot, setDebugHud } from './src/services/eyetrack-real.js';
 
       const player = new EyeTrackingVideoPlayer('eyetrack-player');
       player.init('clips/real/first 9 mins.mp4');
@@ -115,26 +151,58 @@
         toggleBtn.textContent = on ? '👁️ Eye Tracking ON' : '👁️ Enable Eye Tracking';
         toggleBtn.classList.toggle('tracking-on', on);
         status.textContent = on
-          ? '✅ Eye tracking active — look at the video to pan and zoom automatically.'
-          : 'Eye tracking off. Use manual zoom or re-enable above.';
+          ? '✅ Eye tracking active — look at the video to pan and zoom.'
+          : 'Eye tracking off.';
         status.classList.toggle('active', on);
       });
 
       document.getElementById('et-zoomin').addEventListener('click', () => {
         zoomLevel = Math.min(zoomLevel + 0.25, 4);
         player.setZoom(zoomLevel);
-        status.textContent = `Zoom: ${zoomLevel.toFixed(2)}×`;
+        document.getElementById('val-zoom').textContent = zoomLevel.toFixed(1);
+        document.getElementById('ctrl-zoom').value = zoomLevel;
       });
       document.getElementById('et-zoomout').addEventListener('click', () => {
         zoomLevel = Math.max(zoomLevel - 0.25, 1);
         player.setZoom(zoomLevel);
-        status.textContent = `Zoom: ${zoomLevel.toFixed(2)}×`;
+        document.getElementById('val-zoom').textContent = zoomLevel.toFixed(1);
+        document.getElementById('ctrl-zoom').value = zoomLevel;
       });
       document.getElementById('et-reset').addEventListener('click', () => {
         zoomLevel = 2.0;
         player.setZoom(1);
-        status.textContent = 'Zoom reset.';
+        document.getElementById('val-zoom').textContent = '2.0';
+        document.getElementById('ctrl-zoom').value = 2;
       });
+
+      // Gaze debug dot + HUD
+      const gazeDot = document.getElementById('gaze-dot');
+      const gazeHud = document.getElementById('gaze-hud');
+      document.getElementById('et-debug').addEventListener('click', (e) => {
+        const on = gazeDot.style.display === 'none';
+        gazeDot.style.display = on ? 'block' : 'none';
+        gazeHud.style.display = on ? 'block' : 'none';
+        e.currentTarget.textContent = on ? '🔴 Hide gaze dot' : '🔴 Show gaze dot';
+        setDebugDot(on ? gazeDot : null);
+        setDebugHud(on ? gazeHud : null);
+      });
+
+      // Live param sliders
+      function slider(id, valId, paramKey, fmt = v => v) {
+        const el = document.getElementById(id);
+        el.addEventListener('input', () => {
+          const v = parseFloat(el.value);
+          document.getElementById(valId).textContent = fmt(v);
+          if (paramKey === 'zoom') { zoomLevel = v; player.setZoom(v); }
+          else setParams({ [paramKey]: v });
+        });
+      }
+      slider('ctrl-speed',  'val-speed',  'panSpeed');
+      slider('ctrl-sensX',  'val-sensX',  'sensitivityX');
+      slider('ctrl-sensY',  'val-sensY',  'sensitivityY');
+      slider('ctrl-biasY',  'val-biasY',  'biasY', v => v.toFixed(2));
+      slider('ctrl-smooth', 'val-smooth', 'smooth');
+      slider('ctrl-zoom',   'val-zoom',   'zoom', v => v.toFixed(1));
     </script>
   </body>
 </html>
