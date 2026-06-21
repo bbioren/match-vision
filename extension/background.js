@@ -41,6 +41,19 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     chrome.tabs.sendMessage(msg.tabId, { type: 'voice-response', error: msg.error }).catch(() => {});
     return;
   }
+
+  // Fallback when the page can't call element.requestFullscreen() itself —
+  // the Fullscreen API requires a direct user gesture, which a voice command
+  // (async round-trip through Claude) doesn't carry. Maximizing the browser
+  // window via the extension's privileged API has no such restriction.
+  if (msg.type === 'force-window-fullscreen' && sender.tab) {
+    chrome.windows.update(sender.tab.windowId, { state: 'fullscreen' }).catch(() => {});
+    return;
+  }
+  if (msg.type === 'restore-window' && sender.tab) {
+    chrome.windows.update(sender.tab.windowId, { state: 'normal' }).catch(() => {});
+    return;
+  }
 });
 
 async function handleVoiceQuery(tabId, transcript, currentParams, history, wakeWordHeard) {
@@ -59,6 +72,7 @@ WHEN TO IGNORE: Reply with exactly "__ignore__" (nothing else) ONLY if the speec
 
 WHEN TO RESPOND (always respond to these):
 - Any command about zoom, tracking, smoothness, speed, settings
+- Any command about fullscreen (e.g. "go fullscreen", "make it full screen", "exit fullscreen")
 - Any question about how the extension works
 - Short phrases like "more", "less", "stop", "start", "reset" — these are follow-up commands
 - Anything that could plausibly be a request or question to a voice assistant
@@ -108,14 +122,14 @@ When the user asks to change a setting, use the adjust_params tool. Always confi
     },
     {
       name: 'control_tracking',
-      description: 'Start eye tracking, stop eye tracking, or reset the pan position to center',
+      description: 'Start eye tracking, stop eye tracking, reset the pan position, or toggle fullscreen for the video',
       input_schema: {
         type: 'object',
         properties: {
           action: {
             type: 'string',
-            enum: ['start', 'stop', 'reset_pan'],
-            description: 'start=begin tracking, stop=end tracking, reset_pan=center the view',
+            enum: ['start', 'stop', 'reset_pan', 'fullscreen', 'exit_fullscreen'],
+            description: 'start=begin tracking, stop=end tracking, reset_pan=center the view, fullscreen=make the video fullscreen, exit_fullscreen=leave fullscreen',
           },
         },
         required: ['action'],

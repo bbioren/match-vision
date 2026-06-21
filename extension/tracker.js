@@ -760,6 +760,22 @@
         if (msg.action === 'start')     startFlow();
         if (msg.action === 'stop')      stopTracking();
         if (msg.action === 'reset_pan') resetPan();
+        if (msg.action === 'fullscreen') {
+          const v = targetVideo || findBestVideo();
+          const req = v?.requestFullscreen?.();
+          if (req?.catch) {
+            // No direct user gesture behind a voice command — Chrome rejects
+            // element fullscreen in that case. Fall back to maximizing the
+            // browser window instead, which the extension can always do.
+            req.catch(() => { chrome.runtime.sendMessage({ type: 'force-window-fullscreen' }).catch(() => {}); });
+          } else if (!v) {
+            chrome.runtime.sendMessage({ type: 'force-window-fullscreen' }).catch(() => {});
+          }
+        }
+        if (msg.action === 'exit_fullscreen') {
+          if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+          chrome.runtime.sendMessage({ type: 'restore-window' }).catch(() => {});
+        }
 
         if (msg.text) {
           if (vs) vs.textContent = msg.text;
