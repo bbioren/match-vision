@@ -1,7 +1,24 @@
+function stripMarkdown(s) {
+  return s
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/`([^`]*)`/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/__([^_]+)__/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/_([^_]+)_/g, '$1')
+    .replace(/^[-*+]\s+/gm, '')
+    .replace(/^\d+\.\s+/gm, '')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[*_#`~]/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
 export function speakWithBrowserTTS(text) {
   if (!('speechSynthesis' in window) || !text) return false;
   window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
+  const utterance = new SpeechSynthesisUtterance(stripMarkdown(text));
   utterance.rate = 0.95;
   window.speechSynthesis.speak(utterance);
   return true;
@@ -10,6 +27,7 @@ export function speakWithBrowserTTS(text) {
 export async function speakWithDeepgramOrFallback(text) {
   // Hackathon-safe default: browser TTS.
   // Production/credential path: set window.MATCHVISION_USE_DEEPGRAM and implement /api/tts.
+  text = stripMarkdown(text);
   if (!window.MATCHVISION_USE_DEEPGRAM) return speakWithBrowserTTS(text);
   try {
     const response = await fetch('/api/tts', {

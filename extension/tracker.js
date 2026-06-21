@@ -518,8 +518,26 @@
     });
   }
 
+  function stripMarkdown(s) {
+    return s
+      .replace(/```[\s\S]*?```/g, '')          // fenced code blocks
+      .replace(/`([^`]*)`/g, '$1')              // inline code
+      .replace(/^#{1,6}\s+/gm, '')               // headers
+      .replace(/\*\*([^*]+)\*\*/g, '$1')         // bold
+      .replace(/__([^_]+)__/g, '$1')             // bold underscore
+      .replace(/\*([^*]+)\*/g, '$1')             // italic
+      .replace(/_([^_]+)_/g, '$1')               // italic underscore
+      .replace(/^[-*+]\s+/gm, '')                // bullet markers
+      .replace(/^\d+\.\s+/gm, '')                // numbered list markers
+      .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')   // links
+      .replace(/[*_#`~]/g, '')                   // any leftover symbols
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+  }
+
   async function speak(text) {
     if (!text) return;
+    text = stripMarkdown(text);
     window.speechSynthesis.cancel();
 
     // Try Deepgram first, then ElevenLabs (natural voice) — falls back to browser TTS

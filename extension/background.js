@@ -64,6 +64,8 @@ WHEN TO RESPOND (always respond to these):
 
 Keep responses to 1-2 short sentences — spoken aloud. Use tools to change settings immediately.
 
+Your reply is converted directly to speech. Respond in plain spoken language only — no markdown, no asterisks, no bullet points, no headers, no code formatting.
+
 Current settings:
 - Zoom: ${currentParams.zoom?.toFixed(1)}x
 - Pan speed: ${currentParams.panSpeed}

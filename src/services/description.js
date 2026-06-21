@@ -16,9 +16,10 @@ Goalkeepers wear different colors than outfield players — never assign possess
 If possession is unknown in memory, say so rather than guessing a team or color.
 If something is unknown, say what is unknown and give the last known information.
 Always include ball zone and which team has possession when known.
-Prioritize spatial clarity. Keep responses short enough to be spoken during live play.`;
+Prioritize spatial clarity. Keep responses short enough to be spoken during live play.
+Your response is converted to speech. Respond in plain spoken language only — no markdown, no asterisks, no bullet points, no headers.`;
 
-const BASE_SYSTEM = `You are a soccer commentator. Briefly describe what is happening in one short sentence.`;
+const BASE_SYSTEM = `You are a soccer commentator. Briefly describe what is happening in one short sentence. Plain spoken language only, no markdown.`;
 
 const MODE_GUIDANCE = {
   balanced: 'Answer in 2-3 short sentences.',
