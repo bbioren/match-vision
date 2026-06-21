@@ -424,43 +424,48 @@
 
     function startWake(tabId) {
       if (!SR) { voiceStatus.textContent = '⚠ Speech recognition not available.'; return; }
-      wakeRec = new SR();
-      wakeRec.lang = 'en-US';
-      wakeRec.continuous = true;
-      wakeRec.interimResults = false;
 
-      wakeRec.onresult = (e) => {
-        for (let i = e.resultIndex; i < e.results.length; i++) {
-          if (!e.results[i].isFinal) continue;
-          const text = e.results[i][0].transcript;
+      // Non-continuous + instant auto-restart is more reliable than continuous:true.
+      // Chrome batches results in continuous mode and only finalises on stop().
+      function cycle() {
+        if (!wakeOn) return;
+        const rec = new SR();
+        rec.lang = 'en-US';
+        rec.continuous = false;
+        rec.interimResults = false;
+        wakeRec = rec;
+
+        rec.onresult = (e) => {
+          const text = e.results[0][0].transcript;
           console.log('[MV wake] heard:', text);
 
-          // Detect wake word (fuzzy: "match vision", "match mission", etc.)
+          // Fuzzy wake word: "match vision/fission/mission/physician"
           const m = text.match(/match\s*(?:vision|fission|mission|physician)\s+([\s\S]+)/i);
-          if (!m) continue;
+          if (!m) return;
 
           const query = m[1].trim();
           const now = Date.now();
-          if (query === lastQuery && now - lastQueryTime < 4000) continue; // dedupe
+          if (query === lastQuery && now - lastQueryTime < 4000) return;
           lastQuery = query; lastQueryTime = now;
 
-          console.log('[MV wake] wake word → query:', query);
+          console.log('[MV wake] → Claude:', query);
           voiceStatus.textContent = `"${query}" — asking Claude…`;
           chrome.runtime.sendMessage({
             type: 'voice-transcript', tabId, text: query,
             currentParams: { ...params, zoom: zoomLevel, isTracking },
           }).catch(() => {});
-        }
-      };
+        };
 
-      // Auto-restart on end (Chrome stops after silence)
-      wakeRec.onend = () => { if (wakeOn) setTimeout(() => { try { wakeRec.start(); } catch(_){} }, 200); };
-      wakeRec.onerror = (e) => {
-        if (e.error === 'no-speech' || e.error === 'aborted') return; // normal
-        console.warn('[MV wake] error:', e.error);
-        if (wakeOn) setTimeout(() => { try { wakeRec.start(); } catch(_){} }, 1000);
-      };
-      wakeRec.start();
+        rec.onend   = () => setTimeout(cycle, 100);
+        rec.onerror = (e) => {
+          if (e.error !== 'no-speech' && e.error !== 'aborted')
+            console.warn('[MV wake] error:', e.error);
+          setTimeout(cycle, e.error === 'network' ? 2000 : 100);
+        };
+        try { rec.start(); } catch (_) { setTimeout(cycle, 500); }
+      }
+
+      cycle();
     }
 
     micBtn.addEventListener('click', async () => {
@@ -484,8 +489,34 @@
     if (!text) return;
     window.speechSynthesis.cancel();
     const utt = new SpeechSynthesisUtterance(text);
-    utt.rate = 1.1;
-    window.speechSynthesis.speak(utt);
+    utt.rate = 1.0;
+    utt.pitch = 1.0;
+
+    // Prefer high-quality neural/system voices over the default robotic one
+    const pick = () => {
+      const voices = window.speechSynthesis.getVoices();
+      const order = [
+        'Samantha',            // macOS US (Siri-quality)
+        'Google US English',
+        'Google UK English Female',
+        'Karen',               // macOS AU
+        'Moira',               // macOS IE
+        'Tessa',               // macOS ZA
+        'Fiona',               // macOS GB
+      ];
+      for (const name of order) {
+        const v = voices.find(v => v.name.includes(name));
+        if (v) { utt.voice = v; break; }
+      }
+      window.speechSynthesis.speak(utt);
+    };
+
+    // Voices may not be loaded yet on first call
+    if (window.speechSynthesis.getVoices().length) {
+      pick();
+    } else {
+      window.speechSynthesis.onvoiceschanged = () => { pick(); window.speechSynthesis.onvoiceschanged = null; };
+    }
   }
 
   function updateSlider(id, value, fmt) {
