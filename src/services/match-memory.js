@@ -49,7 +49,7 @@ export function formatMemory(entries) {
     .map((m) => {
       const parts = [];
       if (m.timestamp) parts.push(`[${m.timestamp}]`);
-      if (m.summary) parts.push(m.summary);
+      if (m.commentary || m.summary) parts.push(m.commentary || m.summary);
       const detail = [];
       if (m.team_in_possession && m.team_in_possession !== 'unknown') {
         detail.push(`possession: ${m.team_in_possession}`);

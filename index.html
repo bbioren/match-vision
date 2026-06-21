@@ -17,86 +17,27 @@
         <p><a class="link" href="survey.html">📊 Eye-Tracking Survey — help us learn where fans look →</a></p>
       </section>
 
-      <section class="grid">
-        <section class="card" aria-labelledby="clip-heading">
-          <h2 id="clip-heading">1. Pick a match moment</h2>
-          <label for="clipSelect">Demo clip</label>
-          <select id="clipSelect"></select>
-          <p id="replayIndicator" class="hint" style="display:none;"></p>
+      <section class="card" aria-labelledby="clip-heading">
+        <h2 id="clip-heading">1. Pick a match moment</h2>
+        <label for="clipSelect">Demo clip</label>
+        <select id="clipSelect"></select>
+        <div class="video-wrap">
           <video id="clipVideo" class="clip-visual" controls muted playsinline crossorigin="anonymous"></video>
-          <img id="clipVisual" class="clip-visual" alt="Simplified soccer field diagram for selected match moment" />
-          <label class="live-toggle">
-            <input id="liveExtractToggle" type="checkbox" checked />
-            Live vision extraction (Qwen-VL: 5 frames + prior memory, every 2s)
-          </label>
-          <p id="extractStatus" class="hint">Press play — match memory builds live from the video</p>
-          <p id="matchContext" class="hint context-line"></p>
-          <div class="match-state" id="matchState"></div>
-        </section>
-
-        <section class="card" aria-labelledby="ask-heading">
-          <h2 id="ask-heading">2. Ask by voice or text</h2>
-          <div class="controls">
-            <button id="voiceBtn" type="button">🎙️ Ask with voice</button>
-            <button id="describeBtn" type="button">📣 Describe current moment</button>
-            <button id="speakBtn" type="button">🔊 Speak answer</button>
-          </div>
-          <label for="modeSelect">Description mode</label>
-          <select id="modeSelect">
-            <option value="balanced">Balanced</option>
-            <option value="brief">Brief</option>
-            <option value="tactical">Tactical</option>
-            <option value="beginner">Beginner-friendly</option>
-            <option value="emotional">Emotional</option>
-          </select>
-          <label for="questionInput">Question</label>
-          <input id="questionInput" value="What just happened?" />
-          <button id="askBtn" type="button" class="primary">Describe the visual layer</button>
-          <p class="hint">Try: “Where is the ball?”, “Why did the crowd react?”, “Who has space?”</p>
-        </section>
-      </section>
-
-      <section class="card answer-card" aria-live="polite">
-        <h2>Accessible audio description</h2>
-        <p id="answer" class="answer"></p>
+          <p id="liveCaption" class="live-caption" aria-live="polite"></p>
+        </div>
+        <img id="clipVisual" class="clip-visual" alt="Simplified soccer field diagram for selected match moment" />
+        <label class="live-toggle">
+          <input id="liveExtractToggle" type="checkbox" checked />
+          Vision extraction using Qwen-VL: 5 frames + prior memory, every 2s
+        </label>
+        <p id="extractStatus" class="hint">Press play — match memory builds live from the video</p>
+        <div class="match-state" id="matchState"></div>
       </section>
 
       <section class="card">
         <h2>Match memory</h2>
-        <p class="hint">Rolling structured match state up to the current video time. Visual perception (kit colors, screen position) is merged with half-aware team context (Conquerors vs State) before narration.</p>
+        <p class="hint">Rolling structured match state up to the current video time. Visual perception (kit colors, screen position) is merged with half-aware team context before narration.</p>
         <ul id="memoryList" class="memory-list"></ul>
-      </section>
-
-      <section class="card">
-        <h2>Live extracted JSON</h2>
-        <p class="hint">When live extraction is on, this shows vision-generated match state (saved in browser memory only, not to disk).</p>
-        <pre id="liveJson" class="live-json">Waiting for first frame analysis…</pre>
-      </section>
-
-      <section class="grid">
-        <section class="card">
-          <h2>Terac-trained description selector</h2>
-          <div class="comparison">
-            <div>
-              <h3>Baseline</h3>
-              <p id="baseline"></p>
-            </div>
-            <div>
-              <h3>Ranker selected</h3>
-              <p id="improved"></p>
-            </div>
-          </div>
-          <h3>Candidate scores</h3>
-          <div id="rankerDetails"></div>
-        </section>
-
-        <section class="card">
-          <h2>Before/after metrics</h2>
-          <div class="metric"><span>Helpfulness</span><strong>63% → 84%</strong></div>
-          <div class="metric"><span>Key-event coverage</span><strong>58% → 81%</strong></div>
-          <div class="metric"><span>Hallucination rate</span><strong>21% → 9%</strong></div>
-          <p class="hint">The ranker weights are trained/tuned from Terac-style labels. Replace with real Terac + Arize numbers once labels arrive. <a class="link" href="eval.html">Open eval dashboard →</a></p>
-        </section>
       </section>
     </main>
     <script>
@@ -104,6 +45,7 @@
       // or Anthropic based on .env; falls back to local generation if no key.
       window.MATCHVISION_USE_LLM = true;
       window.MATCHVISION_USE_DEEPGRAM = true;
+      window.MATCHVISION_TTS_RATE = 1.35; // live-commentator pace; 1.0 = normal speed
       window.MATCHVISION_EXTRACT_INTERVAL = 2;
       window.MATCHVISION_VISION_FRAME_COUNT = 5;
       window.MATCHVISION_VISION_FRAME_INTERVAL = 30;

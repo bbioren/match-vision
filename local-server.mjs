@@ -427,7 +427,6 @@ http.createServer(async (req, res) => {
     const pathname = url.pathname === '/' ? '/index.html' : decodeURIComponent(url.pathname);
     const file = path.normalize(path.join(root, pathname));
     if (!file.startsWith(root)) return send(res, 403, 'Forbidden');
-
     // Stream static files with HTTP range support so <video> can seek/scrub
     // (the survey player and the gaze-results timeline overlay both rely on this).
     const stat = await fs.stat(file);

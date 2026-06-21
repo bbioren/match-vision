@@ -77,6 +77,72 @@ URGENCY_XT_THRESHOLD = 0.10
 SHOT_TYPES = {"shot", "shot_penalty", "shot_freekick"}
 GOAL_RESULT = "success"
 
+# StatsBomb gives full legal names (e.g. "Lionel Andrés Messi Cuccittini"),
+# but fans/broadcasters use a common name that often is NOT just "last word"
+# (Spanish/Portuguese naming order means the recognized surname is frequently
+# in the middle, e.g. "Di María" not "Hernández"; some players go by a
+# nickname entirely, e.g. "Jorginho", "Dibu Martínez"). No generic string
+# rule gets this right — hand-mapped per player_id for the two rosters here.
+# Disambiguation kept (first name or nickname) only where a roster has two
+# players sharing a surname (e.g. three Martínez in the 2022 Argentina squad).
+COMMON_NAME_OVERRIDES = {
+    # Argentina vs France, 2022 World Cup Final (match 3869685)
+    "2995": "Di María",
+    "3090": "Otamendi",
+    "5503": "Messi",
+    "5507": "Tagliafico",
+    "5743": "Dybala",
+    "6312": "Armani",
+    "6377": "Correa",
+    "6694": "Rulli",
+    "6909": "Dibu Martínez",
+    "7006": "Papu Gómez",
+    "7161": "Pezzella",
+    "7797": "De Paul",
+    "11456": "Lautaro Martínez",
+    "16308": "Paredes",
+    "19597": "Acuña",
+    "20572": "Romero",
+    "21081": "Foyth",
+    "26404": "Rodríguez",
+    "27768": "Lisandro Martínez",
+    "27886": "Mac Allister",
+    "28263": "Montiel",
+    "28268": "Palacios",
+    "28637": "Almada",
+    "29201": "Molina",
+    "29560": "Álvarez",
+    "38718": "Enzo Fernández",
+    "2972": "Thuram",
+    "3009": "Mbappé",
+    "3026": "Rabiot",
+    "3099": "Lloris",
+    "3379": "Areola",
+    "3543": "Mandanda",
+    "3604": "Giroud",
+    "4445": "Koundé",
+    "5476": "Pavard",
+    "5477": "Dembélé",
+    "5485": "Varane",
+    "5487": "Griezmann",
+    "6704": "Theo Hernández",
+    "7153": "Veretout",
+    "7345": "Guendouzi",
+    "7439": "Disasi",
+    "8217": "Coman",
+    "8519": "Upamecano",
+    "10481": "Tchouaméni",
+    "11135": "Konaté",
+    "11990": "Fofana",
+    "17592": "Saliba",
+    "22097": "Kolo Muani",
+    "24778": "Camavinga",
+    # Turkey vs Italy, Euro 2020 (match 3788741) — most names are already
+    # broadcast-style; only the Brazilian-Italians and one nickname differ.
+    "4355": "Emerson Palmieri",
+    "7024": "Jorginho",
+}
+
 
 # ── Period-aware attacking direction ─────────────────────────────────────────
 
@@ -239,20 +305,42 @@ def urgency_level(xt_delta: float, is_shot: bool) -> str:
     return "low"
 
 
+REGULATION_PERIOD_LENGTH_SECONDS = 45 * 60  # nominal half length
+ET_PERIOD_LENGTH_SECONDS = 15 * 60  # nominal extra-time period length
+
 def compute_period_offsets(actions: pd.DataFrame) -> dict[int, float]:
-    """Cumulative real-seconds offset for the START of each period, computed
-    from each prior period's OBSERVED duration (max time_seconds seen in that
-    period) rather than an assumed fixed length. Periods aren't fixed-length:
-    a half can run ~52 real minutes with stoppage time, and extra-time
-    periods (15 real minutes nominal) are shorter than regular halves.
+    """Offset for the START of each period, using FIFA's NOMINAL period bases
+    (0:00, 45:00, 90:00, 105:00, ...) rather than each prior period's actual
+    observed duration.
+
+    This took two rounds to get right, both confirmed against real broadcast
+    clock overlays for the 2022 final:
+
+    1. Extra-time periods (3+) are always labeled from a fixed base (91:00,
+       106:00) regardless of how much stoppage piled up in regulation —
+       NOT continuing from wherever regulation's accumulated stoppage left
+       off. Using a continuous-duration model overestimated ET timestamps by
+       10-15 minutes (Mbappé's title-deciding penalty computed as ~134:07
+       here, but the broadcast showed 119:44 at that exact video frame).
+
+    2. The SAME convention applies between halves 1 and 2, not just into
+       extra time: second-half clocks reset to a nominal 45:00 base and do
+       NOT carry forward the first half's added time. E.g. half 1 ran
+       45:00+7:21 (~52:21) of real stoppage-inclusive time, but half 2's
+       clock was observed at 55:01 and 56:41 a few minutes into the second
+       half — only explainable if half 2 is based at 45:00, not 52:21.
+
+    Each period's OWN stoppage time still accumulates within that period
+    (shown as e.g. "45:00 +7:21" near its end) — it just doesn't shift the
+    *next* period's base.
     """
     period_ids = sorted(actions["period_id"].unique())
-    durations = {p: float(actions.loc[actions["period_id"] == p, "time_seconds"].max()) for p in period_ids}
     offsets: dict[int, float] = {}
-    running = 0.0
     for p in period_ids:
-        offsets[p] = running
-        running += durations[p]
+        if p <= 2:
+            offsets[p] = REGULATION_PERIOD_LENGTH_SECONDS * (p - 1)
+        else:
+            offsets[p] = 2 * REGULATION_PERIOD_LENGTH_SECONDS + ET_PERIOD_LENGTH_SECONDS * (p - 3)
     return offsets
 
 
@@ -266,11 +354,11 @@ def at_second(period_id: int, time_seconds: float, period_offsets: dict[int, flo
     return int(period_offsets[period_id] + time_seconds)
 
 
-def build_timeline(match_id: int, out_path: Path):
+def build_timeline(match_id: int, out_path: Path, window_start: int | None = None, window_end: int | None = None, window_period: int | None = None):
     print(f"Loading actions for match {match_id}...")
     actions, meta = load_match_actions(match_id)
     team_names = meta["team_names"]
-    player_names = meta["player_names"]
+    player_names = {pid: COMMON_NAME_OVERRIDES.get(pid, name) for pid, name in meta["player_names"].items()}
     period_offsets = compute_period_offsets(actions)
     print("Period offsets (real seconds from kickoff):", period_offsets)
 
@@ -364,6 +452,26 @@ def build_timeline(match_id: int, out_path: Path):
         }
         moments.append(moment)
 
+    # Momentum is a rolling window over ALL preceding actions, computed above
+    # before any windowing, so a trimmed clip still carries correct momentum
+    # context into its first moments rather than starting artificially at 0.
+    #
+    # IMPORTANT: under the nominal-base period model, atSecond ranges OVERLAP
+    # across periods — e.g. period 1 stoppage time can reach atSecond ~3144
+    # (45:00 + ~7:24 added time), which numerically falls inside period 2's
+    # nominal range (2700-3000 = minutes 45-50). Filtering by atSecond alone
+    # would silently let period-1 stoppage actions leak into a "period 2"
+    # window, so window_period (match_half) must also be checked when given.
+    if window_start is not None or window_end is not None:
+        lo = window_start if window_start is not None else 0
+        hi = window_end if window_end is not None else float("inf")
+        moments = [
+            m for m in moments
+            if lo <= m["atSecond"] <= hi and (window_period is None or m["match_half"] == window_period)
+        ]
+        for m in moments:
+            m["atSecond"] -= lo  # rebase to the trimmed video's own t=0; timestamp keeps the real match-clock label
+
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(moments, indent=2))
     print(f"\nWrote {len(moments)} moments -> {out_path}")
@@ -378,12 +486,15 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--match-id", type=int, default=DEFAULT_MATCH_ID)
     parser.add_argument("--out", type=Path, default=None)
+    parser.add_argument("--window-start", type=int, default=None, help="atSecond (match-clock) to start the window at; output is rebased to 0")
+    parser.add_argument("--window-end", type=int, default=None, help="atSecond (match-clock) to end the window at")
+    parser.add_argument("--window-period", type=int, default=None, help="match_half to restrict the window to (required when window atSecond ranges could overlap across periods)")
     args = parser.parse_args()
     out_path = args.out or (
         DEFAULT_OUT_PATH if args.match_id == DEFAULT_MATCH_ID
         else Path(__file__).parent.parent / "data" / "analytics" / f"match_{args.match_id}_timeline.json"
     )
-    build_timeline(args.match_id, out_path)
+    build_timeline(args.match_id, out_path, window_start=args.window_start, window_end=args.window_end, window_period=args.window_period)
 
 
 if __name__ == "__main__":

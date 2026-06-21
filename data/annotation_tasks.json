@@ -6,7 +6,65 @@
     "annotation_type": "bvi_audio_commentary_example",
     "annotation_status": "example",
     "reference_author": "requester",
-    "reference_description": "Harry Kane prepares to take a penalty kick for England against Croatia in the FIFA World Cup 2026. The clip shows Kane in close-up composing himself, then standing over the ball on the penalty spot with the Croatian goalkeeper on the goal line. The clip ends before the kick is taken — this is the moment of anticipation before the penalty."
+    "reference_description": "Harry Kane prepares to take a penalty kick for England against Croatia in the FIFA World Cup 2026. The clip shows Kane in close-up composing himself, then standing over the ball on the penalty spot with the Croatian goalkeeper on the goal line. The clip ends before the kick is taken — this is the moment of anticipation before the penalty.",
+    "clip_summary": "# Analysis\n\nEngland (white) has possession and is executing a free kick from approximately the center of the pitch around the 9:21-9:29 mark of this Group L FIFA World Cup 2026 match against Croatia (blue). The ball is positioned near the center line, and England players form a wall formation while Croatia defenders line up to block. This is a key set-piece opportunity for England in the early stages of the match, with both teams maintaining a 0-0 scoreline.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "England sets up a free kick from center field, ball positioned at the halfway line with Croatia's defensive wall formed roughly twelve yards away."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "England sets up a free kick from midfield with a compact wall formed; Croatia's defensive line is organized but stretched wide, leaving central space vulnerable if the delivery is precise and angled correctly."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "England lines up for a free kick from midfield against Croatia's defensive wall."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "An England player stands over the ball at midfield, the wall of white shirts behind him as Croatia's blue line braces; tension hangs heavy in this early set-piece moment."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "England prepares to take a free kick from midfield against Croatia's defensive wall."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "England sets up a free kick from center field, ball positioned at the halfway line with Croatia's defensive wall formed roughly twelve yards away."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "England sets up a free kick from midfield with a compact wall formed; Croatia's defensive line is organized but stretched wide, leaving central space vulnerable if the delivery is precise and angled correctly."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "England lines up for a free kick from midfield against Croatia's defensive wall."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "An England player stands over the ball at midfield, the wall of white shirts behind him as Croatia's blue line braces; tension hangs heavy in this early set-piece moment."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "England prepares to take a free kick from midfield against Croatia's defensive wall."
+      }
+    ],
+    "generated_at": "2026-06-21T12:33:03.038Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "yt_eng_cro_09",
@@ -15,7 +73,65 @@
     "annotation_type": "bvi_audio_commentary_example",
     "annotation_status": "example",
     "reference_author": "requester",
-    "reference_description": "England (in white) delivers a corner kick into Croatia's penalty area during the 8th minute of this FIFA World Cup 2026 Group L match, with the score level at 0-0. The ball is played into a crowded box where multiple England attackers challenge Croatian defenders in blue, resulting in a scramble near the six-yard box. The sequence ends with the referee stopping play inside the penalty area, likely for a foul, as Croatia's goalkeeper in pink positions himself on his line and England players appeal for a decision."
+    "reference_description": "England (in white) delivers a corner kick into Croatia's penalty area during the 8th minute of this FIFA World Cup 2026 Group L match, with the score level at 0-0. The ball is played into a crowded box where multiple England attackers challenge Croatian defenders in blue, resulting in a scramble near the six-yard box. The sequence ends with the referee stopping play inside the penalty area, likely for a foul, as Croatia's goalkeeper in pink positions himself on his line and England players appeal for a decision.",
+    "clip_summary": "# Broadcast Analysis\n\nEngland maintains possession in the early stages of this World Cup 2026 Group L match against Croatia, with the ball circulating among white-shirted players in the midfield and defensive areas from the 8:05 to 8:13 minute mark. The play develops from England's left flank through the center, with Croatian players in blue pressing and attempting to regain possession, while England works the ball systematically backward and laterally without penetrating forward. No clear scoring opportunity emerges during this sequence; instead, the match is characterized by controlled build-up play with both teams establishing their shape and intensity early in the encounter.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "England circulates possession through midfield and back line; ball moves from left flank toward center as Croatia's blue shirts press; no advancement toward goal yet."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "England circulates possession safely in midfield while Croatia presses compactly; the danger lies in England's lack of vertical progression—they must find penetrative passing lanes or risk losing momentum to sustained Croatian pressure."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "England working the ball patiently through midfield, keeping Croatia at arm's length in the opening stages."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "England methodically circulates the ball through midfield and back, building shape against pressing Croatian defenders in blue—controlled possession in the opening minutes, still searching for their rhythm."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "England circulates the ball in midfield during early build-up play, maintaining possession against pressing Croatian defenders."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "England circulates possession through midfield and back line; ball moves from left flank toward center as Croatia's blue shirts press; no advancement toward goal yet."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "England circulates possession safely in midfield while Croatia presses compactly; the danger lies in England's lack of vertical progression—they must find penetrative passing lanes or risk losing momentum to sustained Croatian pressure."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "England working the ball patiently through midfield, keeping Croatia at arm's length in the opening stages."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "England methodically circulates the ball through midfield and back, building shape against pressing Croatian defenders in blue—controlled possession in the opening minutes, still searching for their rhythm."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "England circulates the ball in midfield during early build-up play, maintaining possession against pressing Croatian defenders."
+      }
+    ],
+    "generated_at": "2026-06-21T12:33:23.363Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_000",
@@ -24,62 +140,62 @@
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": "",
-    "clip_summary": "# Soccer Match Analysis\n\nIn this early match sequence (0-11 seconds), the blue team (St) controls possession in the midfield while the white team (Conks) is organizing their defensive shape. The ball circulates among blue players in the center and attacking third of the pitch, with the white team maintaining a compact defensive formation. By the final frame at 0:11, play has shifted toward the center circle where blue continues to probe for an attacking opportunity, while white defenders position themselves to block passes and close down space.",
+    "clip_summary": "# Broadcast Analysis\n\nThe blue team (St) is in possession early in the match against Conks. Throughout the sequence, St maintains control of the ball in the midfield and attacking areas, with players positioned across the pitch spreading the Conks defense. The ball appears to be moved through several passes, with St building play through the center and wings, while Conks attempts to defend but remains largely disorganized without clear possession. By the later frames, St has advanced the ball into dangerous attacking positions near the Conks goal, indicating sustained offensive pressure in the opening moments of the match.",
     "commentary_variations": [
       {
         "id": "a",
         "label": "Spatial",
-        "text": "Ball circulates among blue midfielders near center circle; white defense compact across middle third, organizing shape to block attacking play."
+        "text": "Blue team St controls the ball in midfield, spreading Conks' defense across the pitch with players positioned left and right wings and center approaching the forty-yard line."
       },
       {
         "id": "b",
         "label": "Tactical",
-        "text": "Blue controls the ball in midfield with a spread attacking shape; white compresses defensively toward goal, inviting through-ball danger down the flanks or over the top."
+        "text": "St controls midfield with a spread formation, pinning Conks deep; the danger lies in St's sustained possession and advancing play toward goal in these opening moments."
       },
       {
         "id": "c",
         "label": "Concise live",
-        "text": "St working the ball around midfield, blue moving it side to side as Conks set their defensive line."
+        "text": "St's working the ball forward methodically, spreading Conks wide across the pitch in these early moments."
       },
       {
         "id": "d",
         "label": "Narrative",
-        "text": "Blue builds patiently through midfield, threading passes across the center as white defenders compact their shape tightly around the fifty-yard line, bracing for the next move."
+        "text": "Blue's possession flows seamlessly across midfield within the opening seconds, players spreading the Conks defense thin as attacking pressure builds toward goal with crisp, controlled passing."
       },
       {
         "id": "e",
         "label": "Baseline",
-        "text": "Blue team maintains possession in midfield while white team organizes defensively."
+        "text": "Blue team maintains possession and builds attacking play through midfield in early match action."
       }
     ],
     "candidates": [
       {
         "id": "a",
         "label": "Spatial",
-        "description": "Ball circulates among blue midfielders near center circle; white defense compact across middle third, organizing shape to block attacking play."
+        "description": "Blue team St controls the ball in midfield, spreading Conks' defense across the pitch with players positioned left and right wings and center approaching the forty-yard line."
       },
       {
         "id": "b",
         "label": "Tactical",
-        "description": "Blue controls the ball in midfield with a spread attacking shape; white compresses defensively toward goal, inviting through-ball danger down the flanks or over the top."
+        "description": "St controls midfield with a spread formation, pinning Conks deep; the danger lies in St's sustained possession and advancing play toward goal in these opening moments."
       },
       {
         "id": "c",
         "label": "Concise live",
-        "description": "St working the ball around midfield, blue moving it side to side as Conks set their defensive line."
+        "description": "St's working the ball forward methodically, spreading Conks wide across the pitch in these early moments."
       },
       {
         "id": "d",
         "label": "Narrative",
-        "description": "Blue builds patiently through midfield, threading passes across the center as white defenders compact their shape tightly around the fifty-yard line, bracing for the next move."
+        "description": "Blue's possession flows seamlessly across midfield within the opening seconds, players spreading the Conks defense thin as attacking pressure builds toward goal with crisp, controlled passing."
       },
       {
         "id": "e",
         "label": "Baseline",
-        "description": "Blue team maintains possession in midfield while white team organizes defensively."
+        "description": "Blue team maintains possession and builds attacking play through midfield in early match action."
       }
     ],
-    "generated_at": "2026-06-21T12:27:48.431Z",
+    "generated_at": "2026-06-21T12:33:39.461Z",
     "generation_model": "claude-haiku-4-5-20251001",
     "generation_provider": "anthropic"
   },
@@ -89,7 +205,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_001.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "The white team (St) controls possession in the early stages of the match against the blue team (Conks). The ball is circulating through midfield around the 50-yard line, with white players methodically building play through short passes while maintaining a compact formation. St appears to be executing a possession-based approach, working the ball side-to-side in the center of the pitch without making significant penetrating advances toward the Conks goal, as both teams maintain their defensive shape across the field.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White builds possession centrally around the fifty-yard line, circulating the ball side-to-side through midfield with blue defenders holding their shape across the field."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White methodically circulates possession through midfield in a compact shape, probing for openings while blue sits deep and compact—the danger lies in white's patient build-up eventually finding space to penetrate."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "White working the ball patiently through midfield, keeping it tight and controlled in the early going."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White builds patiently from the center, threading passes across midfield at the fifty-yard line while blue holds shape, both teams locked in deliberate early possession—tactical chess unfolding on grass."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Early in the match, St maintains possession with controlled passing movements through midfield."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White builds possession centrally around the fifty-yard line, circulating the ball side-to-side through midfield with blue defenders holding their shape across the field."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White methodically circulates possession through midfield in a compact shape, probing for openings while blue sits deep and compact—the danger lies in white's patient build-up eventually finding space to penetrate."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "White working the ball patiently through midfield, keeping it tight and controlled in the early going."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White builds patiently from the center, threading passes across midfield at the fifty-yard line while blue holds shape, both teams locked in deliberate early possession—tactical chess unfolding on grass."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Early in the match, St maintains possession with controlled passing movements through midfield."
+      }
+    ],
+    "generated_at": "2026-06-21T12:33:56.675Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_002",
@@ -97,7 +271,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_002.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Soccer Broadcast Analysis\n\nThe blue team maintains possession in the center of the field during the early stages of play, with the ball positioned near midfield around the 50-yard line. White players are spread defensively across the pitch, while blue players execute short passing combinations to advance the ball. The action shows controlled possession-based play, with both teams establishing their shape—no immediate attacking threat is evident as the blue team methodically works the ball in the midfield area without creating clear scoring opportunities.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Blue maintains possession at midfield near the center circle, with white defenders spread across the pitch; play developing slowly in controlled build-up phase."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "Blue team controls midfield with compact passing shape, while white spreads defensively; the key is whether blue can penetrate through the center before white's shape tightens further."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Blue working the ball methodically through midfield, keeping possession with short passes in the center of the pitch."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "Blue methodically controls the ball around midfield, executing short passes while white defenders hold their shape across the pitch—calm possession in the opening minutes as play unfolds deliberately."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Two teams begin early first-half play with blue team controlling possession in midfield."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Blue maintains possession at midfield near the center circle, with white defenders spread across the pitch; play developing slowly in controlled build-up phase."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "Blue team controls midfield with compact passing shape, while white spreads defensively; the key is whether blue can penetrate through the center before white's shape tightens further."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Blue working the ball methodically through midfield, keeping possession with short passes in the center of the pitch."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "Blue methodically controls the ball around midfield, executing short passes while white defenders hold their shape across the pitch—calm possession in the opening minutes as play unfolds deliberately."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Two teams begin early first-half play with blue team controlling possession in midfield."
+      }
+    ],
+    "generated_at": "2026-06-21T12:34:11.720Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_003",
@@ -105,7 +337,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_003.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nThe white team (Conks) is building possession from the back through the middle of the pitch during early match play. The ball progresses steadily upfield through midfield exchanges between white players, with the blue team (St) pressing and attempting to disrupt the buildup. By the final frame at 00:41, the white team has advanced into the attacking third with the ball near the blue team's penalty area, with a white player in a central attacking position and the blue goalkeeper positioned in net—this represents the key offensive moment after sustained possession play.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White builds from deep; ball progresses through midfield exchanges toward blue's penalty area, with white attacker now central in the attacking third."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White builds methodically through midfield with blue pressing high; white now penetrates the attacking third with a central opportunity developing—the key danger is whether white can finish before blue's defense consolidates."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Conks working the ball forward methodically through midfield, now pushing into the final third with numbers up."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White builds methodically through midfield, probing blue's press; the ball reaches the attacking third as a white attacker moves into the penalty area—buildup complete, danger imminent."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White team maintains possession through midfield while blue team presses defensively in early match play."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White builds from deep; ball progresses through midfield exchanges toward blue's penalty area, with white attacker now central in the attacking third."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White builds methodically through midfield with blue pressing high; white now penetrates the attacking third with a central opportunity developing—the key danger is whether white can finish before blue's defense consolidates."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Conks working the ball forward methodically through midfield, now pushing into the final third with numbers up."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White builds methodically through midfield, probing blue's press; the ball reaches the attacking third as a white attacker moves into the penalty area—buildup complete, danger imminent."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White team maintains possession through midfield while blue team presses defensively in early match play."
+      }
+    ],
+    "generated_at": "2026-06-21T12:34:28.393Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_004",
@@ -113,7 +403,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_004.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Match Summary\n\nThe white team (Conks) maintains possession through the opening minutes of the match, spreading play across the midfield and attempting to build from the back against the blue-shirted opposition (St). Around the 00:48 mark, play transitions to a more direct attacking approach, with the white team advancing toward the blue team's goal in the center of the pitch near the 40-yard line. The match shows balanced territorial control with both teams actively engaged, though the white team appears to be dictating the early tempo with controlled passing movements.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White team controls possession across the center and right side of midfield, advancing toward the blue team's goal area near the 40-yard line."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White team spreading possession wide across midfield, blue defense compact and narrow through center; danger lies in white exploiting the flanks where blue's shape leaves space to deliver crosses."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "White working the ball forward methodically, pushing toward the blue team's defensive third in early exchanges."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White's midfield spreads possession methodically across the fifty-yard line, building rhythm and control while blue tracks their movement through the opening minute of play."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Early in the match, the white team builds possession through midfield passes against their blue-shirted opponents."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White team controls possession across the center and right side of midfield, advancing toward the blue team's goal area near the 40-yard line."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White team spreading possession wide across midfield, blue defense compact and narrow through center; danger lies in white exploiting the flanks where blue's shape leaves space to deliver crosses."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "White working the ball forward methodically, pushing toward the blue team's defensive third in early exchanges."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White's midfield spreads possession methodically across the fifty-yard line, building rhythm and control while blue tracks their movement through the opening minute of play."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Early in the match, the white team builds possession through midfield passes against their blue-shirted opponents."
+      }
+    ],
+    "generated_at": "2026-06-21T12:34:43.287Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_005",
@@ -121,7 +469,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_005.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Match Analysis\n\nThe white team (Conks) is in possession and executing a controlled buildup play through midfield during the opening moments of the match (00:53-01:01). The ball circulates among white-shirted players across the center of the pitch, with players spreading across the field in a structured formation while the blue team (St) maintains defensive positioning. The key moment occurs as the white team probes the blue defense with short passing combinations in the midfield area, working the ball methodically toward the attacking third without committing numbers forward aggressively.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White team circulates possession through midfield; ball moving left to right across the 50-yard line with defenders spread in a structured shape, building from deep."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White methodically builds from midfield with compact passing, spreading blue's defense horizontally; the danger lies in committing too few attackers forward while possession remains sterile in the center."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Early possession going white's way as Conks work the ball methodically through midfield with some nice short passing combinations."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White methodically works the ball across midfield at the fifty-yard line, spreading the blue defense wide with controlled passes, building toward the attacking third with patient precision."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White team builds from midfield with controlled passing while blue team defends in organized shape."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White team circulates possession through midfield; ball moving left to right across the 50-yard line with defenders spread in a structured shape, building from deep."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White methodically builds from midfield with compact passing, spreading blue's defense horizontally; the danger lies in committing too few attackers forward while possession remains sterile in the center."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Early possession going white's way as Conks work the ball methodically through midfield with some nice short passing combinations."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White methodically works the ball across midfield at the fifty-yard line, spreading the blue defense wide with controlled passes, building toward the attacking third with patient precision."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White team builds from midfield with controlled passing while blue team defends in organized shape."
+      }
+    ],
+    "generated_at": "2026-06-21T12:35:01.257Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_006",
@@ -129,7 +535,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_006.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "The white team (St) possesses the ball during open play in the midfield and attacking third throughout this sequence. The blue team (Conks) is defending and attempting to regain possession, with their goalkeeper in orange positioned in the net on the left side. Over the three-second interval from 01:03 to 01:11, the white team advances the ball toward the blue goal through a combination of passes and movement, with the play shifting from center field toward the right wing area. The key moment occurs around 01:08-01:11 when white continues to build an attacking opportunity in the blue defensive third, maintaining possession while blue organizes their defensive shape.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White advances toward the blue goal along the right wing; ball is in the attacking third near the right edge of the penalty area as white maintains possession."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White maintains possession in the attacking third with space on the right flank; blue's defense is compact but stretched laterally, creating danger as white probes for an opening near goal."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "St pushing forward through the midfield, working the ball toward the right side as Conks defend deep."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White pushes forward through the midfield, number 24 in blue tracking deep, as St builds possession toward the right wing with purpose and tempo coursing through their attacking setup."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White team advances the ball through midfield toward the opponent's goal during early first-half play."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White advances toward the blue goal along the right wing; ball is in the attacking third near the right edge of the penalty area as white maintains possession."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White maintains possession in the attacking third with space on the right flank; blue's defense is compact but stretched laterally, creating danger as white probes for an opening near goal."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "St pushing forward through the midfield, working the ball toward the right side as Conks defend deep."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White pushes forward through the midfield, number 24 in blue tracking deep, as St builds possession toward the right wing with purpose and tempo coursing through their attacking setup."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White team advances the ball through midfield toward the opponent's goal during early first-half play."
+      }
+    ],
+    "generated_at": "2026-06-21T12:35:17.436Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_007",
@@ -137,7 +601,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_007.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Match Summary\n\nSt. (in blue) controls possession in the midfield during early match play, with the ball moving fluidly across the pitch through multiple passes. The team builds from a spread formation, circulating the ball between players in the center and wide areas while Conks (in white) organizes their defensive shape. By the final frame, St. maintains possession in a more congested central area as both teams press for control, with no clear scoring opportunity developing during this sequence.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Blue team circulates possession through midfield and right wing; white team holds defensive shape across the center with goalkeeper positioned left."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "St. controls the midfield with patient circulation, spreading Conks' defense wide; the danger lies in St.'s ability to probe central gaps while Conks remains compact but risks being stretched if possession shifts fluidly to the wings."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "St. working the ball around midfield, keeping it tidy in the early stages with good circulation."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "St. controls the midfield with patient possession, circulating the ball across the width of the pitch while Conks holds a compact defensive shape, neither team forcing the issue in these opening moments."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "St. passes the ball through midfield while Conks organizes their defensive formation during early match play."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Blue team circulates possession through midfield and right wing; white team holds defensive shape across the center with goalkeeper positioned left."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "St. controls the midfield with patient circulation, spreading Conks' defense wide; the danger lies in St.'s ability to probe central gaps while Conks remains compact but risks being stretched if possession shifts fluidly to the wings."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "St. working the ball around midfield, keeping it tidy in the early stages with good circulation."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "St. controls the midfield with patient possession, circulating the ball across the width of the pitch while Conks holds a compact defensive shape, neither team forcing the issue in these opening moments."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "St. passes the ball through midfield while Conks organizes their defensive formation during early match play."
+      }
+    ],
+    "generated_at": "2026-06-21T12:35:35.096Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_008",
@@ -145,7 +667,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_008.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nThe white team (Conks) is attacking the blue team's goal in the left portion of the field during the opening minutes (01:23-01:31). Blue maintains possession and builds up play through midfield passes, with players distributing the ball across the pitch while white attempts to apply defensive pressure. The key moment occurs around 01:26-01:28 when blue develops an attacking sequence near white's penalty area, with the white goalkeeper (in red) positioned in goal as blue looks to create a scoring opportunity through coordinated passing movements.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Blue builds possession through midfield, shifting play left toward white's penalty area where the goalkeeper stands ready near the goal line."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "Blue builds possession through midfield with time and space, while white's scattered defensive shape leaves dangerous gaps near the box—blue's coordinated passing threatens to unlock a clear chance."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Blue working the ball forward methodically through midfield, looking to break down Conks' defense in the opening stages."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "Blue probes methodically through the middle, spreading white's defense across the pitch while the red-shirted keeper watches intently from goal—a dangerous buildup taking shape in the opening minutes."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Two teams compete for possession in midfield during early match play, with blue building attacking pressure toward white's goal."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Blue builds possession through midfield, shifting play left toward white's penalty area where the goalkeeper stands ready near the goal line."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "Blue builds possession through midfield with time and space, while white's scattered defensive shape leaves dangerous gaps near the box—blue's coordinated passing threatens to unlock a clear chance."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Blue working the ball forward methodically through midfield, looking to break down Conks' defense in the opening stages."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "Blue probes methodically through the middle, spreading white's defense across the pitch while the red-shirted keeper watches intently from goal—a dangerous buildup taking shape in the opening minutes."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Two teams compete for possession in midfield during early match play, with blue building attacking pressure toward white's goal."
+      }
+    ],
+    "generated_at": "2026-06-21T12:35:51.405Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_009",
@@ -153,7 +733,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_009.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "The white team (St) is executing a set piece—a corner kick or throw-in from the left sideline near the goal area. The ball is delivered into the penalty box where multiple white and blue players are converging, with blue defenders attempting to clear or defend against an incoming cross. The action culminates around the 01:38 mark when the ball appears to reach the goal mouth, representing a critical scoring opportunity for the white team.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White players cluster in the blue penalty area as the ball arrives from the left corner; blue defenders positioned centrally near the goal line."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White team crowds the penalty box at a corner, compacting blue's defense; the delivery swings in low toward the far post where white attackers have numbers advantage and first touch opportunity."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "White team swinging it into the box, bodies crowding around the goal area as the ball comes in from the left."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White players converge at the far post as the ball swings into the blue penalty box—a dangerous moment hanging in the air, teammates and defenders battling for possession inches from goal."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White team delivers a cross into the penalty box during a set piece, with players converging near goal."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White players cluster in the blue penalty area as the ball arrives from the left corner; blue defenders positioned centrally near the goal line."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White team crowds the penalty box at a corner, compacting blue's defense; the delivery swings in low toward the far post where white attackers have numbers advantage and first touch opportunity."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "White team swinging it into the box, bodies crowding around the goal area as the ball comes in from the left."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White players converge at the far post as the ball swings into the blue penalty box—a dangerous moment hanging in the air, teammates and defenders battling for possession inches from goal."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White team delivers a cross into the penalty box during a set piece, with players converging near goal."
+      }
+    ],
+    "generated_at": "2026-06-21T12:36:06.191Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_010",
@@ -161,7 +799,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_010.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "The blue team possesses the ball in the attacking third near the goal, with play progressing from right to left across the pitch during a corner or set-piece situation. Between 01:43 and 01:51, the blue team attempts to create scoring opportunities through combination play and movement around the white team's penalty area, with players positioning themselves near the goal line and the goalkeeper in red visible in the net. The white team defends compactly, attempting to block shooting lanes and clear the ball, as blue continues to press for a breakthrough in this sustained attacking phase.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Blue team circulating possession in the white penalty area, with players clustered near the goal line; white defenders compact and blocking central routes to goal."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "Blue maintains possession in the penalty area through sustained pressure, but white's compact defensive shape blocks central scoring lanes; the danger lies in blue's need to find a decisive pass or shot before the defense clears."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Blue pressing hard in the attacking third, working the ball around the box with white defending deep."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "Blue swarms the penalty area from the right, bodies packed tight near the goal line as teammates jostle for position in a frantic scramble for a loose ball."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Blue team works the ball in the attacking third, building play near the white team's goal."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Blue team circulating possession in the white penalty area, with players clustered near the goal line; white defenders compact and blocking central routes to goal."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "Blue maintains possession in the penalty area through sustained pressure, but white's compact defensive shape blocks central scoring lanes; the danger lies in blue's need to find a decisive pass or shot before the defense clears."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Blue pressing hard in the attacking third, working the ball around the box with white defending deep."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "Blue swarms the penalty area from the right, bodies packed tight near the goal line as teammates jostle for position in a frantic scramble for a loose ball."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Blue team works the ball in the attacking third, building play near the white team's goal."
+      }
+    ],
+    "generated_at": "2026-06-21T12:36:23.058Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_011",
@@ -169,7 +865,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_011.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nThe white team (St) is executing a corner kick from the left side of the pitch, with the ball positioned near the corner flag at approximately 01:53. Over the subsequent eight seconds, the white team delivers the ball into the box where blue-shirted defenders (Conks) are organized for the set piece, with players from both teams positioning themselves for a potential header or deflection near the goal mouth. The key moment occurs around 01:58-02:01 as the ball is played into the congested penalty area, with multiple players converging on the ball in an attempt to score or clear the danger.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White corner kick delivered from left side into crowded penalty area; blue defenders and white attackers converging near goal mouth for header opportunity."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White's corner delivery finds congested space near goal with blue defenders compact and organized; the danger lies in a loose ball or deflection from the aerial contest in the box."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "White team swings it in from the corner; crowded scramble developing in the blue box."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "A corner swings in from the left, white players converge desperately near the goal mouth as blue defenders pack the box—tension electrifies the penalty area."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White prepares and delivers a corner kick into a crowded penalty area as both teams jockey for position."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White corner kick delivered from left side into crowded penalty area; blue defenders and white attackers converging near goal mouth for header opportunity."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White's corner delivery finds congested space near goal with blue defenders compact and organized; the danger lies in a loose ball or deflection from the aerial contest in the box."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "White team swings it in from the corner; crowded scramble developing in the blue box."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "A corner swings in from the left, white players converge desperately near the goal mouth as blue defenders pack the box—tension electrifies the penalty area."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White prepares and delivers a corner kick into a crowded penalty area as both teams jockey for position."
+      }
+    ],
+    "generated_at": "2026-06-21T12:36:39.079Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_012",
@@ -177,7 +931,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_012.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nDuring this 10-second sequence, play develops in the attacking third near the St. (Saints) goal. The Saints retain possession around the left side of the box, with multiple players positioned near goal, while Conks' defenders attempt to clear or intercept the ball. By the final frame at 02:11, the ball appears to be loose or contested in and around the penalty area, with both teams converging on the play—a critical moment where the Saints have a potential scoring opportunity but the outcome remains unresolved.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Saints retain possession in the left side of the box with multiple attackers converging; Conks defenders contest the loose ball in the penalty area."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "Saints build pressure in Conks' box with numbers clustered left side; Conks' defense compressed deep, leaving little space to clear as the ball remains contested in the penalty area."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Saints pressing hard in the Conks box with bodies everywhere—a scramble building in the penalty area."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "The Saints surge forward into the left side of Conks' penalty area, bodies crowding the box as the ball bounces loose in a tense, contested scramble—danger lingers at the goal line."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Saints players attack the goal area while Conks defenders work to clear the ball from the penalty box."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Saints retain possession in the left side of the box with multiple attackers converging; Conks defenders contest the loose ball in the penalty area."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "Saints build pressure in Conks' box with numbers clustered left side; Conks' defense compressed deep, leaving little space to clear as the ball remains contested in the penalty area."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Saints pressing hard in the Conks box with bodies everywhere—a scramble building in the penalty area."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "The Saints surge forward into the left side of Conks' penalty area, bodies crowding the box as the ball bounces loose in a tense, contested scramble—danger lingers at the goal line."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Saints players attack the goal area while Conks defenders work to clear the ball from the penalty box."
+      }
+    ],
+    "generated_at": "2026-06-21T12:36:59.716Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_013",
@@ -185,7 +997,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_013.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nThe match between Conks (white) and St (blue) shows possession shifting across the midfield during early play at the 0-2 minute mark. The blue team appears to have defensive positioning in their half while white players are spread across the field attempting to build play through the center and flanks. Key moments include a white player on the left side of the pitch working the ball forward, with blue defenders organizing to press and potentially intercept, while the match remains goalless with both teams establishing their shape and tempo in the opening stages.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White player on the left flank advancing toward the blue defensive line; blue team organized across midfield and defensive half, match in early build-up phase."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White builds deliberately through midfield with space available in wider areas, while blue stays compact defensively—the danger lies in whether white can exploit the flanks before blue's press tightens the passing lanes."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Conks pushing forward in white with space opening up midfield as St's blue defense settles into shape."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White spreads possession through midfield as blue defenders compact their shape, both teams feeling out tempo and space in these opening moments of scoreless play."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Both teams are establishing shape and positioning during the opening minutes of the match, with possession moving through midfield."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White player on the left flank advancing toward the blue defensive line; blue team organized across midfield and defensive half, match in early build-up phase."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White builds deliberately through midfield with space available in wider areas, while blue stays compact defensively—the danger lies in whether white can exploit the flanks before blue's press tightens the passing lanes."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Conks pushing forward in white with space opening up midfield as St's blue defense settles into shape."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White spreads possession through midfield as blue defenders compact their shape, both teams feeling out tempo and space in these opening moments of scoreless play."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Both teams are establishing shape and positioning during the opening minutes of the match, with possession moving through midfield."
+      }
+    ],
+    "generated_at": "2026-06-21T12:37:16.859Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_014",
@@ -193,7 +1063,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_014.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "The St. team (white jerseys) maintains possession in the attacking third of the pitch, working the ball toward the Conks' goal in the upper left. Over the sequence, St. executes multiple short passes in midfield and attacking positions while Conks' defenders (blue jerseys) work to close down space and apply pressure. The action remains concentrated near the Conks' goal area as St. attempts to create a scoring opportunity through patient ball movement.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "St. in white maintains possession in the attacking third, working the ball through midfield with short passes while moving toward the Conks' goal on the left."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "St. controls the attacking third with precise short passes while Conks compress their defense; the danger lies in St. finding a penetrating ball through the congested middle before space opens on the wings."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "St. working the ball patiently in the Conks' attacking third, moving it side to side with quick passes near goal."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "St. orchestrates a methodical attack from the attacking third, threading precise passes through the middle while Conks' blue-shirted defenders collapse toward their goal, the tension mounting with each touch as white shirts probe for an opening."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "St. works the ball methodically in the attacking third, exchanging short passes while Conks' defense attempts to apply pressure."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "St. in white maintains possession in the attacking third, working the ball through midfield with short passes while moving toward the Conks' goal on the left."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "St. controls the attacking third with precise short passes while Conks compress their defense; the danger lies in St. finding a penetrating ball through the congested middle before space opens on the wings."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "St. working the ball patiently in the Conks' attacking third, moving it side to side with quick passes near goal."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "St. orchestrates a methodical attack from the attacking third, threading precise passes through the middle while Conks' blue-shirted defenders collapse toward their goal, the tension mounting with each touch as white shirts probe for an opening."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "St. works the ball methodically in the attacking third, exchanging short passes while Conks' defense attempts to apply pressure."
+      }
+    ],
+    "generated_at": "2026-06-21T12:37:34.053Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_015",
@@ -201,7 +1129,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_015.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Soccer Broadcast Analysis\n\nIn this sequence, St. maintains possession in open play against Conks near the center circle and midfield areas. The white-shirted St. team is executing a controlled passing move, spreading the play across the width of the pitch while Conks in blue defends with a moderate pressing shape. The key decision point occurs as St. progresses the ball forward through the middle third, with the play developing from right to left across the field, testing whether Conks can organize their defensive structure or if St. can break through toward goal.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "St. controls possession near midfield, moving the ball left across the center circle while Conks defend in a spread formation around the 50-yard line."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "St. controls the center circle with width, while Conks' blue shape is stretched and reactive; St. must decide whether to continue building through the middle or exploit the space down the flanks before Conks reorganizes their defense."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "St. working the ball forward through midfield, spreading it left and right as Conks shape up to defend."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White shirts weave through midfield with purpose, the ball traveling left across the center circle while blue defenders close in—St. building momentum toward danger."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White team maintains possession in midfield while blue team defends with organized shape."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "St. controls possession near midfield, moving the ball left across the center circle while Conks defend in a spread formation around the 50-yard line."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "St. controls the center circle with width, while Conks' blue shape is stretched and reactive; St. must decide whether to continue building through the middle or exploit the space down the flanks before Conks reorganizes their defense."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "St. working the ball forward through midfield, spreading it left and right as Conks shape up to defend."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White shirts weave through midfield with purpose, the ball traveling left across the center circle while blue defenders close in—St. building momentum toward danger."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White team maintains possession in midfield while blue team defends with organized shape."
+      }
+    ],
+    "generated_at": "2026-06-21T12:37:52.983Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_016",
@@ -209,7 +1195,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_016.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nThe white-jerseyed team (Conks) maintains possession throughout this sequence, progressing the ball methodically from their defensive third toward the opponent's goal. Between 02:43 and 02:50, the white team executes a controlled build-up play, moving the ball across the midfield and into the attacking third, with multiple players spreading the blue-jerseyed defenders (St) horizontally across the pitch. By the final frame at 02:50, white has advanced significantly into St's defensive area near the right flank, with several attacking players positioned to threaten a scoring opportunity as the ball reaches the final third.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White possession advancing into the final third; ball on the right flank near the thirty-yard line with attacking players spreading St's defense horizontally across midfield."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White stretches St's defense horizontally across the pitch, exploiting space on the right flank; the key danger is whether the final pass into the box can be completed before St's shape tightens defensively."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "White pushing forward methodically, now deep in the attacking third with numbers ahead of the ball on the right."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White surges into the final third down the right flank, attackers spreading St's defense horizontally as possession edges dangerously close to the goal line—the moment of threat crystallizes."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White team builds up possession methodically, advancing from midfield toward the opponent's defensive third."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White possession advancing into the final third; ball on the right flank near the thirty-yard line with attacking players spreading St's defense horizontally across midfield."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White stretches St's defense horizontally across the pitch, exploiting space on the right flank; the key danger is whether the final pass into the box can be completed before St's shape tightens defensively."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "White pushing forward methodically, now deep in the attacking third with numbers ahead of the ball on the right."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White surges into the final third down the right flank, attackers spreading St's defense horizontally as possession edges dangerously close to the goal line—the moment of threat crystallizes."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White team builds up possession methodically, advancing from midfield toward the opponent's defensive third."
+      }
+    ],
+    "generated_at": "2026-06-21T12:38:09.777Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_017",
@@ -217,7 +1261,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_017.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nThe team in white (St.) maintains possession and builds play through the midfield during the opening minutes of the match, with the ball circulating among players in the central and right side of the pitch around the 40-50 yard line. The blue team (Conks) sets up in a defensive shape, positioning players to cut off passing lanes and disrupt the white team's buildup. The key action involves sustained possession by the white team as they probe for opportunities to advance toward the Conks' goal, with the midfielder in white making a deliberate forward pass toward the attacking third as the sequence progresses into the final frames.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Ball circulates in white's midfield around the 40-50 yard line; blue defense compresses central lanes as white probes rightward toward attacking third."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White exploits space down the right flank while Conks defend deep; the midfield pass forward signals white's intent to penetrate the final third."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "White keeping it neat in midfield, probing for an opening as blue holds their shape defensively."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White's midfielder threads a purposeful pass into the attacking third, breaking through the blue defensive line with the ball traveling left-to-right across the forty-yard stripe toward open space."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White team maintains possession through midfield, probing for attacking opportunities against Conks' defensive setup."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Ball circulates in white's midfield around the 40-50 yard line; blue defense compresses central lanes as white probes rightward toward attacking third."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White exploits space down the right flank while Conks defend deep; the midfield pass forward signals white's intent to penetrate the final third."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "White keeping it neat in midfield, probing for an opening as blue holds their shape defensively."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White's midfielder threads a purposeful pass into the attacking third, breaking through the blue defensive line with the ball traveling left-to-right across the forty-yard stripe toward open space."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White team maintains possession through midfield, probing for attacking opportunities against Conks' defensive setup."
+      }
+    ],
+    "generated_at": "2026-06-21T12:38:32.791Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_018",
@@ -225,7 +1327,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_018.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Match Summary (Conks vs St, 03:03-03:10)\n\nThe blue team (St) has possession and is executing an organized attacking phase in the opening minutes of the match, with the ball positioned near midfield. White-clad Conks defenders are spread across the field maintaining shape while St's players advance with several forward runs developing in the attacking third. The match displays early tactical positioning with both teams settled into their formations, and no immediate scoring threat is evident during this sequence as St continues probing for attacking opportunities.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Ball near center circle; St in blue advancing methodically with white Conks defending across midfield and attacking third, no immediate scoring threat developing."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "St controls midfield with a balanced 4-3-3 shape, probing methodically while Conks hold a compact defensive line; space opens on the flanks if St can penetrate centrally, but possession is cautious and unrushed."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "St pushing forward with possession in midfield, building their attacking shape early on."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "In the opening minutes, St's blue shirts spread across midfield in coordinated waves, probing Conks' white defense with patient possession near the center circle."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Early in the match, the blue team (St) maintains possession and moves the ball forward while the white team (Conks) defends with organized shape."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Ball near center circle; St in blue advancing methodically with white Conks defending across midfield and attacking third, no immediate scoring threat developing."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "St controls midfield with a balanced 4-3-3 shape, probing methodically while Conks hold a compact defensive line; space opens on the flanks if St can penetrate centrally, but possession is cautious and unrushed."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "St pushing forward with possession in midfield, building their attacking shape early on."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "In the opening minutes, St's blue shirts spread across midfield in coordinated waves, probing Conks' white defense with patient possession near the center circle."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Early in the match, the blue team (St) maintains possession and moves the ball forward while the white team (Conks) defends with organized shape."
+      }
+    ],
+    "generated_at": "2026-06-21T12:38:48.441Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_019",
@@ -233,7 +1393,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_019.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nThe white-clad team (Conks) maintains possession in midfield during the opening minutes of the match against the blue team (St), with the ball circulating among their players in the center of the pitch around the 50-yard line. Play progresses from organized passing exchanges to a more dynamic phase where blue players press forward and challenge for the ball in white's defensive third. By the final frame, white's defense is under pressure with a contested situation developing near their goal area, as blue attackers close in on white defenders to force a turnover or create a scoring opportunity.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White controls midfield possession near the fifty-yard line; blue presses forward into white's defensive third with contested play developing near the goal area."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White's deep defense is compressed near goal with blue pressing aggressively; white must either clear decisively or risk losing possession in a dangerous area where blue threatens an immediate chance."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "White working the ball around midfield, but blue pressing hard now in their defensive third."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White's defense tightens around their penalty area as blue attackers swarm in from multiple angles, the ball contested in a crowded box where possession hangs in the balance."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White team passes the ball around midfield as blue pressures forward in early match play."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White controls midfield possession near the fifty-yard line; blue presses forward into white's defensive third with contested play developing near the goal area."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White's deep defense is compressed near goal with blue pressing aggressively; white must either clear decisively or risk losing possession in a dangerous area where blue threatens an immediate chance."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "White working the ball around midfield, but blue pressing hard now in their defensive third."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White's defense tightens around their penalty area as blue attackers swarm in from multiple angles, the ball contested in a crowded box where possession hangs in the balance."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White team passes the ball around midfield as blue pressures forward in early match play."
+      }
+    ],
+    "generated_at": "2026-06-21T12:39:04.541Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_020",
@@ -241,7 +1459,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_020.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "The blue team maintains possession in the midfield and attacking third throughout this sequence, with the white team (Conks) defending deep near their own goal. From 3:23 to 3:30, the blue team circulates the ball laterally and probes forward with multiple passing combinations, while the white defenders remain organized but passive in shape. The key moment occurs around 3:28-3:30 when a blue player on the right flank appears to receive the ball in a dangerous attacking position near the white goal area, creating a scoring opportunity that the white defense must address.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Blue probes from midfield into the attacking third; a blue player receives near the right side of white's penalty area as white defenders hold deep shape."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "Blue circles the ball patiently in the attacking third while Conks sit deep in a compact defensive shape; a blue player now receives possession on the right flank near the penalty area, forcing white to decide whether to press or risk being penetrated."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Blue probing down the right wing, white defense holding shape deep near goal."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "Blue probes the right flank near the white goal area at the 30-second mark, possession flowing through midfield as white stays compact but deep, danger building in the attacking third."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Blue team probes forward with possession while white defenders hold a deep defensive shape near their goal."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Blue probes from midfield into the attacking third; a blue player receives near the right side of white's penalty area as white defenders hold deep shape."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "Blue circles the ball patiently in the attacking third while Conks sit deep in a compact defensive shape; a blue player now receives possession on the right flank near the penalty area, forcing white to decide whether to press or risk being penetrated."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Blue probing down the right wing, white defense holding shape deep near goal."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "Blue probes the right flank near the white goal area at the 30-second mark, possession flowing through midfield as white stays compact but deep, danger building in the attacking third."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Blue team probes forward with possession while white defenders hold a deep defensive shape near their goal."
+      }
+    ],
+    "generated_at": "2026-06-21T12:39:20.107Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_021",
@@ -249,7 +1525,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_021.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Soccer Broadcast Analysis\n\nThe white team (St) controls possession in the midfield around the 40-yard line during early match action. Between frames 1-2 (03:33-03:35), St moves the ball forward with multiple passing options spread across the field, while the blue team (Conks) defends in a structured formation. By frames 3-4 (03:38-03:40), St continues attacking down the left flank with a white player dribbling past a blue defender, creating a clear scoring opportunity as the ball progresses toward Conks' goal in the background. The key moment is St's sustained offensive momentum through the midfield into the attacking third, with space opening up on the wing for a potential dangerous cross or shot.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White team advancing through midfield around the 40-yard line, ball moving left toward blue team's goal; white player dribbling past blue defender on left flank."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "St probes methodically through midfield with numerical advantage in possession; Conks' defense spreads thin on the left flank as a white attacker dribbles into dangerous territory—the wing space is critical to exploit before defensive shape tightens."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "St pushing forward through midfield, white player driving down the left with space opening up."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White pushes forward through midfield toward the left wing, a St player breaks past the blue defender with open space ahead—danger building as the attack presses toward goal."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White team advances the ball through midfield with passing combinations toward the opposing goal."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White team advancing through midfield around the 40-yard line, ball moving left toward blue team's goal; white player dribbling past blue defender on left flank."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "St probes methodically through midfield with numerical advantage in possession; Conks' defense spreads thin on the left flank as a white attacker dribbles into dangerous territory—the wing space is critical to exploit before defensive shape tightens."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "St pushing forward through midfield, white player driving down the left with space opening up."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White pushes forward through midfield toward the left wing, a St player breaks past the blue defender with open space ahead—danger building as the attack presses toward goal."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White team advances the ball through midfield with passing combinations toward the opposing goal."
+      }
+    ],
+    "generated_at": "2026-06-21T12:39:36.297Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_022",
@@ -257,7 +1591,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_022.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Match Analysis: St vs Conks (0-0, 03:43-03:50)\n\nSt (blue team) maintains possession in the midfield throughout this sequence, working the ball around the center circle with short passes while Conks (white team) defends in a compact shape. The play develops from left to right across the pitch, with St building up slowly through their midfielders and attempting to create space for an attacking opportunity. By the final frame at 03:50, St has progressed the ball forward slightly into Conks' defensive third, with a player wearing number 19 positioned centrally as a potential focal point for an attack, though no clear scoring chance has materialized yet.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "St in light blue controls midfield near center circle, shifting play left to right; Conks defend compactly as number 19 positions centrally in the attacking third."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "St controls midfield with patient, sideways passing while Conks stays compact and deep; the danger lies in St's gradual advance toward goal—number 19 offers a focal point, but Conks' shape remains organized and limits space for a breakthrough."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "St working it around midfield, looking to break down Conks' compact defense with patient possession."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "St probes methodically through the center, their midfield circulating possession as Conks holds a disciplined defensive line—tension building across the pitch in these early moments."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "St builds possession through midfield with short passes while Conks defends compactly."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "St in light blue controls midfield near center circle, shifting play left to right; Conks defend compactly as number 19 positions centrally in the attacking third."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "St controls midfield with patient, sideways passing while Conks stays compact and deep; the danger lies in St's gradual advance toward goal—number 19 offers a focal point, but Conks' shape remains organized and limits space for a breakthrough."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "St working it around midfield, looking to break down Conks' compact defense with patient possession."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "St probes methodically through the center, their midfield circulating possession as Conks holds a disciplined defensive line—tension building across the pitch in these early moments."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "St builds possession through midfield with short passes while Conks defends compactly."
+      }
+    ],
+    "generated_at": "2026-06-21T12:39:52.627Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_023",
@@ -265,7 +1657,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_023.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nSt. (in blue) maintains possession in the midfield as Conks (in white) defends, with the ball positioned approximately at the 40-yard line in the center of the pitch. The teams are engaged in structured positional play, with St. working to advance toward the Conks goal while maintaining spacing and passing lanes. No significant attacking movement or shooting opportunity develops during this sequence, which appears to show typical build-up play in the early stages of match action.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "St. maintains possession near midfield around the 40-yard line; blue players spread across center and right side while white defenders position deeper in their half."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "St. controls midfield with compact spacing and multiple passing options while Conks sits deep in a structured defensive shape, inviting pressure—the key is whether St. can break the compact defense or Conks can win the ball and transition quickly."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "St. works the ball around midfield, probing for an opening as Conks stay compact in defense."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "St. controls the ball at midfield near the 40-yard line, their blue shirts spread across the pitch as Conks in white hold their defensive shape, tension building in this patient, methodical build-up."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "St. in blue controls the ball in midfield while Conks in white defend, maintaining structured positioning across the field."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "St. maintains possession near midfield around the 40-yard line; blue players spread across center and right side while white defenders position deeper in their half."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "St. controls midfield with compact spacing and multiple passing options while Conks sits deep in a structured defensive shape, inviting pressure—the key is whether St. can break the compact defense or Conks can win the ball and transition quickly."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "St. works the ball around midfield, probing for an opening as Conks stay compact in defense."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "St. controls the ball at midfield near the 40-yard line, their blue shirts spread across the pitch as Conks in white hold their defensive shape, tension building in this patient, methodical build-up."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "St. in blue controls the ball in midfield while Conks in white defend, maintaining structured positioning across the field."
+      }
+    ],
+    "generated_at": "2026-06-21T12:40:09.784Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_024",
@@ -273,7 +1723,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_024.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Analysis\n\nThe white team (Conks) is in possession and maintaining control of the ball in the center midfield area, approximately 40-50 yards from the blue team's goal. Over the four-second sequence, white executes passing combinations near the center circle while blue defends in a compact formation around their defensive third. The play remains relatively static with no clear scoring opportunity developing, as white circulates the ball laterally and backwards without penetrating toward goal, while the blue team holds their shape defensively and waits to regain possession.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White controls possession near the center circle, circulating the ball laterally while blue defends compactly in their defensive third around the penalty area."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White controls midfield possession but blue's compact defensive shape denies penetration; white must find width or depth to create the breakthrough before blue regains the ball."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Conks working the ball around midfield, probing for an opening through the blue defense."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White maintains possession in midfield, circulating the ball methodically around the center circle while blue holds a compact defensive shape, the moment crackling with tactical patience before the next break unfolds."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White team circulates the ball in midfield while blue defends compactly near their goal."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White controls possession near the center circle, circulating the ball laterally while blue defends compactly in their defensive third around the penalty area."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White controls midfield possession but blue's compact defensive shape denies penetration; white must find width or depth to create the breakthrough before blue regains the ball."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Conks working the ball around midfield, probing for an opening through the blue defense."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White maintains possession in midfield, circulating the ball methodically around the center circle while blue holds a compact defensive shape, the moment crackling with tactical patience before the next break unfolds."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White team circulates the ball in midfield while blue defends compactly near their goal."
+      }
+    ],
+    "generated_at": "2026-06-21T12:40:27.942Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_025",
@@ -281,7 +1789,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_025.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nThe team in white has possession and is executing an attacking sequence in the opponent's half of the pitch, with players clustered around the blue team's goal area near the left side. Between the 4:13 and 4:20 timestamps, the white team advances the ball methodically through passing, maintaining possession while the blue team defends in a compact shape around their goal. The key moment occurs around 4:18-4:20 when white appears to be setting up for a potential shot or dangerous cross from the left flank, with multiple attacking players positioned to capitalize on any opportunity.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White attacks left flank near blue's goal area; multiple white players positioned to capitalize as blue defends compactly around their net."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White maintains possession in blue's penalty area with numerical advantage on the left flank; blue's compact defensive shape restricts shooting space, forcing white to find the decisive pass or cross before pressure tightens."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "White building pressure on the left side, several attackers in the box looking for an opening."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White attacks methodically on the left flank, players converging near the goal mouth with the ball at their feet, the decisive moment building as multiple strikers crowd the box."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White team maintains possession and advances toward the blue team's goal area during early match play."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White attacks left flank near blue's goal area; multiple white players positioned to capitalize as blue defends compactly around their net."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White maintains possession in blue's penalty area with numerical advantage on the left flank; blue's compact defensive shape restricts shooting space, forcing white to find the decisive pass or cross before pressure tightens."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "White building pressure on the left side, several attackers in the box looking for an opening."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White attacks methodically on the left flank, players converging near the goal mouth with the ball at their feet, the decisive moment building as multiple strikers crowd the box."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White team maintains possession and advances toward the blue team's goal area during early match play."
+      }
+    ],
+    "generated_at": "2026-06-21T12:40:51.183Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_026",
@@ -289,7 +1855,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_026.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nThe white team (Conks) is attacking the blue team's goal during open play in the first half. Between frames 1 and 4, the white team maintains possession in the attacking third of the pitch, with the ball circulating among players near the blue team's penalty area as the blue defense organizes to block shooting opportunities. The key moment occurs around frame 3-4 as white builds attacking pressure through short passes in the central and left portions of the field, with blue defenders compacting around their goal to prevent a clear shot on target.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White maintains possession in blue's penalty area, circulating the ball centrally and left side while blue defenders compact around goal to block shooting lanes."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White circulates possession in blue's penalty area with numerical pressure, but blue's compact defensive shape blocks central space—white must find width or a cutting pass to create a clear shooting opportunity."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "White's building pressure in the attacking third with sharp passing around the blue penalty area."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White builds mounting pressure in the attacking third, passing methodically through blue's compacted defense near the penalty area as the moment tightens around the goal."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White team circulates the ball in blue's attacking third, building pressure through short passes near the penalty area."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White maintains possession in blue's penalty area, circulating the ball centrally and left side while blue defenders compact around goal to block shooting lanes."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White circulates possession in blue's penalty area with numerical pressure, but blue's compact defensive shape blocks central space—white must find width or a cutting pass to create a clear shooting opportunity."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "White's building pressure in the attacking third with sharp passing around the blue penalty area."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White builds mounting pressure in the attacking third, passing methodically through blue's compacted defense near the penalty area as the moment tightens around the goal."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White team circulates the ball in blue's attacking third, building pressure through short passes near the penalty area."
+      }
+    ],
+    "generated_at": "2026-06-21T12:41:08.280Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_027",
@@ -297,7 +1921,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_027.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nThe white team maintains possession throughout this sequence, controlling the ball in the midfield and attacking third against the blue team's defense. Play flows from left to right across the pitch, with the white team executing short passing movements and advancing toward the blue team's goal on the right side of the frame. The match remains scoreless at the 4:33-4:40 mark, with neither team creating a clear shooting opportunity during this particular attacking sequence.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White team controls midfield possession, moving right toward blue's goal; ball in center circle area around thirty-five-yard line."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White builds patiently through midfield with numerical advantage, exploiting space on the right flank while blue sits deep—the danger is an overlapping run into the box if white isolates their fullback."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "White keeps it tight in midfield, working the ball forward with short passes toward the right flank."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White methodically probes right through midfield, threading passes toward the blue goal as defenders compress in tighter; the attack builds with measured control and spatial patience five minutes in."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White team maintains possession and advances the ball toward the blue team's goal through midfield passes."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White team controls midfield possession, moving right toward blue's goal; ball in center circle area around thirty-five-yard line."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White builds patiently through midfield with numerical advantage, exploiting space on the right flank while blue sits deep—the danger is an overlapping run into the box if white isolates their fullback."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "White keeps it tight in midfield, working the ball forward with short passes toward the right flank."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White methodically probes right through midfield, threading passes toward the blue goal as defenders compress in tighter; the attack builds with measured control and spatial patience five minutes in."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White team maintains possession and advances the ball toward the blue team's goal through midfield passes."
+      }
+    ],
+    "generated_at": "2026-06-21T12:41:24.616Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_028",
@@ -305,7 +1987,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_028.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nThe blue team (St) maintains possession in the midfield during this sequence spanning from 4:43 to 4:50, with the ball circulating among their players in the center of the pitch. The white team (Conks) is positioned defensively across the field, maintaining their shape while attempting to pressure the blue team's build-up play. The key moment occurs as blue progresses the ball through the middle third, with players making short passing exchanges while white tracks their movement, neither team creating an immediate threatening attacking opportunity during these opening minutes of play.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Blue maintains possession in central midfield with short passes; white defenders track movement across the pitch as play circulates through the center third."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "Blue controls midfield possession with short passes while white holds a compact defensive shape, but blue faces congestion in the center with limited space to break through white's organized pressure."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Blue working the ball through midfield with white keeping shape defensively in the first half."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "Blue circulates possession through midfield with crisp passing exchanges, white defenders positioned across the pitch tracking movement as the ball shifts left and right through the center."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Blue team circulates possession in midfield while white team defends their shape."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Blue maintains possession in central midfield with short passes; white defenders track movement across the pitch as play circulates through the center third."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "Blue controls midfield possession with short passes while white holds a compact defensive shape, but blue faces congestion in the center with limited space to break through white's organized pressure."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Blue working the ball through midfield with white keeping shape defensively in the first half."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "Blue circulates possession through midfield with crisp passing exchanges, white defenders positioned across the pitch tracking movement as the ball shifts left and right through the center."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Blue team circulates possession in midfield while white team defends their shape."
+      }
+    ],
+    "generated_at": "2026-06-21T12:41:40.474Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_029",
@@ -313,7 +2053,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_029.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "The blue team is in possession and moving the ball through the midfield toward the white team's goal during open play. From 04:53 to 05:00, the blue players advance with short passes while the white team attempts to defend and regain possession in the central and attacking third of the pitch. By the final frame at 05:00, the play has shifted to the left side of the field where a blue player is executing a pass or shot attempt near the white team's defensive line, with the ball in active play near the goal area.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Ball in play near white's goal line, left side; blue player passing or shooting as white defenders close in centrally and to the right."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "Blue advances methodically through midfield with patient passing; white's defense is spread wide, leaving central space vulnerable as blue probes toward goal down the left flank."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Blue pushing forward through midfield, working the ball toward goal with crisp passing."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "Blue surges forward through midfield with sharp passing, probing white's defense as the ball moves left toward goal in tense, open-field exchanges."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Blue team advances through midfield with possession, moving toward the white goal during open play."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Ball in play near white's goal line, left side; blue player passing or shooting as white defenders close in centrally and to the right."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "Blue advances methodically through midfield with patient passing; white's defense is spread wide, leaving central space vulnerable as blue probes toward goal down the left flank."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Blue pushing forward through midfield, working the ball toward goal with crisp passing."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "Blue surges forward through midfield with sharp passing, probing white's defense as the ball moves left toward goal in tense, open-field exchanges."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Blue team advances through midfield with possession, moving toward the white goal during open play."
+      }
+    ],
+    "generated_at": "2026-06-21T12:41:55.928Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_030",
@@ -321,7 +2119,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_030.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Soccer Broadcast Analysis\n\nThe blue team maintains possession throughout the sequence, executing a controlled passing buildup in midfield between the 40-yard and 50-yard lines. The white team (Conks) defends in a compact shape across the central area, pressing the blue team's ball carrier and blocking passing lanes. By frame four (05:10), the blue team has shifted play toward the right flank with a player advancing into attacking space, creating a developing opportunity down the wing while the teams remain at 0-0.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Blue team controls possession in midfield around the 45-yard line; white team defends compactly through center as blue shifts the ball right toward the wing."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "Blue team probes methodically through midfield while Conks compress their shape centrally; the danger emerges as blue shifts right-flank momentum, exploiting space where Conks' defense must decide whether to track the advancing winger or maintain compactness."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Blue team working the ball methodically through midfield, now looking to exploit space down the right flank as Conks hold their defensive shape."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "Blue methodically works the ball through midfield toward the right flank, shifting play as Conks' defense holds firm in the center, the moment building with patient possession near the 40-yard line."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Blue team builds possession through midfield with controlled passing while white team defends compactly."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Blue team controls possession in midfield around the 45-yard line; white team defends compactly through center as blue shifts the ball right toward the wing."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "Blue team probes methodically through midfield while Conks compress their shape centrally; the danger emerges as blue shifts right-flank momentum, exploiting space where Conks' defense must decide whether to track the advancing winger or maintain compactness."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Blue team working the ball methodically through midfield, now looking to exploit space down the right flank as Conks hold their defensive shape."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "Blue methodically works the ball through midfield toward the right flank, shifting play as Conks' defense holds firm in the center, the moment building with patient possession near the 40-yard line."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Blue team builds possession through midfield with controlled passing while white team defends compactly."
+      }
+    ],
+    "generated_at": "2026-06-21T12:42:12.251Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_031",
@@ -329,7 +2185,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_031.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "The white team (St) possesses the ball and maintains possession throughout the sequence, moving the ball from the center of the pitch toward the left side of the field where they build up play in the opponent's defensive third. The blue team (Conks) defends passively without significant pressure, allowing St to control the tempo and execute measured passes across the midfield and forward areas. By the final frames, St continues their attack down the left flank with numerical superiority in that area, creating a potential scoring opportunity as they advance toward the goal.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White team controls the ball in St's attacking third, building play leftward with a numerical advantage on the left flank near the opponent's penalty area."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "St controls the tempo in the attacking third with a patient buildup on the left flank; Conks' loose defensive shape invites danger as they fail to press, leaving space for St to exploit numerical advantage down the wing."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Saint building patiently from midfield, now working the ball down the left side with space to attack."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "Saint's white shirts dance deliberately leftward through five minutes of early control, numbers favoring them deep in Conks' third as the blue defense retreats."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White team builds possession and advances toward the left flank in attacking build-up play."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White team controls the ball in St's attacking third, building play leftward with a numerical advantage on the left flank near the opponent's penalty area."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "St controls the tempo in the attacking third with a patient buildup on the left flank; Conks' loose defensive shape invites danger as they fail to press, leaving space for St to exploit numerical advantage down the wing."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Saint building patiently from midfield, now working the ball down the left side with space to attack."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "Saint's white shirts dance deliberately leftward through five minutes of early control, numbers favoring them deep in Conks' third as the blue defense retreats."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White team builds possession and advances toward the left flank in attacking build-up play."
+      }
+    ],
+    "generated_at": "2026-06-21T12:42:29.565Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_032",
@@ -337,7 +2251,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_032.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nThe blue team is in possession of the ball in the midfield and is executing a structured attacking sequence toward the white team's goal positioned at the far end. Play progresses from left to right across the pitch over the 10-second sequence, with blue maintaining possession through short passes while white defends with a compact formation near their penalty area. The key moment occurs around the 05:28 mark when blue advances deeper into white's defensive third, creating a critical attacking opportunity that requires white's goalkeeper (in orange) to remain alert for a potential shot or dangerous cross.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Blue team in midfield advancing toward white's goal at far end; ball progresses rightward through short passes while white defends compactly near their penalty area."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "Blue advances into white's attacking third with possession, compressing the defense and creating central shooting space—white must hold their compact shape or risk a clear chance."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Blue driving forward in midfield, working the ball toward white's penalty area with sharp passing."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "Blue surges forward through midfield with precise passes, penetrating deeper into white's defensive third as the goalkeeper in orange braces for an imminent threat from close range."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Blue team advances toward white's goal with possession during early-game attacking play."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Blue team in midfield advancing toward white's goal at far end; ball progresses rightward through short passes while white defends compactly near their penalty area."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "Blue advances into white's attacking third with possession, compressing the defense and creating central shooting space—white must hold their compact shape or risk a clear chance."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Blue driving forward in midfield, working the ball toward white's penalty area with sharp passing."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "Blue surges forward through midfield with precise passes, penetrating deeper into white's defensive third as the goalkeeper in orange braces for an imminent threat from close range."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Blue team advances toward white's goal with possession during early-game attacking play."
+      }
+    ],
+    "generated_at": "2026-06-21T12:42:46.515Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_033",
@@ -345,7 +2317,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_033.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nCorks (white) and St. (blue) are in midfield possession play during the opening minutes of the match. The blue team maintains possession in the center of the pitch around the 50-yard line, with players positioned across the width of the field while white defenders attempt to press and regain the ball. Throughout the sequence, St. executes short passing combinations while Corks moves forward to challenge, with the ball remaining contested in central areas without either team creating a clear attacking opportunity toward goal.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Ball contested in center circle; St. in blue retains possession across midfield width while Corks white press forward to challenge play."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "St. maintains compact possession in central midfield while Corks presses high, but gaps remain wide—St. must quickly switch play left or right to exploit space before Corks' shape tightens further."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "St. working the ball around midfield, Corks pressing hard to win it back in the center."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "St. controls the midfield with composed passing, blue shirts spreading wide across the fifty-yard line as white defenders press urgently forward, intensity building in these early moments."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White and blue teams exchange possession in midfield during early match play."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Ball contested in center circle; St. in blue retains possession across midfield width while Corks white press forward to challenge play."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "St. maintains compact possession in central midfield while Corks presses high, but gaps remain wide—St. must quickly switch play left or right to exploit space before Corks' shape tightens further."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "St. working the ball around midfield, Corks pressing hard to win it back in the center."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "St. controls the midfield with composed passing, blue shirts spreading wide across the fifty-yard line as white defenders press urgently forward, intensity building in these early moments."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White and blue teams exchange possession in midfield during early match play."
+      }
+    ],
+    "generated_at": "2026-06-21T12:43:05.216Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_034",
@@ -353,7 +2383,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_034.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nThe white team (St) maintains possession throughout this sequence, executing a controlled passing build-up in the midfield during the opening minutes of the match. The blue team (Conks) is defending deep in their half, attempting to pressure and intercept as the white team works the ball methodically from their defensive area toward the attacking third, with multiple passing options visible across the pitch. By the final frame at 05:50, white has advanced further downfield with the ball moving toward the right flank, setting up potential attacking opportunities while the blue defense works to compress space and deny clear shooting lanes.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White builds possession through midfield with controlled passes; ball progresses toward the right flank as blue defends deep in their half, compressing central space."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White builds patiently from deep, finding space through midfield while Blue defends compactly; the key danger is whether White can penetrate the crowded center or exploit the flanks before Blue's shape tightens further."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "White building patiently through midfield, working the ball forward with space opening up on the right side."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White methodically advances through midfield, their patient passing probing blue's deep defensive shape as the ball moves toward the right flank—early dominance building with precision and purpose."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White team builds play methodically through midfield with controlled passing while blue defends deep."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White builds possession through midfield with controlled passes; ball progresses toward the right flank as blue defends deep in their half, compressing central space."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White builds patiently from deep, finding space through midfield while Blue defends compactly; the key danger is whether White can penetrate the crowded center or exploit the flanks before Blue's shape tightens further."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "White building patiently through midfield, working the ball forward with space opening up on the right side."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White methodically advances through midfield, their patient passing probing blue's deep defensive shape as the ball moves toward the right flank—early dominance building with precision and purpose."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White team builds play methodically through midfield with controlled passing while blue defends deep."
+      }
+    ],
+    "generated_at": "2026-06-21T12:43:23.984Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_035",
@@ -361,7 +2449,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_035.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Soccer Match Analysis\n\nThe white team is in possession of the ball and is executing controlled passing play in the midfield area, roughly around the center circle and slightly toward the blue team's defensive half. Over the sequence, the white team maintains possession while circulating the ball laterally and attempting to build an attacking movement, with blue defenders positioned to pressure and intercept. The key moment occurs around the 05:58 mark where the white team appears to be organizing a coordinated build-up play, but there is no decisive breakthrough or shot on goal visible in this passage of play.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White team in possession near midfield, circulating the ball laterally around the center circle with blue defenders applying pressure across the field."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White circulates possession through midfield with blue pressing laterally, but lacks penetration—wide players must find space to break the compact defensive shape and create a dangerous attacking opportunity."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "White team probing patiently through the midfield, working the ball side to side as blue sets their defensive shape."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White maintains possession near midfield, circulating the ball with patient control while blue presses defensively—the tension builds as attacking shape forms around the center circle."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White team builds possession through midfield with controlled passing while blue defends."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White team in possession near midfield, circulating the ball laterally around the center circle with blue defenders applying pressure across the field."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White circulates possession through midfield with blue pressing laterally, but lacks penetration—wide players must find space to break the compact defensive shape and create a dangerous attacking opportunity."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "White team probing patiently through the midfield, working the ball side to side as blue sets their defensive shape."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White maintains possession near midfield, circulating the ball with patient control while blue presses defensively—the tension builds as attacking shape forms around the center circle."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White team builds possession through midfield with controlled passing while blue defends."
+      }
+    ],
+    "generated_at": "2026-06-21T12:43:39.096Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_036",
@@ -369,7 +2515,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_036.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nIn this sequence, St. (blue jerseys) maintains possession and builds play across the midfield against Conks (white jerseys) during the opening minutes. The ball progresses from the center circle area through lateral passes and movement toward the right flank, with St. players making short, controlled passes while Conks defenders attempt to press and regain possession in the midfield. By the final frame at 06:10, St. has advanced into the attacking third near Conks' penalty area, where a shot or dangerous cross appears imminent, representing the culmination of their sustained possession sequence.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "St. in blue maintains possession across the midfield; ball near center circle progressing rightward with Conks defenders pressing in midfield zone."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "St. builds methodically through midfield with numerical superiority and clean passing lanes, while Conks' press lacks coordination—the danger is St.'s advancing right flank attack nearing the penalty box with space to exploit."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "St. building patiently through midfield, working the ball right as they probe toward the Conks box."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "Blue jerseys weave methodically leftward from midfield toward the penalty area, their patient passing stretching Conks' defense thin as the moment hangs poised at the attacking third."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Blue team builds possession through midfield with short passes during early-match play."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "St. in blue maintains possession across the midfield; ball near center circle progressing rightward with Conks defenders pressing in midfield zone."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "St. builds methodically through midfield with numerical superiority and clean passing lanes, while Conks' press lacks coordination—the danger is St.'s advancing right flank attack nearing the penalty box with space to exploit."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "St. building patiently through midfield, working the ball right as they probe toward the Conks box."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "Blue jerseys weave methodically leftward from midfield toward the penalty area, their patient passing stretching Conks' defense thin as the moment hangs poised at the attacking third."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Blue team builds possession through midfield with short passes during early-match play."
+      }
+    ],
+    "generated_at": "2026-06-21T12:43:55.357Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_037",
@@ -377,7 +2581,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_037.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nSt. (blue team) maintains possession in the midfield during open play, with the ball circulating among their players in the center of the pitch around the 30-yard line. Over the sequence, St. builds up their attack through short passing combinations, gradually advancing the ball toward the Conks' (white team) goal on the right side of the frame. By the final frame at 06:20, St. has progressed into a more advanced attacking position with multiple players converging near the Conks' penalty area, setting up a potential shooting or crossing opportunity.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "St. advances possession through midfield with short passes, progressing toward Conks' penalty area on the right; multiple St. players converging near the box."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "St. controls midfield with patient short passes, gradually working the ball forward while Conks hold a compact defensive shape; the danger builds as St. advances multiple attackers toward the penalty area for a potential cross or shot."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "St. working the ball forward methodically, now pressing toward the Conks' penalty area with numbers ahead."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "St. methodically advances through midfield with crisp passing, their blue shirts converging near Conks' penalty area as the attack builds toward a decisive moment."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "St. builds possession through midfield with short passes, gradually advancing toward the Conks' goal."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "St. advances possession through midfield with short passes, progressing toward Conks' penalty area on the right; multiple St. players converging near the box."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "St. controls midfield with patient short passes, gradually working the ball forward while Conks hold a compact defensive shape; the danger builds as St. advances multiple attackers toward the penalty area for a potential cross or shot."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "St. working the ball forward methodically, now pressing toward the Conks' penalty area with numbers ahead."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "St. methodically advances through midfield with crisp passing, their blue shirts converging near Conks' penalty area as the attack builds toward a decisive moment."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "St. builds possession through midfield with short passes, gradually advancing toward the Conks' goal."
+      }
+    ],
+    "generated_at": "2026-06-21T12:44:11.662Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_038",
@@ -385,7 +2647,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_038.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Match Description\n\nThe blue team receives the opening kickoff at the center circle and initiates possession in the early stages of the first half (06:23-06:30). Play develops with the blue team building from midfield toward the white team's defensive setup, with white players retreating to defensive positions near their goal. By the final frame, the blue team has advanced the ball into the attacking third and is probing for an attacking opportunity against an organized white defensive shape.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Blue team advances upfield from center circle toward white's goal; ball in attacking third around forty-yard line, blue players spreading wide while white defends deep."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "Blue team builds methodically from midfield into the attacking third, with white retreating into a compact defensive block; the key danger is whether blue can find penetrating passing lanes through a well-organized shape before white clears possession."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Blue team probing forward into the attacking third with white defense set and ready."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "Blue pushes forward from kickoff, advancing deliberately through midfield toward white's retreating defense in the attacking third, probing for an opening."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Blue team advances upfield from kickoff, moving the ball toward white's goal in early first-half play."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Blue team advances upfield from center circle toward white's goal; ball in attacking third around forty-yard line, blue players spreading wide while white defends deep."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "Blue team builds methodically from midfield into the attacking third, with white retreating into a compact defensive block; the key danger is whether blue can find penetrating passing lanes through a well-organized shape before white clears possession."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Blue team probing forward into the attacking third with white defense set and ready."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "Blue pushes forward from kickoff, advancing deliberately through midfield toward white's retreating defense in the attacking third, probing for an opening."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Blue team advances upfield from kickoff, moving the ball toward white's goal in early first-half play."
+      }
+    ],
+    "generated_at": "2026-06-21T12:44:27.406Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_039",
@@ -393,7 +2713,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_039.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "The blue team possesses the ball in the center of the pitch near midfield during the opening minutes of the match (6:33-6:40 in the first half). Play develops with the blue team moving the ball through midfield while the white team defends their half, with players spread across the field in standard attacking and defensive formations. The blue team maintains possession through a series of passes, advancing gradually toward the white team's goal on the right side of the frame, but no clear scoring opportunity materializes during this sequence.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Blue team circulates possession through midfield, with players distributed across the center and left flank, advancing slowly toward white's defensive half on the right."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "Blue controls midfield with a patient buildup, but white's compact defensive shape limits space on the flanks—the key is whether blue can switch play quickly or find an opening through the center before white closes them down."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Blue team keeps possession in midfield, working the ball forward methodically in the opening stages."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "Blue threads possession through the center circle, methodically advancing toward the right flank as white defenders settle into shape—early pressure building with each measured pass in the opening minutes."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Blue team passes the ball through midfield during early first-half play."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Blue team circulates possession through midfield, with players distributed across the center and left flank, advancing slowly toward white's defensive half on the right."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "Blue controls midfield with a patient buildup, but white's compact defensive shape limits space on the flanks—the key is whether blue can switch play quickly or find an opening through the center before white closes them down."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Blue team keeps possession in midfield, working the ball forward methodically in the opening stages."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "Blue threads possession through the center circle, methodically advancing toward the right flank as white defenders settle into shape—early pressure building with each measured pass in the opening minutes."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Blue team passes the ball through midfield during early first-half play."
+      }
+    ],
+    "generated_at": "2026-06-21T12:44:43.077Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_040",
@@ -401,7 +2779,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_040.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "The blue team maintains possession of the ball in midfield during the opening moments of the first half, with the white team defending in a spread formation across the pitch. The action progresses with the blue team moving the ball laterally and forward through their midfield, maintaining possession while the white defenders track their movements. By the final frames, the blue team continues to control the ball in the center and right side of the pitch, with no clear shot on goal or dangerous attacking opportunity materialized during this sequence.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Blue team circulates possession through midfield and right flank, white defense spread across the pitch tracking movement with no immediate scoring threat."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "Blue controls midfield with lateral possession while white stretches defensively across the pitch; the danger lies in blue's space to drive forward through the center before white's shape compacts."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Blue team probing forward in midfield, working the ball side to side in the first half."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "Blue moves the ball smoothly through midfield, spreading white's defense across the pitch as possession flows left to right in these opening moments."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Blue team controls midfield possession during early first-half play against a spread white defense."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Blue team circulates possession through midfield and right flank, white defense spread across the pitch tracking movement with no immediate scoring threat."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "Blue controls midfield with lateral possession while white stretches defensively across the pitch; the danger lies in blue's space to drive forward through the center before white's shape compacts."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Blue team probing forward in midfield, working the ball side to side in the first half."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "Blue moves the ball smoothly through midfield, spreading white's defense across the pitch as possession flows left to right in these opening moments."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Blue team controls midfield possession during early first-half play against a spread white defense."
+      }
+    ],
+    "generated_at": "2026-06-21T12:44:59.296Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_041",
@@ -409,7 +2845,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_041.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nSt. (the team in blue) maintains possession throughout this sequence, playing against Conks (in white) in a match at 0-0. The ball circulates among St.'s midfield and attacking players across the pitch during open play, with St. executing a series of passes in the central and attacking third around the 30-40 yard line. The key moment occurs when a St. player in a pink/magenta jersey makes a run into space, drawing attention from Conks' defense, though no clear shooting opportunity materializes as St. continues their possession-based play without creating an immediate goalscoring chance.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Ball circulates among St.'s midfield in central areas near the 30-40 yard line; St. player in pink makes a run into attacking space as white defenders track movement across the pitch."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "St. maintains patient possession in midfield, with Conks defending deeper and compact; a St. player in magenta exploits space centrally, but Conks' shape holds firm without immediate breakthrough."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Saint maintaining the ball nicely here, working it through midfield as Conks sit deep in defense."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "St. works the ball forward through the midfield with crisp passing; a player in pink peels into space around the 30-yard line, creating dangerous movement as Conks' defense adjusts to track the run."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Blue team maintains possession in midfield during open play."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Ball circulates among St.'s midfield in central areas near the 30-40 yard line; St. player in pink makes a run into attacking space as white defenders track movement across the pitch."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "St. maintains patient possession in midfield, with Conks defending deeper and compact; a St. player in magenta exploits space centrally, but Conks' shape holds firm without immediate breakthrough."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Saint maintaining the ball nicely here, working it through midfield as Conks sit deep in defense."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "St. works the ball forward through the midfield with crisp passing; a player in pink peels into space around the 30-yard line, creating dangerous movement as Conks' defense adjusts to track the run."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Blue team maintains possession in midfield during open play."
+      }
+    ],
+    "generated_at": "2026-06-21T12:45:16.007Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_042",
@@ -417,7 +2911,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_042.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Match Analysis\n\nThe white team (St.) maintains possession and controls play in the central midfield area throughout the opening moments of the match against Corks. The white players are spread across the field with multiple players in advanced positions, executing short passing combinations across the 50-yard line as they attempt to build an offensive attack. The blue-shirted Corks team is organized defensively, with players distributed across their half of the pitch to track their opponents and disrupt the play, though they have not yet mounted a significant counter-attacking threat during this early sequence.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White maintains possession across the center midfield near the fifty-yard line, with blue Corks organized defensively across their half, tracking opponents through short passing combinations."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "St. controls the ball in midfield with a spread shape, probing for openings while Corks holds a compact defensive line—the key danger is whether St. can penetrate centrally or must switch play wide to break through."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "St. maintains possession in midfield, spreading the ball across the field in the opening exchanges."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White pushes forward from the center circle, spreading possession wide across the fifty-yard line while blue organizes a compact defensive shape, early chess moves unfolding under an attentive crowd."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White maintains possession with short passes in midfield while blue defends in early first-half play."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White maintains possession across the center midfield near the fifty-yard line, with blue Corks organized defensively across their half, tracking opponents through short passing combinations."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "St. controls the ball in midfield with a spread shape, probing for openings while Corks holds a compact defensive line—the key danger is whether St. can penetrate centrally or must switch play wide to break through."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "St. maintains possession in midfield, spreading the ball across the field in the opening exchanges."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White pushes forward from the center circle, spreading possession wide across the fifty-yard line while blue organizes a compact defensive shape, early chess moves unfolding under an attentive crowd."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White maintains possession with short passes in midfield while blue defends in early first-half play."
+      }
+    ],
+    "generated_at": "2026-06-21T12:45:34.278Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_043",
@@ -425,7 +2977,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_043.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "The blue team maintains possession in the midfield during open play, with the white team defending deeper in their half. Over the sequence, the ball moves laterally across the pitch as the blue team attempts to work the ball forward, with a pink-jerseyed referee positioned centrally to monitor play. By the final frame at 07:20, the blue team still controls the ball in the attacking midfield area, approximately 30 yards from the white team's goal, with both teams maintaining their defensive shape and spacing.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Blue team in possession, ball moving laterally across midfield around the 30-yard line, white defense holding shape deeper in their half."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "Blue controls midfield possession with white compact and deep; blue's danger lies in finding the final pass through congestion while white risks a turnover in transition."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Blue keeping it tight in midfield, working the ball side to side as white sets their defensive line."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "Blue probes patiently across the midfield, working the ball left to right, holding possession thirty yards out as white sits deep and compact—the tension builds with every touch."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Blue team controls possession in midfield, shifting the ball laterally while white team defends deep."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Blue team in possession, ball moving laterally across midfield around the 30-yard line, white defense holding shape deeper in their half."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "Blue controls midfield possession with white compact and deep; blue's danger lies in finding the final pass through congestion while white risks a turnover in transition."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Blue keeping it tight in midfield, working the ball side to side as white sets their defensive line."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "Blue probes patiently across the midfield, working the ball left to right, holding possession thirty yards out as white sits deep and compact—the tension builds with every touch."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Blue team controls possession in midfield, shifting the ball laterally while white team defends deep."
+      }
+    ],
+    "generated_at": "2026-06-21T12:45:53.532Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_044",
@@ -433,7 +3043,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_044.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nThe white team (Conks) is in possession of the ball in the midfield during the opening minutes of the match (7:23-7:30). The ball is being worked through the center and right side of the pitch, approximately 40 yards from the opposing goal, with multiple white players spreading the defense and attempting to advance up the field. The blue team is defending with a compact shape in their half, looking to intercept or force a turnover as the sequence develops with no immediate dangerous attacking opportunity materializing for either side.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Ball is with white's midfield, forty yards from goal, moving right across center as blue defenders compact their shape in their half."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White builds possession through midfield with patient sideways movement, but blue's compact defensive shape limits penetration—the key is finding a forward pass before possession stalls in traffic."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "White working the ball forward through midfield, spreading the blue defense with patient possession play."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White shifts the ball right from midfield, spreading blue's defense across the forty-yard line as the possession builds with deliberate, controlled passing in these early moments."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White builds possession in midfield during early play, working the ball through the center with spreading movement."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Ball is with white's midfield, forty yards from goal, moving right across center as blue defenders compact their shape in their half."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White builds possession through midfield with patient sideways movement, but blue's compact defensive shape limits penetration—the key is finding a forward pass before possession stalls in traffic."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "White working the ball forward through midfield, spreading the blue defense with patient possession play."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White shifts the ball right from midfield, spreading blue's defense across the forty-yard line as the possession builds with deliberate, controlled passing in these early moments."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White builds possession in midfield during early play, working the ball through the center with spreading movement."
+      }
+    ],
+    "generated_at": "2026-06-21T12:46:08.912Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_045",
@@ -441,7 +3109,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_045.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nIn the opening minutes of the first half (time 07:33-07:40), the white team maintains possession in the midfield and attacking third of the pitch, with the blue team defending. The ball circulates among white players across the width of the field as they work to build an attack toward the blue goal on the right side, while the blue team remains compact defensively. By 07:40, white continues their possession-based approach with multiple passing options distributed across the midfield, maintaining territorial advantage without creating an immediate clear-cut scoring opportunity.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White maintains possession in the attacking third, circulating the ball across midfield and right flank near the blue goal as blue defends compactly."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White controls midfield with patient possession, spreading play wide while blue sits deep and compact; white must find penetrating passes or create width to break through the organized blue defense."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "White's keeping possession in the attacking half, circulating the ball across the midfield with blue defending deep."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White's midfield hums with patient possession across the width, probing blue's compact defense as the ball moves laterally through the opening minutes—measured buildup searching for the breakthrough."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White team maintains possession in midfield during early first-half play against defending blue team."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White maintains possession in the attacking third, circulating the ball across midfield and right flank near the blue goal as blue defends compactly."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White controls midfield with patient possession, spreading play wide while blue sits deep and compact; white must find penetrating passes or create width to break through the organized blue defense."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "White's keeping possession in the attacking half, circulating the ball across the midfield with blue defending deep."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White's midfield hums with patient possession across the width, probing blue's compact defense as the ball moves laterally through the opening minutes—measured buildup searching for the breakthrough."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White team maintains possession in midfield during early first-half play against defending blue team."
+      }
+    ],
+    "generated_at": "2026-06-21T12:46:25.101Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_046",
@@ -449,7 +3175,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_046.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "The white team (Corks) maintains possession throughout the sequence, executing short passes and building from the back in their own half of the pitch. The blue team defends by attempting to press and intercept, but the white team successfully moves the ball laterally and forward, gradually advancing up the field toward the opponent's goal during the 7:43-7:50 window of the match.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White builds from the back with short passes across midfield, advancing gradually toward blue's half while blue presses high on the flanks."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White builds patiently from deep, shifting the ball side-to-side while blue's press remains disorganized; space opens centrally as the visitors edge into the attacking half."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Corks keeping the ball moving nicely, working it forward with short passes as the blue side tries to press."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White shifts the ball left across midfield, probing methodically as blue presses inward—a patient buildup from deep that inches forward with each measured pass."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Corks builds possession through short passes, gradually advancing toward the opponent's half while the blue team presses defensively."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White builds from the back with short passes across midfield, advancing gradually toward blue's half while blue presses high on the flanks."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White builds patiently from deep, shifting the ball side-to-side while blue's press remains disorganized; space opens centrally as the visitors edge into the attacking half."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Corks keeping the ball moving nicely, working it forward with short passes as the blue side tries to press."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White shifts the ball left across midfield, probing methodically as blue presses inward—a patient buildup from deep that inches forward with each measured pass."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Corks builds possession through short passes, gradually advancing toward the opponent's half while the blue team presses defensively."
+      }
+    ],
+    "generated_at": "2026-06-21T12:46:41.816Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_047",
@@ -457,7 +3241,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_047.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "The white team maintains possession in midfield throughout the sequence, with the ball circulating among players in the center and attacking third of the pitch. The blue team is pressing defensively but remains largely compact in their shape, positioning themselves to intercept passes and block attacking lanes. By the final frame at 08:00, the white team has advanced the ball closer to the blue team's goal area on the right flank, creating a potential scoring opportunity as they continue their build-up play.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White team controls midfield and right flank, advancing toward blue's goal area; blue team compact defensively across the thirty-yard line."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White maintains patient possession through the middle while blue sits deep and compact; danger builds on the right flank as white inches closer to goal, testing blue's defensive shape."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "White keeping the ball nicely in midfield, working it around as blue sits deep and organized in defense."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White methodically circles the ball through midfield, each touch drawing blue deeper into their own half—a patient build-up crackling with attacking intent as the opportunity ripens on the right flank."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White team circulates possession in midfield while blue team defends compactly."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White team controls midfield and right flank, advancing toward blue's goal area; blue team compact defensively across the thirty-yard line."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White maintains patient possession through the middle while blue sits deep and compact; danger builds on the right flank as white inches closer to goal, testing blue's defensive shape."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "White keeping the ball nicely in midfield, working it around as blue sits deep and organized in defense."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White methodically circles the ball through midfield, each touch drawing blue deeper into their own half—a patient build-up crackling with attacking intent as the opportunity ripens on the right flank."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White team circulates possession in midfield while blue team defends compactly."
+      }
+    ],
+    "generated_at": "2026-06-21T12:46:58.836Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_048",
@@ -465,7 +3307,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_048.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Soccer Broadcast Analysis\n\nThe white team maintains possession in the attacking third of the pitch, moving the ball toward the blue team's goal on the right side of the frame. Over the sequence, white players execute a series of short passes and positional movements, with the ball progressing into the box area near the goal line by the final frame. The blue team defends with players clustered around their goal, and the key moment appears to be white's buildup play in the attacking third, creating scoring opportunities through controlled possession in the penalty area.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "White controls possession in the attacking third, ball progressing toward the right side of the blue penalty area as defenders cluster near the goal line."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "White builds possession in blue's penalty area with numerical advantage near goal; blue's defense clusters tight but gaps open on the flanks as white probes methodically toward a shooting opportunity."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "White working it into the box with quick passing—dangerous buildup in the attacking third."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "White players weave through the blue defense in the penalty area, their passes sharp and deliberate, building toward a decisive moment near the goal line."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "White team builds up possession in the attacking third, working the ball toward the blue goal."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "White controls possession in the attacking third, ball progressing toward the right side of the blue penalty area as defenders cluster near the goal line."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "White builds possession in blue's penalty area with numerical advantage near goal; blue's defense clusters tight but gaps open on the flanks as white probes methodically toward a shooting opportunity."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "White working it into the box with quick passing—dangerous buildup in the attacking third."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "White players weave through the blue defense in the penalty area, their passes sharp and deliberate, building toward a decisive moment near the goal line."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "White team builds up possession in the attacking third, working the ball toward the blue goal."
+      }
+    ],
+    "generated_at": "2026-06-21T12:47:14.127Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_049",
@@ -473,7 +3373,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_049.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "The blue team is executing a set piece in the attacking third near the white team's goal. Between frames 1 and 3, the blue team sets up for a corner or free kick with players positioned around the penalty area, while the white team defends with a compact group near the goal. By frame 4 (at 08:20), the play has developed into open play with both teams competing for the ball in the midfield and attacking areas, though the blue team maintains possession and continues probing the white team's defense near the goal line.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Blue team maintains possession near the white penalty area; clustered defenders guard the goal as blue players probe from the right side of the box."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "Blue team exploits a set piece with numbers around the box; white defense clusters tight but risks being overrun if the ball bounces loose in the congestion near goal."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Blue setting up the set piece, white's wall locked in tight around the goal."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "Blue team swarms the white goal mouth during a set piece in the attacking third, bodies packed tight in the penalty area as the moment hangs with dangerous possibility."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Blue team sets up for a set piece with players clustered near the white team's goal area."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Blue team maintains possession near the white penalty area; clustered defenders guard the goal as blue players probe from the right side of the box."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "Blue team exploits a set piece with numbers around the box; white defense clusters tight but risks being overrun if the ball bounces loose in the congestion near goal."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Blue setting up the set piece, white's wall locked in tight around the goal."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "Blue team swarms the white goal mouth during a set piece in the attacking third, bodies packed tight in the penalty area as the moment hangs with dangerous possibility."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Blue team sets up for a set piece with players clustered near the white team's goal area."
+      }
+    ],
+    "generated_at": "2026-06-21T12:47:29.775Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_050",
@@ -481,7 +3439,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_050.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "The blue team is attacking the white team's goal in the penalty area during the first half (8:23-8:30). Play develops with the blue team maintaining possession and moving the ball into dangerous attacking positions near the goal line, with multiple blue players converging around the white goalkeeper and penalty box. The white team attempts to defend, but the blue team creates several scoring opportunities through continued pressure, ultimately resulting in a shot or attempt on goal around the 8:28-8:30 mark.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Blue team converges in white's penalty area; ball at goal line with multiple blue attackers pressing the goalkeeper near the six-yard box."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "Blue converges in the white penalty area with numerical advantage; white's compressed defense leaves the back post vulnerable as blue maintains possession pressure near goal."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Blue team surging forward with numbers, crowding the penalty box as white scrambles to clear the danger."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "Blue pushes relentlessly into white's penalty area, numbers overwhelming near the goal line; the moment crackles with danger as bodies converge in the box."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Blue team presses forward with multiple players converging in the white team's penalty area during early first-half play."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Blue team converges in white's penalty area; ball at goal line with multiple blue attackers pressing the goalkeeper near the six-yard box."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "Blue converges in the white penalty area with numerical advantage; white's compressed defense leaves the back post vulnerable as blue maintains possession pressure near goal."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Blue team surging forward with numbers, crowding the penalty box as white scrambles to clear the danger."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "Blue pushes relentlessly into white's penalty area, numbers overwhelming near the goal line; the moment crackles with danger as bodies converge in the box."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Blue team presses forward with multiple players converging in the white team's penalty area during early first-half play."
+      }
+    ],
+    "generated_at": "2026-06-21T12:47:45.680Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_051",
@@ -489,7 +3505,65 @@
     "video_src": "https://qg9kbszzfgzph9eb.public.blob.vercel-storage.com/match-vision-clips/clips/real/segments/first_9_mins_051.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Broadcast Analysis\n\nThe blue team maintains possession in the attacking third, moving the ball toward the white team's goal on the right side of the pitch. Over the sequence, blue players work the ball through midfield with short passes while white defenders attempt to press and cut out passing lanes near their penalty area. The key moment occurs as blue advances closer to goal, with the ball moving into scoring range around the 20-yard box, though no shot is attempted in these frames.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Blue maintains possession in the attacking third, working the ball left-to-right across midfield toward white's penalty area; ball currently twenty yards from goal."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "Blue's patient buildup near the box creates numerical overload in tight space; white's deeper defensive shape leaves them vulnerable to a penetrating pass or cutback from the wing."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "Blue working it forward in the attacking third, probing the white defense around the box."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "Blue surges forward in the attacking third, threading passes through white's defensive shape as the ball creeps dangerously closer to the penalty area on the right side of the pitch."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Blue team advances the ball toward white's goal through midfield possession play."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Blue maintains possession in the attacking third, working the ball left-to-right across midfield toward white's penalty area; ball currently twenty yards from goal."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "Blue's patient buildup near the box creates numerical overload in tight space; white's deeper defensive shape leaves them vulnerable to a penetrating pass or cutback from the wing."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "Blue working it forward in the attacking third, probing the white defense around the box."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "Blue surges forward in the attacking third, threading passes through white's defensive shape as the ball creeps dangerously closer to the penalty area on the right side of the pitch."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Blue team advances the ball toward white's goal through midfield possession play."
+      }
+    ],
+    "generated_at": "2026-06-21T12:48:01.170Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "kaggle_10_000",

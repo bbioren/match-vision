@@ -1,13 +1,11 @@
 import { generateAdc, generateQnaAnswer } from './services/description.js';
-import { setupSpeechRecognition, speakWithDeepgramOrFallback } from './services/voice.js';
-import { loadMemory, saveMemory } from './services/memory.js';
-import { selectBestCandidate, scoreCandidate } from './ranker.js';
+import { setupWakeWordListening, speakWithDeepgramOrFallback, stopSpeaking } from './services/voice.js';
+import { saveMemory } from './services/memory.js';
 import { currentMoment, memoryAt } from './services/match-memory.js';
 import { resolveContextAt, formatContextSummary } from './services/match-context.js';
 import { captureVideoFrameSequence, extractMomentFromFrame, formatVideoTimestamp, resetProbeVideo } from './services/vision-extract.js';
 
 let clips = [];
-let annotationTasks = [];
 let timeline = [];
 let liveTimeline = [];
 let liveMode = true;
@@ -25,15 +23,73 @@ let extractTimings = [];
 let extractInterval = Number(window.MATCHVISION_EXTRACT_INTERVAL) || 2;
 let liveExtractBlocked = false;
 let seekTimer = null;
+// Live caption + auto-speak: track the last moment captioned/spoken so we
+// don't re-caption an unchanged moment on every timeupdate tick, and don't
+// re-speak a key moment the user has already heard (e.g. re-seeking nearby).
+let lastCaptionKey = null;
+let lastSpokenKey = null;
+let lastSpokenAtSecond = -Infinity;
+// Generated commentary lines take a few seconds to speak even when short;
+// without a minimum gap, moments arriving faster than that would constantly
+// interrupt each other before finishing. Key moments (goals/danger) always
+// cut through immediately regardless of this gap.
+const MIN_CAPTION_GAP_SECONDS = 3;
+// True while a wake-word question is being answered — the live ticker keeps
+// updating captions visually but stays silent so it doesn't talk over the
+// answer, then resumes once the spoken answer finishes.
+let commentaryMuted = false;
+// The most recent ADC/Q&A answer text — there's no visible answer panel
+// (voice is the primary interface), so this is just internal state for
+// speak()'s default argument and for re-speaking after a clip/mode change.
+let lastAnswerText = '';
 const $ = (id) => document.getElementById(id);
+
+function momentKey(m) {
+  return `${m?.atSecond ?? ''}|${m?.event || m?.summary || ''}`;
+}
+
+// "Key" moments (goals, high-danger plays) get spoken aloud automatically as
+// the video plays; everything else only updates the visible caption text —
+// speaking every single pass/touch nonstop would be unusable, not helpful.
+function isKeyMoment(m) {
+  if (!m) return false;
+  const danger = (m.danger_level || m.urgency_level || '').toLowerCase();
+  return danger === 'high' || /goal/i.test(m.event || '');
+}
+
+function renderCaption(m) {
+  const el = $('liveCaption');
+  if (!el) return;
+  const text = m?.commentary || m?.summary || m?.event;
+  if (!text) {
+    el.classList.remove('visible', 'key-moment');
+    return;
+  }
+  const key = momentKey(m);
+  if (key === lastCaptionKey) return;
+
+  const isKey = isKeyMoment(m);
+  const gapElapsed = (m.atSecond ?? 0) - lastSpokenAtSecond >= MIN_CAPTION_GAP_SECONDS;
+  if (!isKey && !gapElapsed) return; // too soon after the last caption — let it finish, skip this one
+
+  lastCaptionKey = key;
+  el.textContent = text;
+  el.classList.add('visible');
+  el.classList.toggle('key-moment', isKey);
+  // Speak every caption that makes it through the gap above — interrupt-
+  // replace (newest wins) is handled inside speakWithDeepgramOrFallback/
+  // speechSynthesis, so back-to-back moments cut cleanly into each other.
+  // While a voice question is being answered, keep updating the caption
+  // text but stay silent so the ticker doesn't talk over the answer.
+  if (key !== lastSpokenKey) {
+    lastSpokenKey = key;
+    lastSpokenAtSecond = m.atSecond ?? lastSpokenAtSecond;
+    if (!commentaryMuted) speakWithDeepgramOrFallback(text, { shouldSpeak: () => !commentaryMuted });
+  }
+}
 
 function currentClip() {
   return clips[$('clipSelect').selectedIndex];
-}
-
-function currentAnnotationTask() {
-  const clip = currentClip();
-  return annotationTasks.find((task) => task.clip_id === clip?.clip_id);
 }
 
 function getResolvedContext(seconds = currentSeconds) {
@@ -76,12 +132,11 @@ function localAdc(mode) {
     const zone = m.ball_zone || m.ball_location;
     return `${m.team_in_possession} in possession. Ball in ${zone}. ${m.phase || m.event}.`;
   }
-  return m.summary || `${m.team_in_possession} — ${m.phase || m.event}. ${m.ball_zone || m.ball_location}.`;
+  return m.commentary || m.summary || `${m.team_in_possession} — ${m.phase || m.event}. ${m.ball_zone || m.ball_location}.`;
 }
 function localAnswer(question) {
   const q = normalize(question);
-  const mode = $('modeSelect')?.value || 'balanced';
-  const recap = currentMemory().map((m) => m.summary).filter(Boolean).join(' ');
+  const recap = currentMemory().map((m) => m.commentary || m.summary).filter(Boolean).join(' ');
   if (!recap) {
     return liveMode
       ? 'No match memory yet. Press play and wait for live frame analysis.'
@@ -95,19 +150,9 @@ function localAnswer(question) {
       : recap;
   }
   if (q.includes('miss') || q.includes('recent') || q.includes('happen')) return recap;
-  if (mode !== 'balanced') return localAdc(mode);
   return recap;
 }
 
-function renderLiveJson() {
-  const el = $('liveJson');
-  if (!el) return;
-  if (!isAnalyticsReplay && !liveMode) {
-    el.textContent = 'Live extraction off — enable the checkbox above and press play.';
-    return;
-  }
-  el.textContent = JSON.stringify(liveTimeline, null, 2) || 'Waiting for first frame analysis…';
-}
 
 function setExtractStatus(msg) {
   const el = $('extractStatus');
@@ -211,7 +256,6 @@ async function runExtraction(bucket) {
   );
   renderMoment();
   renderMemory();
-  renderLiveJson();
 }
 
 // Single sequential worker: drains pending buckets one at a time, guaranteeing
@@ -230,7 +274,6 @@ async function drainQueue() {
         if (error.message === 'INVALID_API_KEY') {
           liveExtractBlocked = true;
           setExtractStatus('DashScope API key rejected. Update DASHSCOPE_API_KEY in .env, restart ./run.sh, then reload.');
-          if ($('liveJson')) $('liveJson').textContent = 'API key invalid — live extraction paused.\n\nFix: get a new key from Alibaba Model Studio → paste in .env → restart server.';
         } else if (error.message === 'MODEL_NOT_FOUND') {
           liveExtractBlocked = true;
           setExtractStatus('Vision model not found on US endpoint. Set QWEN_VL_MODEL=qwen3-vl-plus in .env and restart server.');
@@ -271,33 +314,15 @@ function renderMoment() {
       <dt>Visual event</dt><dd>${m.event || 'unknown'}</dd>
       <dt>Danger</dt><dd>${m.danger_level || 'unknown'}</dd>
     </dl>`;
+  renderCaption(m);
   renderMatchContext();
 }
 
 function renderMemory() {
   const entries = currentMemory();
   $('memoryList').innerHTML = entries.length
-    ? entries.map((m) => `<li><strong>${m.timestamp || ''}</strong> ${m.summary || m.event || ''}</li>`).join('')
+    ? entries.map((m) => `<li><strong>${m.timestamp || ''}</strong> ${m.commentary || m.summary || m.event || ''}</li>`).join('')
     : `<li>${liveMode ? 'Waiting for live frame analysis…' : 'No match memory yet.'}</li>`;
-}
-
-function renderRanker() {
-  const task = currentAnnotationTask();
-  if (!task) {
-    $('baseline').textContent = '—';
-    $('improved').textContent = 'No Terac labels for this clip yet.';
-    if ($('rankerDetails')) $('rankerDetails').innerHTML = '';
-    return;
-  }
-  const selected = selectBestCandidate(task.candidates);
-  $('baseline').textContent = task.baseline;
-  $('improved').textContent = selected.description;
-  const ranker = $('rankerDetails');
-  if (ranker) {
-    ranker.innerHTML = task.candidates
-      .map((c) => `<div class="metric"><span>${c.label || c.id}</span><strong>${scoreCandidate(c).toFixed(1)}</strong></div>`)
-      .join('');
-  }
 }
 
 function encodeVideoPath(assetPath) {
@@ -314,6 +339,9 @@ async function renderClip() {
   liveExtractBlocked = false;
   timeline = [];
   currentSeconds = 0;
+  lastCaptionKey = null;
+  lastSpokenKey = null;
+  lastSpokenAtSecond = -Infinity;
   isAnalyticsReplay = Boolean(clip?.timeline_asset);
   resetProbeVideo();
 
@@ -321,7 +349,6 @@ async function renderClip() {
     $('liveExtractToggle').disabled = isAnalyticsReplay;
     $('liveExtractToggle').checked = isAnalyticsReplay ? false : liveMode;
   }
-  setReplayIndicator(isAnalyticsReplay, clip);
 
   if (isAnalyticsReplay) {
     // Ground-truth analytics replay (e.g. StatsBomb/socceraction) — no VLM
@@ -359,36 +386,44 @@ async function renderClip() {
   }
 
   renderMoment();
-  renderRanker();
   renderMemory();
-  renderLiveJson();
   renderMatchContext();
-  $('answer').textContent = localAdc($('modeSelect')?.value || 'balanced');
-}
-
-function setReplayIndicator(active, clip) {
-  let el = $('replayIndicator');
-  if (!el) return;
-  if (active) {
-    el.style.display = 'block';
-    el.textContent = clip?.video_asset
-      ? `📊 Analytics replay — ticker driven by ground-truth match data (${clip?.source || 'statsbomb-open-data'}), synced to real video. No live VLM extraction.`
-      : `📊 Analytics replay — ground-truth match data (${clip?.source || 'statsbomb-open-data'}), not live video.`;
-  } else {
-    el.style.display = 'none';
-    el.textContent = '';
-  }
+  lastAnswerText = localAdc('balanced');
 }
 
 // For clips that pair real video with a precomputed timeline_asset (e.g. a
 // full match replay synced to ground-truth analytics), the timeline's
-// atSecond is real match-clock time, but the video itself has pre/post-match
-// padding (walkout, trophy ceremony, etc.) before kickoff. video_offset_seconds
-// is the video-time at which kickoff actually happens, so we can map
-// video.currentTime back to match-clock seconds.
+// atSecond is real match-clock time, but the video itself has dead time
+// (pre-match buildup, halftime coverage, mid-match production cutaways) that
+// inflates video runtime without advancing the match clock — so a single
+// constant offset only holds within one contiguous broadcast segment, not
+// across the whole match. video_sync_anchors is a list of [videoSeconds,
+// matchSeconds] pairs (read directly off the broadcast's own clock overlay
+// at each videoSeconds) that we piecewise-linearly interpolate/extrapolate
+// between. video_offset_seconds (a single constant) is still supported as a
+// simpler fallback for clips with no mid-match dead time.
 function videoToMatchSeconds(videoSeconds) {
-  const offset = currentClip()?.video_offset_seconds || 0;
-  return Math.max(0, Math.floor(videoSeconds - offset));
+  const anchors = currentClip()?.video_sync_anchors;
+  if (!anchors?.length) {
+    const offset = currentClip()?.video_offset_seconds || 0;
+    return Math.max(0, Math.floor(videoSeconds - offset));
+  }
+  if (videoSeconds <= anchors[0][0]) {
+    return Math.max(0, Math.floor(anchors[0][1] - (anchors[0][0] - videoSeconds)));
+  }
+  for (let i = 0; i < anchors.length - 1; i += 1) {
+    const [v0, m0] = anchors[i];
+    const [v1, m1] = anchors[i + 1];
+    if (videoSeconds <= v1) {
+      const t = (videoSeconds - v0) / (v1 - v0);
+      return Math.max(0, Math.floor(m0 + t * (m1 - m0)));
+    }
+  }
+  // Past the last anchor: extrapolate using the final segment's slope.
+  const [v0, m0] = anchors[anchors.length - 2];
+  const [v1, m1] = anchors[anchors.length - 1];
+  const slope = v1 !== v0 ? (m1 - m0) / (v1 - v0) : 1;
+  return Math.max(0, Math.floor(m1 + (videoSeconds - v1) * slope));
 }
 
 function onTimeUpdate() {
@@ -421,27 +456,27 @@ function onSeeked() {
   }, 250);
 }
 
-async function ask() {
+async function ask(question) {
   const clip = currentClip();
-  const question = $('questionInput').value;
-  const mode = $('modeSelect')?.value || 'balanced';
-  $('answer').textContent = 'Thinking…';
+  const mode = 'balanced';
+  lastAnswerText = 'Thinking…';
   const memoryEntries = currentMemory();
   const matchContext = getResolvedContext();
-  $('answer').textContent = await generateQnaAnswer({
+  const answer = await generateQnaAnswer({
     question,
     memoryEntries,
     matchContext,
     mode,
     fallback: () => localAnswer(question)
   });
+  lastAnswerText = answer;
   await saveMemory({ clip: clip.title, question, mode, ts: Date.now() });
+  return answer;
 }
 
 async function describeNow() {
-  const mode = $('modeSelect')?.value || 'balanced';
-  $('answer').textContent = 'Describing…';
-  $('answer').textContent = await generateAdc({
+  const mode = 'balanced';
+  lastAnswerText = await generateAdc({
     memoryEntries: currentMemory(),
     matchContext: getResolvedContext(),
     mode,
@@ -450,26 +485,30 @@ async function describeNow() {
   speak();
 }
 
-function speak() {
-  speakWithDeepgramOrFallback($('answer').textContent);
+function speak(text = lastAnswerText) {
+  return speakWithDeepgramOrFallback(text);
 }
 
-function setupVoiceInput() {
-  setupSpeechRecognition({
-    button: $('voiceBtn'),
-    onTranscript: async (transcript) => {
-      $('questionInput').value = transcript;
-      await ask();
-      speak();
-    }
-  });
+function setVoiceStatus(message) {
+  const el = $('voiceStatus');
+  if (el) el.textContent = message;
+}
+
+// Wake word heard ("Match Vision, <question>") — mute the live ticker so it
+// doesn't talk over the answer, ask, speak the answer, then resume.
+async function handleVoiceQuestion(question) {
+  commentaryMuted = true;
+  stopSpeaking();
+  setVoiceStatus(`🎙️ Heard: "${question}" — thinking…`);
+  const answer = await ask(question);
+  setVoiceStatus('🎙️ Answering…');
+  await speak(answer);
+  commentaryMuted = false;
+  setVoiceStatus('🎙️ Always listening — say "Match Vision" then your question.');
 }
 
 async function init() {
-  [clips, annotationTasks] = await Promise.all([
-    fetch('data/clips.json').then((r) => r.json()),
-    fetch('data/annotation_tasks.json').then((r) => r.json())
-  ]);
+  clips = await fetch('data/clips.json').then((r) => r.json());
   const select = $('clipSelect');
   clips.forEach((clip) => {
     const option = document.createElement('option');
@@ -479,26 +518,17 @@ async function init() {
   });
   if ($('liveExtractToggle')) $('liveExtractToggle').checked = liveMode;
   select.addEventListener('change', renderClip);
-  $('modeSelect')?.addEventListener('change', () => {
-    $('answer').textContent = localAdc($('modeSelect').value);
-  });
-  $('askBtn').addEventListener('click', ask);
-  $('speakBtn').addEventListener('click', speak);
-  $('describeBtn')?.addEventListener('click', describeNow);
   $('liveExtractToggle')?.addEventListener('change', (event) => {
     liveMode = event.target.checked;
     renderClip();
   });
   $('clipVideo')?.addEventListener('timeupdate', onTimeUpdate);
   $('clipVideo')?.addEventListener('seeked', onSeeked);
-  $('questionInput').addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') ask();
-  });
-  setupVoiceInput();
+  setupWakeWordListening({ onQuestion: handleVoiceQuestion, onStatusChange: setVoiceStatus });
   await renderClip();
 }
 
 init().catch((error) => {
   console.error(error);
-  $('answer').textContent = 'Failed to load demo data.';
+  setVoiceStatus('⚠️ Failed to load demo data.');
 });

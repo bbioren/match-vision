@@ -1,51 +1,10 @@
 [
   {
-    "clip_id": "conquerors_vs_state_first_9_mins",
-    "title": "Conquerors vs State — first 9 minutes",
-    "video_asset": "clips/real/first 9 mins.mp4",
-    "match_context": {
-      "camera_view": "broadcast sideline",
-      "halftime_at_second": 2700,
-      "teams": {
-        "Conquerors": {
-          "short_name": "Conquerors",
-          "outfield_kit": "white",
-          "goalkeeper_kit": "grey"
-        },
-        "State": {
-          "short_name": "State",
-          "outfield_kit": "blue",
-          "goalkeeper_kit": "orange"
-        }
-      },
-      "halves": [
-        {
-          "half": 1,
-          "from_second": 0,
-          "until_second": 2699,
-          "Conquerors": { "attacking_direction": "left", "defending_goal": "right" },
-          "State": { "attacking_direction": "right", "defending_goal": "left" }
-        },
-        {
-          "half": 2,
-          "from_second": 2700,
-          "until_second": null,
-          "Conquerors": { "attacking_direction": "right", "defending_goal": "left" },
-          "State": { "attacking_direction": "left", "defending_goal": "right" }
-        }
-      ]
-    }
-  },
-  {
-    "clip_id": "turkey_vs_italy_euro2020_analytics",
-    "title": "Turkey vs Italy (Euro 2020) — analytics replay",
-    "timeline_asset": "data/analytics/turkey_vs_italy_euro2020_timeline.json",
-    "source": "statsbomb-open-data"
-  },
-  {
-    "clip_id": "argentina_vs_france_wc2022_final_analytics",
-    "title": "Argentina vs France (2022 World Cup Final) — analytics replay",
-    "timeline_asset": "data/analytics/argentina_vs_france_wc2022_final_timeline.json",
-    "source": "statsbomb-open-data"
+    "clip_id": "argentina_vs_france_wc2022_h2_kickoff",
+    "title": "Argentina vs France (2022 World Cup Final) — 2nd half kickoff, 5 min",
+    "timeline_asset": "data/analytics/argentina_vs_france_wc2022_h2_kickoff_5min_timeline.json",
+    "video_asset": "clips/real/argentina_vs_france_wc2022_h2_kickoff_5min.mp4",
+    "source": "statsbomb-open-data",
+    "video_source_note": "5-minute clip trimmed from FIFA's official full-match YouTube upload (https://www.youtube.com/watch?v=RgqKdplLIk4), starting exactly at second-half kickoff (video t=3298s) so video time 0 = match-clock 45:00 with no piecewise sync needed."
   }
 ]
