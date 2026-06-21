@@ -1,0 +1,50 @@
+{
+  "survey_id": "soccer_gaze_v1",
+  "title": "Where do you watch the game?",
+  "description": "A short eye-tracking study. Watch five soccer clips while your webcam estimates where you look. We use this to learn what fans naturally focus on so MatchVision can auto-zoom there for low-vision viewers.",
+  "min_watch_seconds": 30,
+  "default_zoom": 1.0,
+  "match_source": "Conquerors vs State (youth match)",
+  "clips": [
+    {
+      "clip_id": "survey_clip_1",
+      "title": "Clip 1 — Kickoff & build-up",
+      "video_src": "clips/survey/survey_clip_1.mp4",
+      "poster": "clips/survey/survey_clip_1.jpg",
+      "duration_seconds": 40,
+      "match_time": "00:00"
+    },
+    {
+      "clip_id": "survey_clip_2",
+      "title": "Clip 2 — Midfield battle",
+      "video_src": "clips/survey/survey_clip_2.mp4",
+      "poster": "clips/survey/survey_clip_2.jpg",
+      "duration_seconds": 40,
+      "match_time": "01:40"
+    },
+    {
+      "clip_id": "survey_clip_3",
+      "title": "Clip 3 — Attacking move",
+      "video_src": "clips/survey/survey_clip_3.mp4",
+      "poster": "clips/survey/survey_clip_3.jpg",
+      "duration_seconds": 40,
+      "match_time": "03:20"
+    },
+    {
+      "clip_id": "survey_clip_4",
+      "title": "Clip 4 — Transition & counter",
+      "video_src": "clips/survey/survey_clip_4.mp4",
+      "poster": "clips/survey/survey_clip_4.jpg",
+      "duration_seconds": 40,
+      "match_time": "05:00"
+    },
+    {
+      "clip_id": "survey_clip_5",
+      "title": "Clip 5 — Final third pressure",
+      "video_src": "clips/survey/survey_clip_5.mp4",
+      "poster": "clips/survey/survey_clip_5.jpg",
+      "duration_seconds": 40,
+      "match_time": "06:40"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MatchVision — Gaze Results</title>
+    <link rel="stylesheet" href="src/styles.css" />
+    <style>
+      .stat-row { display: flex; gap: 14px; flex-wrap: wrap; margin: 8px 0 4px; }
+      .stat {
+        flex: 1; min-width: 130px; padding: 16px; border-radius: 16px;
+        background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .stat .n { font-size: 1.8rem; font-weight: 1000; color: var(--accent-2); }
+      .stat .l { color: var(--muted); font-size: 0.85rem; }
+
+      .heat-box {
+        position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 16px;
+        overflow: hidden; background: #000 center/cover no-repeat;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+      }
+      .heat-box video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: #000; }
+      .heat-box canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+      .heat-meta { display: flex; justify-content: space-between; align-items: baseline; margin-top: 10px; }
+      .heat-meta .small { color: var(--muted); font-size: 0.85rem; }
+
+      .heat-controls { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+      .heat-controls .hc-seek { flex: 1; min-width: 140px; accent-color: var(--accent-2); }
+      .heat-controls .hc-time { min-width: 48px; text-align: right; font-variant-numeric: tabular-nums; }
+      .heat-controls button {
+        cursor: pointer; border-radius: 999px; padding: 7px 14px; font-weight: 700;
+        color: #fff; background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+      }
+      .heat-controls button:hover { background: rgba(255, 255, 255, 0.18); }
+      .heat-controls select {
+        cursor: pointer; border-radius: 999px; padding: 6px 10px; color: #fff;
+        background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.18);
+      }
+
+      .legend { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 0.82rem; margin-top: 10px; }
+      .legend .bar { height: 10px; flex: 1; border-radius: 999px;
+        background: linear-gradient(90deg, rgba(68,136,255,0.0), #4488ff, #44ff44, #ffdd00, #ff8800, #ff3344); }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <section class="hero">
+        <p class="eyebrow">Eye-tracking data collection</p>
+        <h1 style="font-size: clamp(2.4rem, 6vw, 4.4rem);">Where people looked</h1>
+        <p class="tagline">Aggregated gaze heatmaps from every survey session, per clip.</p>
+        <p>
+          <a class="link" href="survey.html">← Take the survey</a>
+          &nbsp;&nbsp;
+          <a class="link" href="index.html">MatchVision home</a>
+          &nbsp;&nbsp;
+          <a class="link" href="/api/gaze?full=1" target="_blank">Raw JSON →</a>
+        </p>
+      </section>
+
+      <section class="card" style="margin-bottom: 18px;">
+        <div class="stat-row">
+          <div class="stat"><div class="n" id="statSessions">—</div><div class="l">sessions</div></div>
+          <div class="stat"><div class="n" id="statSamples">—</div><div class="l">gaze samples</div></div>
+          <div class="stat"><div class="n" id="statClips">—</div><div class="l">clips with data</div></div>
+          <div class="stat"><div class="n" id="statCalib">—</div><div class="l">avg calibration</div></div>
+        </div>
+        <div class="legend"><span>cold</span><span class="bar"></span><span>most looked at</span></div>
+        <p class="hint" id="emptyHint" style="display:none; margin-top: 14px;"></p>
+      </section>
+
+      <div id="clipGrid"></div>
+    </main>
+
+    <script type="module" src="src/gaze-results.js"></script>
+  </body>
+</html>

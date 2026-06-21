@@ -38,6 +38,10 @@ clips/real/*.mp4
 # local annotation smoke-test output
 data/labels.local.json
 
+# eye-tracking survey: participant gaze sessions + large concatenated clips
+data/gaze/
+clips/survey/*.mp4
+
 clips/real/*.mov
 
 # analytics: cached StatsBomb actions + fitted xT/VAEP models (regenerable)

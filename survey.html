@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MatchVision — Eye-Tracking Survey</title>
+    <link rel="stylesheet" href="src/styles.css" />
+    <style>
+      .survey-screen { display: none; }
+      .survey-screen.active { display: block; }
+
+      .badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(112, 225, 255, 0.12);
+        color: var(--accent);
+        font-size: 0.8rem;
+        font-weight: 800;
+        margin-bottom: 12px;
+      }
+
+      .step-dots { display: flex; gap: 8px; margin: 18px 0 6px; }
+      .step-dot {
+        flex: 1;
+        height: 6px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+        transition: background 0.25s;
+      }
+      .step-dot.done { background: var(--accent-2); }
+      .step-dot.current { background: var(--accent); }
+
+      .video-stage {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        background: #000;
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+      }
+      .video-stage video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+        background: #000;
+      }
+      .gaze-dot {
+        position: fixed;
+        width: 18px;
+        height: 18px;
+        margin: -9px 0 0 -9px;
+        border-radius: 50%;
+        background: rgba(112, 225, 255, 0.85);
+        box-shadow: 0 0 16px rgba(112, 225, 255, 0.9);
+        pointer-events: none;
+        z-index: 50;
+        display: none;
+        transition: left 0.05s linear, top 0.05s linear;
+      }
+
+      .watch-meter {
+        margin-top: 14px;
+        height: 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+      }
+      .watch-meter > div {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        transition: width 0.2s linear;
+      }
+
+      .clip-controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
+      .clip-controls .spacer { flex: 1; }
+      .ghost-btn { background: rgba(255, 255, 255, 0.12); color: var(--text); }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--muted);
+        font-size: 0.85rem;
+        margin-top: 12px;
+      }
+      .status-pill.tracking { background: rgba(164, 255, 159, 0.12); color: var(--accent-2); }
+      .status-pill.error { background: rgba(255, 184, 107, 0.14); color: var(--danger); }
+
+      .privacy-note {
+        margin-top: 18px;
+        padding: 14px 16px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(0, 0, 0, 0.18);
+        color: var(--muted);
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <section class="hero" aria-labelledby="survey-title">
+        <p class="eyebrow">Eye-tracking data collection</p>
+        <h1 id="survey-title" style="font-size: clamp(2.4rem, 6vw, 4.4rem);">Where do you watch the game?</h1>
+        <p class="tagline">Watch 5 short soccer clips. Your webcam estimates where you look so we can learn what fans naturally focus on.</p>
+        <p>
+          <a class="link" href="index.html">← Back to MatchVision</a>
+        </p>
+        <p><span id="submissionBadge" class="badge" hidden></span></p>
+      </section>
+
+      <!-- ── Intro / consent ─────────────────────────────────────────────── -->
+      <section id="screen-intro" class="card survey-screen active">
+        <h2>Before you start</h2>
+        <ul style="color: var(--muted); line-height: 1.9; padding-left: 1.2em;">
+          <li>You'll be asked to <strong>allow camera access</strong> and complete a quick 9-dot calibration.</li>
+          <li>Then you'll watch <strong>5 soccer clips</strong> (about 40 seconds each). Just watch naturally.</li>
+          <li>We record <strong>where on the video your eyes look</strong> — coordinates only, never video of you.</li>
+          <li>Sit roughly arm's length from the screen with your face well lit, and try to keep your head still.</li>
+        </ul>
+        <div class="privacy-note">
+          <strong>Privacy:</strong> All face processing happens on your device via WebGazer. We only save anonymous gaze
+          coordinates (where you looked on each clip) and timing — never images or video from your camera.
+        </div>
+        <button id="beginBtn" class="primary" type="button">Allow camera & calibrate</button>
+        <div id="introStatus" class="status-pill" style="display:none;"></div>
+      </section>
+
+      <!-- ── Calibration handoff (overlay is built dynamically) ──────────── -->
+      <section id="screen-calibrate" class="card survey-screen">
+        <h2>Calibrating…</h2>
+        <p class="hint">Follow the dots. Look directly at each one and press <strong>Space</strong> (or click it) to record.</p>
+        <div id="calibrateStatus" class="status-pill">Starting camera…</div>
+      </section>
+
+      <!-- ── Clip player ─────────────────────────────────────────────────── -->
+      <section id="screen-clip" class="card survey-screen">
+        <span class="badge" id="clipBadge">Clip 1 of 5</span>
+        <h2 id="clipTitle">Clip</h2>
+        <div class="step-dots" id="stepDots"></div>
+
+        <div class="video-stage" id="videoStage">
+          <video id="surveyVideo" muted playsinline preload="auto"></video>
+        </div>
+
+        <div class="watch-meter" aria-hidden="true"><div id="watchFill"></div></div>
+
+        <div class="clip-controls">
+          <button id="playPauseBtn" class="ghost-btn" type="button">⏸️ Pause</button>
+          <button id="muteBtn" class="ghost-btn" type="button">🔊 Unmute</button>
+          <span class="status-pill tracking" id="watchStatus">Watch at least 30s…</span>
+          <span class="spacer"></span>
+          <button id="nextBtn" type="button" disabled>Next clip →</button>
+        </div>
+        <p class="hint" id="trackHint">👁️ Tracking your gaze — the blue dot shows the current estimate.</p>
+      </section>
+
+      <!-- ── Done ────────────────────────────────────────────────────────── -->
+      <section id="screen-done" class="card survey-screen">
+        <h2>Thank you! 🎉</h2>
+        <p class="answer small" id="doneSummary">Your gaze data has been saved.</p>
+        <div class="privacy-note" id="doneDetails"></div>
+        <div class="clip-controls" style="margin-top: 18px;">
+          <button id="restartBtn" class="ghost-btn" type="button">Run again</button>
+        </div>
+      </section>
+    </main>
+
+    <div class="gaze-dot" id="gazeDot"></div>
+
+    <script type="module" src="src/survey.js"></script>
+  </body>
+</html>

@@ -261,6 +261,118 @@ async function labels(req, res) {
   }
   send(res, 405, JSON.stringify({ error: 'Method not allowed' }), { 'content-type': 'application/json' });
 }
+// ── Gaze survey persistence ────────────────────────────────────────────────
+// Eye-tracking sessions are large (hundreds–thousands of samples per clip), so
+// they're stored separately from /api/labels: one JSON file per session under
+// data/gaze/. On Vercel the equivalent handler (api/gaze.js) uses Upstash.
+const GAZE_DIR = path.join(root, 'data', 'gaze');
+
+function buildGazeSession(body, req) {
+  const submissionId = labelSubmissionId(body, req);
+  const clips = Array.isArray(body.clips) ? body.clips : [];
+  return {
+    id: `gaze_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    survey_id: body.survey_id ?? 'soccer_gaze_v1',
+    terac_submission_id: submissionId,
+    terac_task_id: body.teracTaskId ?? body.taskId ?? null,
+    calibration: body.calibration ?? null,
+    participant: body.participant ?? null,
+    clips: clips.map((clip) => ({
+      clip_id: clip.clip_id ?? null,
+      video_src: clip.video_src ?? null,
+      duration_seconds: clip.duration_seconds ?? null,
+      watched_seconds: clip.watched_seconds ?? null,
+      zoom: clip.zoom ?? 1,
+      sample_count: Array.isArray(clip.samples) ? clip.samples.length : 0,
+      samples: Array.isArray(clip.samples) ? clip.samples : [],
+    })),
+    created_at: new Date().toISOString(),
+  };
+}
+
+function summarizeGazeSession(session) {
+  return {
+    id: session.id,
+    survey_id: session.survey_id,
+    terac_submission_id: session.terac_submission_id,
+    calibration: session.calibration,
+    created_at: session.created_at,
+    clips: (session.clips ?? []).map((c) => ({
+      clip_id: c.clip_id,
+      video_src: c.video_src,
+      duration_seconds: c.duration_seconds,
+      watched_seconds: c.watched_seconds,
+      zoom: c.zoom,
+      sample_count: c.sample_count,
+    })),
+  };
+}
+
+async function readGazeSessions() {
+  try {
+    const files = await fs.readdir(GAZE_DIR);
+    const sessions = [];
+    for (const file of files) {
+      if (!file.endsWith('.json')) continue;
+      try {
+        sessions.push(JSON.parse(await fs.readFile(path.join(GAZE_DIR, file), 'utf8')));
+      } catch { /* skip corrupt file */ }
+    }
+    sessions.sort((a, b) => (a.created_at < b.created_at ? 1 : -1));
+    return sessions;
+  } catch (error) {
+    if (error.code === 'ENOENT') return [];
+    throw error;
+  }
+}
+
+async function gaze(req, res) {
+  if (req.method === 'POST') {
+    const body = await readJson(req);
+    const session = buildGazeSession(body, req);
+    await fs.mkdir(GAZE_DIR, { recursive: true });
+    await fs.writeFile(path.join(GAZE_DIR, `${session.id}.json`), JSON.stringify(session, null, 2));
+    const totalSamples = session.clips.reduce((n, c) => n + c.sample_count, 0);
+    return send(res, 201, JSON.stringify({ ok: true, id: session.id, clips: session.clips.length, samples: totalSamples }), { 'content-type': 'application/json' });
+  }
+  if (req.method === 'GET') {
+    const url = new URL(req.url, `http://localhost:${port}`);
+    // Mirror the production read gate (api/gaze.js): if GAZE_ADMIN_TOKEN is set,
+    // require it. Left unset locally so dev stays frictionless (localhost only).
+    const adminToken = process.env.GAZE_ADMIN_TOKEN;
+    if (adminToken) {
+      const provided = url.searchParams.get('token') ?? req.headers['x-admin-token'];
+      if (provided !== adminToken) return send(res, 401, JSON.stringify({ error: 'unauthorized' }), { 'content-type': 'application/json' });
+    }
+    const id = url.searchParams.get('id');
+    const full = url.searchParams.get('full') === '1' || id;
+    const sessions = await readGazeSessions();
+    if (id) {
+      const found = sessions.find((s) => s.id === id);
+      if (!found) return send(res, 404, JSON.stringify({ error: 'not found' }), { 'content-type': 'application/json' });
+      return send(res, 200, JSON.stringify(found), { 'content-type': 'application/json' });
+    }
+    const rows = full ? sessions : sessions.map(summarizeGazeSession);
+    return send(res, 200, JSON.stringify({ count: rows.length, sessions: rows }), { 'content-type': 'application/json' });
+  }
+  if (req.method === 'DELETE') {
+    const url = new URL(req.url, `http://localhost:${port}`);
+    if (url.searchParams.get('all') === '1') {
+      try { await fs.rm(GAZE_DIR, { recursive: true, force: true }); } catch {}
+      return send(res, 200, JSON.stringify({ ok: true, deleted: 'all' }), { 'content-type': 'application/json' });
+    }
+    const id = url.searchParams.get('id');
+    if (!id) return send(res, 400, JSON.stringify({ error: 'provide ?id=<sessionId> or ?all=1' }), { 'content-type': 'application/json' });
+    try {
+      await fs.unlink(path.join(GAZE_DIR, `${id}.json`));
+      return send(res, 200, JSON.stringify({ ok: true, deleted: id }), { 'content-type': 'application/json' });
+    } catch (error) {
+      return send(res, error.code === 'ENOENT' ? 404 : 500, JSON.stringify({ error: error.code === 'ENOENT' ? 'not found' : String(error) }), { 'content-type': 'application/json' });
+    }
+  }
+  send(res, 405, JSON.stringify({ error: 'Method not allowed' }), { 'content-type': 'application/json' });
+}
+
 async function sessions(req, res) {
   if (req.method !== 'GET') return send(res, 405, JSON.stringify({ error: 'Method not allowed' }), { 'content-type': 'application/json' });
   const rows = await readLocalLabels();
@@ -300,6 +412,7 @@ http.createServer(async (req, res) => {
     if (req.method === 'POST' && url.pathname === '/api/describe') return await describe(req, res);
     if (req.method === 'POST' && url.pathname === '/api/extract') return await extract(req, res);
     if (url.pathname === '/api/labels') return await labels(req, res);
+    if (url.pathname === '/api/gaze') return await gaze(req, res);
     if (url.pathname === '/api/sessions') return await sessions(req, res);
     if (req.method === 'POST' && url.pathname === '/api/tts') return await tts(req, res);
     // Proxy mediapipe WASM assets for WebGazer (it hardcodes relative paths)
@@ -314,8 +427,35 @@ http.createServer(async (req, res) => {
     const pathname = url.pathname === '/' ? '/index.html' : decodeURIComponent(url.pathname);
     const file = path.normalize(path.join(root, pathname));
     if (!file.startsWith(root)) return send(res, 403, 'Forbidden');
-    const data = await fs.readFile(file);
-    send(res, 200, data, { 'content-type': mime[path.extname(file)] || 'application/octet-stream' });
+
+    // Stream static files with HTTP range support so <video> can seek/scrub
+    // (the survey player and the gaze-results timeline overlay both rely on this).
+    const stat = await fs.stat(file);
+    if (stat.isDirectory()) return send(res, 404, 'Not found');
+    const ctype = mime[path.extname(file)] || 'application/octet-stream';
+    const rangeHeader = req.headers.range;
+    const m = rangeHeader && /^bytes=(\d*)-(\d*)$/.exec(rangeHeader);
+    if (m) {
+      let start = m[1] === '' ? null : parseInt(m[1], 10);
+      let end = m[2] === '' ? null : parseInt(m[2], 10);
+      if (start === null) { start = Math.max(0, stat.size - (end ?? 0)); end = stat.size - 1; }
+      else if (end === null || end >= stat.size) { end = stat.size - 1; }
+      if (start > end || start >= stat.size) {
+        res.writeHead(416, { 'Content-Range': `bytes */${stat.size}`, 'Accept-Ranges': 'bytes' });
+        return res.end();
+      }
+      res.writeHead(206, {
+        'content-type': ctype,
+        'accept-ranges': 'bytes',
+        'content-range': `bytes ${start}-${end}/${stat.size}`,
+        'content-length': end - start + 1,
+      });
+      if (req.method === 'HEAD') return res.end();
+      return fsSync.createReadStream(file, { start, end }).pipe(res);
+    }
+    res.writeHead(200, { 'content-type': ctype, 'accept-ranges': 'bytes', 'content-length': stat.size });
+    if (req.method === 'HEAD') return res.end();
+    fsSync.createReadStream(file).pipe(res);
   } catch (error) {
     send(res, error.code === 'ENOENT' ? 404 : 500, error.code === 'ENOENT' ? 'Not found' : String(error.stack || error));
   }
