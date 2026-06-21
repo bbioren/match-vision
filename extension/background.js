@@ -74,23 +74,40 @@ Parameter guide:
 
 When the user asks to change a setting, use the adjust_params tool. Always confirm what you changed.`;
 
-  const tools = [{
-    name: 'adjust_params',
-    description: 'Adjust one or more eye-tracking parameters in real time',
-    input_schema: {
-      type: 'object',
-      properties: {
-        zoom:        { type: 'number', description: 'Zoom level 1.2–6' },
-        panSpeed:    { type: 'number', description: 'Pan speed 1–20' },
-        gazeSmooth:  { type: 'number', description: 'Gaze smoothing 0.02–0.5' },
-        kP:          { type: 'number', description: 'Proportional gain 0.01–0.5' },
-        kI:          { type: 'number', description: 'Integral gain 0–0.2' },
-        kD:          { type: 'number', description: 'Derivative gain 0–0.3' },
-        yBias:       { type: 'number', description: 'Y offset in pixels -200 to 400' },
-        yScale:      { type: 'number', description: 'Y scale factor 0.5–2.5' },
+  const tools = [
+    {
+      name: 'adjust_params',
+      description: 'Adjust one or more eye-tracking parameters in real time',
+      input_schema: {
+        type: 'object',
+        properties: {
+          zoom:       { type: 'number', description: 'Zoom level 1.2–6' },
+          panSpeed:   { type: 'number', description: 'Pan speed 1–20' },
+          gazeSmooth: { type: 'number', description: 'Gaze smoothing 0.02–0.5' },
+          kP:         { type: 'number', description: 'Proportional gain 0.01–0.5' },
+          kI:         { type: 'number', description: 'Integral gain 0–0.2' },
+          kD:         { type: 'number', description: 'Derivative gain 0–0.3' },
+          yBias:      { type: 'number', description: 'Y offset in pixels -200 to 400' },
+          yScale:     { type: 'number', description: 'Y scale factor 0.5–2.5' },
+        },
       },
     },
-  }];
+    {
+      name: 'control_tracking',
+      description: 'Start eye tracking, stop eye tracking, or reset the pan position to center',
+      input_schema: {
+        type: 'object',
+        properties: {
+          action: {
+            type: 'string',
+            enum: ['start', 'stop', 'reset_pan'],
+            description: 'start=begin tracking, stop=end tracking, reset_pan=center the view',
+          },
+        },
+        required: ['action'],
+      },
+    },
+  ];
 
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -116,13 +133,15 @@ When the user asks to change a setting, use the adjust_params tool. Always confi
 
     let text = '';
     let paramChanges = {};
+    let action = null;
     for (const block of data.content || []) {
       if (block.type === 'text') text = block.text;
       if (block.type === 'tool_use' && block.name === 'adjust_params') paramChanges = block.input;
+      if (block.type === 'tool_use' && block.name === 'control_tracking') action = block.input.action;
     }
-    if (!text && Object.keys(paramChanges).length) text = 'Done, settings updated.';
+    if (!text && (Object.keys(paramChanges).length || action)) text = 'Done.';
 
-    chrome.tabs.sendMessage(tabId, { type: 'voice-response', text, params: paramChanges }).catch(() => {});
+    chrome.tabs.sendMessage(tabId, { type: 'voice-response', text, params: paramChanges, action }).catch(() => {});
   } catch (err) {
     chrome.tabs.sendMessage(tabId, { type: 'voice-response', error: 'Claude error: ' + err.message }).catch(() => {});
   }

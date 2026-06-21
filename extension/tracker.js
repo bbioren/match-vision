@@ -540,6 +540,11 @@
           if (p.yBias      != null) { params.yBias      = p.yBias;      updateSlider('mv-yb', p.yBias,      v => v + 'px'); }
           if (p.yScale     != null) { params.yScale     = p.yScale;     updateSlider('mv-ys', p.yScale,     v => v.toFixed(2)); }
         }
+        // Execute control actions
+        if (msg.action === 'start')     startFlow();
+        if (msg.action === 'stop')      stopTracking();
+        if (msg.action === 'reset_pan') resetPan();
+
         if (msg.text) {
           if (vs) vs.textContent = msg.text;
           speak(msg.text);
