@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node server.mjs",
     "start": "node server.mjs",
+    "build": "node scripts/build-static.mjs",
     "check": "node scripts/check-data.mjs",
     "metrics": "node scripts/compute-metrics.mjs",
     "rehearse": "node scripts/rehearsal-timer.mjs",
