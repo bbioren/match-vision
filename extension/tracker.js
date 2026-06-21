@@ -14,7 +14,7 @@
   let _pidPrevErrX = 0, _pidPrevErrY = 0;
   let _pidLastTime = 0;
   const INT_LIMIT = 3.0;
-  const params = { panSpeed: 6, kP: 0.08, kI: 0.02, kD: 0.04, gazeSmooth: 0.12 };
+  const params = { panSpeed: 6, kP: 0.08, kI: 0.02, kD: 0.04, gazeSmooth: 0.12, yBias: 0, yScale: 1.0 };
   let panInterval = null;
   let calibrationOverlay = null;
   let debugDot = null;
@@ -58,9 +58,11 @@
 
   // ── Gaze smoother + debug dot ─────────────────────────────────────────────
   function applyGaze(x, y) {
+    // Correct for webcam-position bias: scale Y then shift it down
+    const cy = y * params.yScale + params.yBias;
     const a = params.gazeSmooth;
-    smoothX = smoothX === null ? x : smoothX + a * (x - smoothX);
-    smoothY = smoothY === null ? y : smoothY + a * (y - smoothY);
+    smoothX = smoothX === null ? x  : smoothX + a * (x  - smoothX);
+    smoothY = smoothY === null ? cy : smoothY + a * (cy - smoothY);
     if (debugDot) { debugDot.style.left = smoothX + 'px'; debugDot.style.top = smoothY + 'px'; }
   }
 
@@ -313,6 +315,12 @@
           <input type="range" id="mv-ki" min="0" max="0.2" step="0.005" value="0.02"></div>
         <div class="mv-sl"><div class="mv-sl-top"><span>kD</span><span id="mv-kd-val">0.040</span></div>
           <input type="range" id="mv-kd" min="0" max="0.3" step="0.005" value="0.04"></div>
+        <hr class="mv-sep">
+        <div class="mv-sec">Webcam Correction</div>
+        <div class="mv-sl"><div class="mv-sl-top"><span>Y bias (cam above screen)</span><span id="mv-yb-val">0px</span></div>
+          <input type="range" id="mv-yb" min="-200" max="400" step="5" value="0"></div>
+        <div class="mv-sl"><div class="mv-sl-top"><span>Y scale (vertical sensitivity)</span><span id="mv-ys-val">1.00</span></div>
+          <input type="range" id="mv-ys" min="0.5" max="2.5" step="0.05" value="1.0"></div>
       </div>
       <div id="mv-circle">👁</div>
     `;
@@ -354,6 +362,8 @@
     wireSlider('mv-kp', 'mv-kp-val', v => v.toFixed(2), v => { params.kP = v; });
     wireSlider('mv-ki', 'mv-ki-val', v => v.toFixed(3), v => { params.kI = v; });
     wireSlider('mv-kd', 'mv-kd-val', v => v.toFixed(3), v => { params.kD = v; });
+    wireSlider('mv-yb', 'mv-yb-val', v => v + 'px',    v => { params.yBias  = v; });
+    wireSlider('mv-ys', 'mv-ys-val', v => v.toFixed(2), v => { params.yScale = v; });
   }
 
   function setUiStatus(msg, cls = '') {
