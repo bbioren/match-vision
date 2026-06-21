@@ -39,17 +39,37 @@ npm run check
 node scripts/compute-metrics.mjs
 ```
 
-## AI generation credentials
+## Analytics-replay clips (StatsBomb ground truth, no live VLM needed)
 
-For the annotation candidate generator and `/api/describe`, use a Google Gemini API key:
+Alongside the live-video VLM pipeline, the demo includes a second data source: real StatsBomb open-data matches converted to a structured moment timeline via `kloppy` + `socceraction` (xT + VAEP), with no broadcast video required. See `analytics/build_state_frames.py`.
 
+Currently wired into `data/clips.json`:
+- **Turkey vs Italy, Euro 2020 group stage** (`turkey_vs_italy_euro2020_analytics`) — ticker only, no video.
+- **Argentina vs France, 2022 World Cup Final** (`argentina_vs_france_wc2022_final_analytics`) — ticker synced to FIFA's official full-match YouTube upload via a `video_offset_seconds` kickoff offset.
+
+Regenerate a timeline (requires the `analytics/.venv` — Python 3.12, see `analytics/requirements.txt`):
 ```bash
-GEMINI_API_KEY=your_google_ai_studio_key
-# optional, defaults to gemini-2.5-flash
-GEMINI_MODEL=gemini-2.5-flash
+cd analytics && source .venv/bin/activate
+python fit_models.py                                    # fits xT + VAEP once, caches to analytics/cache/
+python build_state_frames.py                             # default: Turkey vs Italy
+python build_state_frames.py --match-id 3869685 --out ../data/analytics/argentina_vs_france_wc2022_final_timeline.json
 ```
 
-`GOOGLE_API_KEY` is also accepted as an alias for `GEMINI_API_KEY`.
+## AI generation credentials
+
+For the annotation candidate generator (`scripts/generate-candidates.mjs`) and `/api/describe`, use either Gemini or Anthropic — both support vision (frame analysis) and text generation:
+
+```bash
+# Gemini
+GEMINI_API_KEY=your_google_ai_studio_key
+GEMINI_MODEL=gemini-2.5-flash       # optional, this is the default
+
+# Anthropic
+ANTHROPIC_API_KEY=your_anthropic_key
+ANTHROPIC_MODEL=claude-haiku-4-5-20251001   # optional, this is the default
+```
+
+`GOOGLE_API_KEY` is also accepted as an alias for `GEMINI_API_KEY`. Set `LLM_PROVIDER=gemini` or `LLM_PROVIDER=anthropic` to force one; otherwise both `local-server.mjs` and `generate-candidates.mjs` auto-detect (Gemini first if both keys are set).
 
 ## Terac fine-tune pipeline (human labels → better commentary prompt)
 
@@ -58,12 +78,14 @@ See [`docs/TERAC_FINETUNE_PLAN.md`](./docs/TERAC_FINETUNE_PLAN.md) for the full 
 1. **Generate real AI candidates** (replaces hand-written commentary variations):
    ```bash
    GEMINI_API_KEY=your_key node scripts/generate-candidates.mjs
+   # or Anthropic instead:
+   LLM_PROVIDER=anthropic ANTHROPIC_API_KEY=your_key node scripts/generate-candidates.mjs
    # or one clip at a time:
    GEMINI_API_KEY=your_key node scripts/generate-candidates.mjs --clip yt_eng_cro_12
    # sanity-check without burning quota / without a key at all:
    node scripts/generate-candidates.mjs --dry-run
    ```
-   Writes real Gemini outputs (5 prompt strategies per clip) into `data/annotation_tasks.json`.
+   Writes real Gemini or Anthropic outputs (5 prompt strategies per clip) into `data/annotation_tasks.json`, tagged with `generation_provider`/`generation_model`.
 
 2. **Collect Terac rankings** — open `annotate.html`, rank the 5 real candidates per clip. Locally this POSTs to `/api/labels` and is stored in `data/labels.local.json` (gitignored) by `local-server.mjs`; hosted Terac sessions use the same shape.
 
@@ -94,7 +116,7 @@ See [`docs/TERAC_FINETUNE_PLAN.md`](./docs/TERAC_FINETUNE_PLAN.md) for the full 
 
 | Step | Key | Where |
 |---|---|---|
-| Generate candidates | `GEMINI_API_KEY` (or `GOOGLE_API_KEY`) | `.env`, read by `scripts/generate-candidates.mjs` |
+| Generate candidates | `GEMINI_API_KEY` (or `GOOGLE_API_KEY`) **or** `ANTHROPIC_API_KEY` | `.env`, read by `scripts/generate-candidates.mjs` |
 | Collect labels | none | local — `local-server.mjs` writes `data/labels.local.json` |
 | Build preference dataset | none | reads from the local server's `/api/labels` + `/api/sessions` |
 | Optimize prompt | none | pure text-pattern analysis over `preference_pairs.jsonl` |
