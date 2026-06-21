@@ -4,10 +4,14 @@
  *
  * For each clip in annotation_tasks.json:
  *   1. Extract 4 frames from the video with ffmpeg
- *   2. Send frames to Gemini vision to auto-generate clip_summary
- *   3. Call Gemini 5× with different prompt strategies to generate
+ *   2. Send frames to a vision LLM (Gemini or Anthropic) to auto-generate clip_summary
+ *   3. Call the same LLM 5× with different prompt strategies to generate
  *      real AI commentary candidates
  *   4. Write results back to annotation_tasks.json
+ *
+ * Provider: set LLM_PROVIDER=gemini|anthropic to force one, or leave unset to
+ * auto-detect (Gemini if GEMINI_API_KEY/GOOGLE_API_KEY is set, else Anthropic
+ * if ANTHROPIC_API_KEY is set).
  *
  * Usage:
  *   node --env-file=.env.local scripts/generate-candidates.mjs
@@ -21,21 +25,41 @@ import { execSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
-const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
-const GEMINI_REQUEST_DELAY_MS = Number(process.env.GEMINI_REQUEST_DELAY_MS || 13000);
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const EXPLICIT_PROVIDER = (process.env.LLM_PROVIDER || '').toLowerCase();
+const PROVIDER = ['gemini', 'anthropic'].includes(EXPLICIT_PROVIDER)
+  ? EXPLICIT_PROVIDER
+  : (GEMINI_API_KEY ? 'gemini' : (ANTHROPIC_API_KEY ? 'anthropic' : null));
+const MODEL = PROVIDER === 'anthropic'
+  ? (process.env.ANTHROPIC_MODEL || 'claude-haiku-4-5-20251001')
+  : (process.env.GEMINI_MODEL || 'gemini-2.5-flash');
+// Gemini's free tier is commonly 5 requests/min/model, so pace calls hard by
+// default; Anthropic has much higher limits, so a short pace is enough.
+const REQUEST_DELAY_MS = Number(
+  process.env.GENERATE_REQUEST_DELAY_MS || (PROVIDER === 'anthropic' ? 1000 : 13000)
+);
 const DRY_RUN = process.argv.includes('--dry-run');
 const clipFlagIdx = process.argv.indexOf('--clip');
 const ONLY_CLIP = clipFlagIdx !== -1 ? process.argv[clipFlagIdx + 1] : null;
 
-if (!GEMINI_API_KEY && !DRY_RUN) {
-  console.error('GEMINI_API_KEY or GOOGLE_API_KEY required');
+if (!PROVIDER && !DRY_RUN) {
+  console.error('Need GEMINI_API_KEY/GOOGLE_API_KEY or ANTHROPIC_API_KEY (or pass --dry-run)');
   process.exit(1);
 }
 
-// ── Gemini API call ──────────────────────────────────────────────────────────
-async function gemini(system, userContent, attempt = 1) {
+// ── Provider-agnostic vision call ────────────────────────────────────────────
+// `blocks` is an array of { type: 'text', text } | { type: 'image', mimeType, data }.
+async function callLLM(system, blocks, attempt = 1) {
+  return PROVIDER === 'anthropic'
+    ? callAnthropic(system, blocks, attempt)
+    : callGemini(system, blocks, attempt);
+}
+
+async function callGemini(system, blocks, attempt = 1) {
+  const parts = blocks.map(b => b.type === 'image'
+    ? { inlineData: { mimeType: b.mimeType, data: b.data } }
+    : { text: b.text });
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(MODEL)}:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`;
-  const parts = Array.isArray(userContent) ? userContent : [{ text: userContent }];
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
@@ -50,13 +74,41 @@ async function gemini(system, userContent, attempt = 1) {
     if ([429, 500, 502, 503, 504].includes(res.status) && attempt < 4) {
       const delayMs = 1000 * 2 ** (attempt - 1);
       await new Promise(r => setTimeout(r, delayMs));
-      return gemini(system, userContent, attempt + 1);
+      return callGemini(system, blocks, attempt + 1);
     }
     throw new Error(`Gemini API error ${res.status}: ${err}`);
   }
   const data = await res.json();
   const text = data.candidates?.[0]?.content?.parts?.map(part => part.text || '').join('\n').trim();
   if (!text) throw new Error(`Gemini returned no text: ${JSON.stringify(data)}`);
+  return text;
+}
+
+async function callAnthropic(system, blocks, attempt = 1) {
+  const content = blocks.map(b => b.type === 'image'
+    ? { type: 'image', source: { type: 'base64', media_type: b.mimeType, data: b.data } }
+    : { type: 'text', text: b.text });
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'x-api-key': ANTHROPIC_API_KEY,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({ model: MODEL, max_tokens: 1024, system, messages: [{ role: 'user', content }] }),
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    if ([429, 500, 502, 503, 504, 529].includes(res.status) && attempt < 4) {
+      const delayMs = 1000 * 2 ** (attempt - 1);
+      await new Promise(r => setTimeout(r, delayMs));
+      return callAnthropic(system, blocks, attempt + 1);
+    }
+    throw new Error(`Anthropic API error ${res.status}: ${err}`);
+  }
+  const data = await res.json();
+  const text = data.content?.map(part => part.text || '').join('\n').trim();
+  if (!text) throw new Error(`Anthropic returned no text: ${JSON.stringify(data)}`);
   return text;
 }
 
@@ -83,29 +135,28 @@ function extractFrames(videoPath, count = 4) {
   return { frames, cleanup: () => fs.rmSync(dir, { recursive: true, force: true }) };
 }
 
-// ── Build vision content blocks ───────────────────────────────────────────────
+// ── Build provider-agnostic vision content blocks ────────────────────────────
 function framesToContent(frames, text) {
   const imageBlocks = frames.map(f => ({
-    inlineData: {
-      mimeType: 'image/jpeg',
-      data: fs.readFileSync(f).toString('base64'),
-    },
+    type: 'image',
+    mimeType: 'image/jpeg',
+    data: fs.readFileSync(f).toString('base64'),
   }));
-  return [...imageBlocks, { text }];
+  return [...imageBlocks, { type: 'text', text }];
 }
 
 // ── Step 1: Auto-generate clip_summary from frames ───────────────────────────
 async function generateClipSummary(frames) {
-  const system = `You are a soccer broadcast analyst. Given video frames from a 10-second soccer clip, 
-write a single concise paragraph (2-3 sentences) describing exactly what is happening visually: 
-which team has the ball, where the ball is on the pitch, what action is occurring, and the key moment 
+  const system = `You are a soccer broadcast analyst. Given video frames from a 10-second soccer clip,
+write a single concise paragraph (2-3 sentences) describing exactly what is happening visually:
+which team has the ball, where the ball is on the pitch, what action is occurring, and the key moment
 or decision point. Be factual and specific. Do not editorialize.`;
 
   const content = framesToContent(frames,
     'These are 4 evenly-spaced frames from a 10-second soccer clip. Describe what is happening.'
   );
 
-  return gemini(system, content);
+  return callLLM(system, content);
 }
 
 // ── Shared anti-hallucination rule injected into every strategy ───────────────
@@ -166,7 +217,7 @@ ${NO_HALLUCINATION}`,
 async function generateCandidates(clipSummary, frames, manualSummary = false) {
   // If summary was manually written, use text-only to avoid frames overriding it
   const userPrompt = manualSummary
-    ? `Soccer clip context: ${clipSummary}\n\nWrite your commentary based on the context above.`
+    ? [{ type: 'text', text: `Soccer clip context: ${clipSummary}\n\nWrite your commentary based on the context above.` }]
     : framesToContent(frames,
         `Soccer clip context: ${clipSummary}\n\nWrite your commentary based on the frames and context above.`
       );
@@ -176,7 +227,7 @@ async function generateCandidates(clipSummary, frames, manualSummary = false) {
   for (const strategy of STRATEGIES) {
     process.stdout.write(`    [${strategy.id}] ${strategy.label}... `);
     try {
-      const text = await gemini(strategy.system, userPrompt);
+      const text = await callLLM(strategy.system, userPrompt);
       assertCompleteSentence(text, strategy.label);
       results.push({ id: strategy.id, label: strategy.label, text });
       console.log('✓');
@@ -184,8 +235,7 @@ async function generateCandidates(clipSummary, frames, manualSummary = false) {
       console.log(`✗ ${err.message}`);
       errors.push(`${strategy.id}/${strategy.label}: ${err.message}`);
     }
-    // Gemini free tier is commonly 5 requests/min/model, so pace calls by default.
-    await new Promise(r => setTimeout(r, GEMINI_REQUEST_DELAY_MS));
+    await new Promise(r => setTimeout(r, REQUEST_DELAY_MS));
   }
   if (errors.length) {
     throw new Error(`Candidate generation failed; not writing partial output. ${errors.join(' | ')}`);
@@ -219,7 +269,7 @@ async function run() {
     }
 
     if (DRY_RUN) {
-      console.log('  [dry-run] would extract frames and call Gemini');
+      console.log(`  [dry-run] would extract frames and call ${PROVIDER || '(no provider key set)'}`);
       continue;
     }
 
@@ -258,6 +308,7 @@ async function run() {
       }));
       taskInFull.generated_at = new Date().toISOString();
       taskInFull.generation_model = MODEL;
+      taskInFull.generation_provider = PROVIDER;
 
       updated++;
     } finally {

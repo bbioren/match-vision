@@ -23,7 +23,65 @@
     "video_src": "clips/real/segments/first_9_mins_000.mp4",
     "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
-    "reference_description": ""
+    "reference_description": "",
+    "clip_summary": "# Soccer Match Analysis\n\nIn this early match sequence (0-11 seconds), the blue team (St) controls possession in the midfield while the white team (Conks) is organizing their defensive shape. The ball circulates among blue players in the center and attacking third of the pitch, with the white team maintaining a compact defensive formation. By the final frame at 0:11, play has shifted toward the center circle where blue continues to probe for an attacking opportunity, while white defenders position themselves to block passes and close down space.",
+    "commentary_variations": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "text": "Ball circulates among blue midfielders near center circle; white defense compact across middle third, organizing shape to block attacking play."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "text": "Blue controls the ball in midfield with a spread attacking shape; white compresses defensively toward goal, inviting through-ball danger down the flanks or over the top."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "text": "St working the ball around midfield, blue moving it side to side as Conks set their defensive line."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "text": "Blue builds patiently through midfield, threading passes across the center as white defenders compact their shape tightly around the fifty-yard line, bracing for the next move."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "text": "Blue team maintains possession in midfield while white team organizes defensively."
+      }
+    ],
+    "candidates": [
+      {
+        "id": "a",
+        "label": "Spatial",
+        "description": "Ball circulates among blue midfielders near center circle; white defense compact across middle third, organizing shape to block attacking play."
+      },
+      {
+        "id": "b",
+        "label": "Tactical",
+        "description": "Blue controls the ball in midfield with a spread attacking shape; white compresses defensively toward goal, inviting through-ball danger down the flanks or over the top."
+      },
+      {
+        "id": "c",
+        "label": "Concise live",
+        "description": "St working the ball around midfield, blue moving it side to side as Conks set their defensive line."
+      },
+      {
+        "id": "d",
+        "label": "Narrative",
+        "description": "Blue builds patiently through midfield, threading passes across the center as white defenders compact their shape tightly around the fifty-yard line, bracing for the next move."
+      },
+      {
+        "id": "e",
+        "label": "Baseline",
+        "description": "Blue team maintains possession in midfield while white team organizes defensively."
+      }
+    ],
+    "generated_at": "2026-06-21T12:27:48.431Z",
+    "generation_model": "claude-haiku-4-5-20251001",
+    "generation_provider": "anthropic"
   },
   {
     "task_id": "first_9_mins_001",
