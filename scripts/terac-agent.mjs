@@ -20,8 +20,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const TERAC_API_KEY = process.env.TERAC_API_KEY;
-const VERCEL_URL = process.env.VERCEL_URL ?? 'https://match-vision-q5a791kob-jstnzhous-projects.vercel.app';
-const TASK_URL = `${VERCEL_URL}/annotate.html`;
+const TASK_URL = process.env.TASK_URL ?? 'http://localhost:5173/annotate.html';
 const DRY_RUN = process.argv.includes('--dry-run');
 const MAX_SPEND_USD = 160;
 const NUM_PARTICIPANTS = Number(process.env.TERAC_NUM_PARTICIPANTS || 10);
