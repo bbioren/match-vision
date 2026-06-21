@@ -2,12 +2,12 @@
 
 The app is intentionally runnable without credentials. Real sponsor APIs can be swapped in through small adapter seams.
 
-## Claude / Anthropic
+## Gemini
 
 Current seam: `src/services/description.js`.
 
 - `buildDescriptionPrompt(log, question, mode)` creates the prompt.
-- `generateAccessibleDescription()` uses deterministic fallback unless `window.MATCHVISION_USE_CLAUDE` is enabled and `/api/describe` exists.
+- `generateAccessibleDescription()` uses deterministic fallback unless `window.MATCHVISION_USE_GEMINI` is enabled and `/api/describe` exists. The local server calls Gemini when `GEMINI_API_KEY` or `GOOGLE_API_KEY` is present.
 
 Expected `/api/describe` response:
 
@@ -57,11 +57,11 @@ Run:
 
 ```bash
 cp .env.example .env
-# fill ANTHROPIC_API_KEY and/or DEEPGRAM_API_KEY if available
+# fill GEMINI_API_KEY and/or DEEPGRAM_API_KEY if available
 npm run dev
 ```
 
 The server exposes:
 
-- `POST /api/describe`: calls Anthropic when `ANTHROPIC_API_KEY` exists, otherwise returns fallback mode.
+- `POST /api/describe`: calls Gemini when `GEMINI_API_KEY` or `GOOGLE_API_KEY` exists, otherwise returns fallback mode.
 - `POST /api/tts`: calls Deepgram when `DEEPGRAM_API_KEY` exists, otherwise browser TTS fallback remains available.

@@ -6,7 +6,7 @@ MatchVision
 
 ## Elevator pitch
 
-MatchVision is a voice-first accessibility companion that gives blind and low-vision soccer fans the missing visual layer of a match: ball location, player positioning, direction of attack, and why key moments matter. Built for the World Cup era, it uses Deepgram for voice interaction, Claude for accessible descriptions, Redis for match memory, Terac for human accessibility labels that train/tune the description selector, and Arize-style evaluation to prove descriptions improve over a baseline.
+MatchVision is a voice-first accessibility companion that gives blind and low-vision soccer fans the missing visual layer of a match: ball location, player positioning, direction of attack, and why key moments matter. Built for the World Cup era, it uses Deepgram for voice interaction, Gemini for accessible vision descriptions and grounded Q&A, Redis-style match memory for preferences and follow-ups, Terac for human accessibility labels that train/tune the description selector, and Arize-style evaluation to prove descriptions improve over a baseline.
 
 ## Problem
 
@@ -27,10 +27,10 @@ MatchVision responds with concise spoken descriptions designed for blind and low
 ## Sponsor usage
 
 - Deepgram: voice-first input/output for accessible interaction.
-- Anthropic: accessible match description generation and Q&A.
+- Gemini: accessible match description generation and Q&A.
 - Terac: human labels for baseline vs candidate-ranked accessibility descriptions.
-- Redis: real-time match memory and user preference modes.
-- Arize: traces/evals for description quality, hallucination rate, and before/after selector improvement.
+- Redis: match memory and user preference modes, implemented with a local fallback and a documented Upstash/Redis deployment seam.
+- Arize: eval-style evidence for description quality, hallucination rate, and before/after selector improvement.
 
 ## Judging close
 

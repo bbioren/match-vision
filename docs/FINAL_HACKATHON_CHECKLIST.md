@@ -1,5 +1,13 @@
 # Final Hackathon Checklist
 
+## Current verified status
+
+- `npm run check` passes: 3 event logs and 8 annotation tasks validated.
+- `npm run metrics` passes: Terac-trained selector win rate vs baseline is 100%, hallucination rate is 0%, mean helpfulness is 4.6/5.
+- `npm run build` passes and writes `dist/`.
+- `npm run rehearse` is 3:20 total, safely under the 5-minute judging target.
+- No screenshot/video assets are currently checked into the repo, so media capture is the main remaining submission task.
+
 ## 1. Run the app
 
 ```bash
@@ -16,7 +24,7 @@ Optional credentials:
 
 ```bash
 cp .env.example .env
-# add ANTHROPIC_API_KEY and DEEPGRAM_API_KEY if available
+# add GEMINI_API_KEY and DEEPGRAM_API_KEY if available
 ```
 
 ## 2. Collect labels fast
@@ -49,6 +57,14 @@ Required shots:
 4. Eval Dashboard: show improvement metrics.
 5. Sponsor stack close.
 
+Also capture at least 5 screenshots for Devpost:
+
+1. Home/demo page with a selected match moment.
+2. Voice question and generated answer.
+3. Annotation Lab drag-ranking task.
+4. Eval Dashboard / metric output.
+5. Architecture or sponsor stack section from README/docs.
+
 ## 4. Table judging
 
 Use `docs/JUDGING_SCRIPT.md`.
@@ -64,7 +80,7 @@ Submit to:
 - Ddoski's World
 - Terac
 - Deepgram
-- Anthropic
+- Gemini / Google AI, if available as a track
 - Redis
 - Arize
 - Sentry if you mention reliability/fallbacks
