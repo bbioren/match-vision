@@ -29,13 +29,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return;
   }
 
-  // Content script asks tracker-window to start listening
-  if (msg.type === 'start-voice') {
-    chrome.runtime.sendMessage({ target: 'tracker-window', type: 'start-voice', tabId: msg.tabId }).catch(() => {});
-    return;
-  }
-
-  // Tracker-window finished listening → call Claude
+  // Content script finished listening → call Claude
   if (msg.type === 'voice-transcript') {
     handleVoiceQuery(msg.tabId, msg.text, msg.currentParams);
     return;

@@ -405,10 +405,43 @@
     });
 
     micBtn.addEventListener('click', async () => {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) {
+        voiceStatus.textContent = '⚠ Speech recognition not supported.';
+        return;
+      }
       const { tabId } = await chrome.runtime.sendMessage({ type: 'get-tab-id' });
       micBtn.disabled = true;
       voiceStatus.textContent = '🎤 Listening…';
-      chrome.runtime.sendMessage({ type: 'start-voice', tabId }).catch(() => {});
+
+      const rec = new SR();
+      rec.lang = 'en-US';
+      rec.interimResults = false;
+      rec.maxAlternatives = 1;
+      rec.onresult = (e) => {
+        const text = e.results[0][0].transcript;
+        console.log('[MV voice] heard:', text);
+        voiceStatus.textContent = `"${text}"`;
+        chrome.runtime.sendMessage({
+          type: 'voice-transcript', tabId, text,
+          currentParams: { ...params, zoom: zoomLevel, isTracking },
+        }).catch(err => {
+          voiceStatus.textContent = '⚠ ' + err.message;
+          micBtn.disabled = false;
+        });
+      };
+      rec.onerror = (e) => {
+        console.warn('[MV voice] error:', e.error);
+        voiceStatus.textContent = '⚠ Mic error: ' + e.error;
+        micBtn.disabled = false;
+      };
+      rec.onend = () => {
+        if (micBtn.disabled && voiceStatus.textContent === '🎤 Listening…') {
+          voiceStatus.textContent = '(no speech detected)';
+          micBtn.disabled = false;
+        }
+      };
+      rec.start();
     });
   }
 

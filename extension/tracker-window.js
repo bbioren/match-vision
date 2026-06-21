@@ -28,33 +28,8 @@
       gazingActive = false;
       try { webgazer.clearGazeListener(); webgazer.end(); } catch (_) {}
       log('Stopped');
-    } else if (msg.type === 'start-voice') {
-      startListening(msg.tabId);
     }
   });
-
-  function startListening(tabId) {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) {
-      chrome.runtime.sendMessage({ type: 'voice-error', tabId, error: 'Speech recognition not supported in this browser.' }).catch(() => {});
-      return;
-    }
-    const rec = new SR();
-    rec.lang = 'en-US';
-    rec.interimResults = false;
-    rec.maxAlternatives = 1;
-    rec.onresult = (e) => {
-      const text = e.results[0][0].transcript;
-      console.log('[MV voice] heard:', text);
-      chrome.runtime.sendMessage({ type: 'voice-transcript', tabId, text,
-        currentParams: window._mvCurrentParams || {} }).catch(() => {});
-    };
-    rec.onerror = (e) => {
-      chrome.runtime.sendMessage({ type: 'voice-error', tabId, error: e.error }).catch(() => {});
-    };
-    rec.start();
-    log('Listening…');
-  }
 
   // ── Kick off AudioContext on any interaction (keeps page alive if window loses focus) ──
   // We also try immediately — if camera permission dialog was just clicked it may work.
