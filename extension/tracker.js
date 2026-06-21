@@ -18,7 +18,7 @@
   const voiceHistory = []; // rolling conversation sent to Claude for context
   let voiceBusy = false;  // prevent overlapping Claude calls
   let micMuteUntil = 0;   // Date.now() timestamp — ignore mic results until then (prevents hearing our own TTS)
-  const TTS_RATE = 1.15;  // playback speed multiplier for all TTS engines
+  const TTS_RATE = 1.35;  // playback speed multiplier for all TTS engines
   let micStream = null;   // raw mic stream, recorded in parallel with SpeechRecognition and sent to Deepgram for the real transcript
 
   // Browser SpeechRecognition is only used here as a "user started/stopped talking"
@@ -636,9 +636,11 @@
           const audio = new Audio(url);
           audio.playbackRate = TTS_RATE;
           muteForPlayback();
-          audio.onended = () => { URL.revokeObjectURL(url); unmute(); };
-          audio.onerror = unmute;
-          audio.play();
+          await new Promise((resolve) => {
+            audio.onended = () => { URL.revokeObjectURL(url); unmute(); resolve(); };
+            audio.onerror = () => { unmute(); resolve(); };
+            audio.play();
+          });
           return;
         }
       }
@@ -648,18 +650,20 @@
     const utt = new SpeechSynthesisUtterance(text);
     utt.rate = TTS_RATE;
     muteForPlayback();
-    utt.onend = unmute;
-    utt.onerror = unmute;
-    const pick = () => {
-      const voices = window.speechSynthesis.getVoices();
-      for (const name of ['Samantha','Google US English','Google UK English Female','Karen','Moira']) {
-        const v = voices.find(v => v.name.includes(name));
-        if (v) { utt.voice = v; break; }
-      }
-      window.speechSynthesis.speak(utt);
-    };
-    window.speechSynthesis.getVoices().length ? pick()
-      : (window.speechSynthesis.onvoiceschanged = () => { pick(); window.speechSynthesis.onvoiceschanged = null; });
+    await new Promise((resolve) => {
+      utt.onend = () => { unmute(); resolve(); };
+      utt.onerror = () => { unmute(); resolve(); };
+      const pick = () => {
+        const voices = window.speechSynthesis.getVoices();
+        for (const name of ['Samantha','Google US English','Google UK English Female','Karen','Moira']) {
+          const v = voices.find(v => v.name.includes(name));
+          if (v) { utt.voice = v; break; }
+        }
+        window.speechSynthesis.speak(utt);
+      };
+      window.speechSynthesis.getVoices().length ? pick()
+        : (window.speechSynthesis.onvoiceschanged = () => { pick(); window.speechSynthesis.onvoiceschanged = null; });
+    });
   }
 
   function updateSlider(id, value, fmt) {
@@ -756,25 +760,37 @@
           if (p.yBias      != null) { params.yBias      = p.yBias;      updateSlider('mv-yb', p.yBias,      v => v + 'px'); }
           if (p.yScale     != null) { params.yScale     = p.yScale;     updateSlider('mv-ys', p.yScale,     v => v.toFixed(2)); }
         }
-        // Execute control actions
-        if (msg.action === 'start')     startFlow();
-        if (msg.action === 'stop')      stopTracking();
-        if (msg.action === 'reset_pan') resetPan();
-        if (msg.action === 'fullscreen') {
-          // Background grants real user activation via chrome.debugger (CDP
-          // input events count as genuine gestures, unlike a JS-dispatched
-          // click), then fullscreens the actual player. Falls back to
-          // maximizing the window if that's unavailable for any reason.
-          chrome.runtime.sendMessage({ type: 'request-video-fullscreen' }).catch(() => {});
-        }
-        if (msg.action === 'exit_fullscreen') {
-          if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
-          chrome.runtime.sendMessage({ type: 'restore-window' }).catch(() => {});
-        }
-
-        if (msg.text) {
-          if (vs) vs.textContent = msg.text;
-          speak(msg.text);
+        // Execute control actions. "start" is special-cased: calibration needs
+        // the user's full attention, so speak the explanation to completion
+        // first and only then kick off the iframe/calibration flow — otherwise
+        // the dots can start appearing mid-sentence (a fixed timeout guards
+        // against ever blocking forever if playback weirdly never resolves).
+        if (msg.action === 'start') {
+          (async () => {
+            if (msg.text) {
+              if (vs) vs.textContent = msg.text;
+              await Promise.race([speak(msg.text), new Promise((r) => setTimeout(r, 8000))]);
+            }
+            startFlow();
+          })();
+        } else {
+          if (msg.action === 'stop')      stopTracking();
+          if (msg.action === 'reset_pan') resetPan();
+          if (msg.action === 'fullscreen') {
+            // Background grants real user activation via chrome.debugger (CDP
+            // input events count as genuine gestures, unlike a JS-dispatched
+            // click), then fullscreens the actual player. Falls back to
+            // maximizing the window if that's unavailable for any reason.
+            chrome.runtime.sendMessage({ type: 'request-video-fullscreen' }).catch(() => {});
+          }
+          if (msg.action === 'exit_fullscreen') {
+            if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+            chrome.runtime.sendMessage({ type: 'restore-window' }).catch(() => {});
+          }
+          if (msg.text) {
+            if (vs) vs.textContent = msg.text;
+            speak(msg.text);
+          }
         }
         break;
       }
