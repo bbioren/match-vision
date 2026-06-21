@@ -2,7 +2,7 @@
 /**
  * terac-agent.mjs
  *
- * Runs the full MatchVision annotation loop via Terac MCP:
+ * Runs the full MatchVision expert commentary loop via Terac MCP:
  *   1. terac_get_context   – verify balance
  *   2. terac_create_project (if needed)
  *   3. terac_create_opportunity – draft with task URL + quote
@@ -23,9 +23,22 @@ const TERAC_API_KEY = process.env.TERAC_API_KEY;
 const VERCEL_URL = process.env.VERCEL_URL ?? 'https://match-vision-q5a791kob-jstnzhous-projects.vercel.app';
 const TASK_URL = `${VERCEL_URL}/annotate.html`;
 const DRY_RUN = process.argv.includes('--dry-run');
-const MAX_SPEND_USD = 160; // reserve ~$90 for held-out eval round
-const NUM_PARTICIPANTS = 20; // $7.50 each = $150 for training data
-const TASK_DURATION_MINUTES = 8; // 8 clips × ~1 min each
+const MAX_SPEND_USD = 160;
+const NUM_PARTICIPANTS = Number(process.env.TERAC_NUM_PARTICIPANTS || 10);
+const TASK_DURATION_MINUTES = Number(process.env.TERAC_TASK_DURATION_MINUTES || 25);
+
+const TASK_BRIEF = `MatchVision is collecting high-quality soccer audio-description commentary for blind and low-vision fans.
+
+Annotators will watch 10-second soccer clips and write voice-ready commentary that can later be spoken by a voice AI. The commentary should be enthusiastic, natural, and useful, while staying factual.
+
+Quality requirements:
+- Write 2-4 concise sentences per clip.
+- Prioritize the visual layer missing from normal broadcast commentary: ball location, direction of play, player spacing, pressure, danger, and why the moment matters.
+- If player names are unknown, use shirt numbers when visible; otherwise use positions/roles such as goalkeeper, left back, right winger, nearest defender, player in white, or player in blue.
+- Do not invent outcomes after the clip ends. If the clip ends before a shot, pass, foul call, or goal is resolved, say so.
+- Make it engaging enough for a fan, not a dry object label. This will be used downstream in voice AI for blind/low-vision soccer accessibility.
+
+The task page includes two examples written by the requester, followed by the clips that need expert commentary.`;
 
 if (!TERAC_API_KEY) {
   console.error('TERAC_API_KEY is required. Set it in .env.local or environment.');
@@ -76,8 +89,8 @@ async function run() {
   let projectId;
   try {
     const project = await terac('terac_create_project', {
-      name: 'MatchVision ADC Quality',
-      description: 'Ranking AI-generated audio description commentary for blind and low-vision soccer fans. Annotators watch 10-second clips and rank 5 commentary styles.',
+      name: 'MatchVision BVI Soccer Commentary',
+      description: TASK_BRIEF,
     });
     projectId = project?.id ?? project?.project_id;
     console.log(`Project created: ${projectId}`);
@@ -88,23 +101,30 @@ async function run() {
   // ── Step 3: Draft opportunity ──────────────────────────────────────────────
   console.log('\n[3/6] Creating draft opportunity...');
   const draft = await terac('terac_create_opportunity', {
-    title: 'Rank soccer commentary for blind fans (5–8 min)',
+    title: 'Write soccer audio-description commentary for blind fans',
     ...(projectId ? { project_id: projectId } : {}),
     num_participants: NUM_PARTICIPANTS,
     business_type: 'b2c',
-    tasks: [{
+      tasks: [{
       sequence: 1,
       task_type: 'activity',
       review_type: 'self_report',
       task_url: TASK_URL,
       duration_minutes: TASK_DURATION_MINUTES,
+      instructions: TASK_BRIEF,
     }],
     screener: {
       questions: [
         {
           question: 'How familiar are you with soccer (football)?',
           type: 'single_choice',
-          options: ['I watch it occasionally', 'I watch it regularly', 'I follow it closely'],
+          options: ['I watch it occasionally', 'I watch it regularly', 'I follow it closely', 'I have coached, played competitively, commentated, or analyzed soccer'],
+          required: true,
+        },
+        {
+          question: 'Can you write vivid, factual English commentary suitable for blind or low-vision sports fans?',
+          type: 'single_choice',
+          options: ['Yes', 'No'],
           required: true,
         },
       ],

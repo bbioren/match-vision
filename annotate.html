@@ -32,6 +32,9 @@
         padding: 12px 14px;
         background: #f7f7ff;
       }
+      .instruction-list li {
+        margin: 8px 0;
+      }
       .status-line {
         min-height: 1.4em;
         margin-top: 10px;
@@ -46,9 +49,9 @@
   <body>
     <main class="app">
       <section class="hero">
-        <p class="eyebrow">Terac expert visual transcription</p>
+        <p class="eyebrow">Terac expert audio-description commentary</p>
         <h1>Annotation Lab</h1>
-        <p class="tagline">Watch a soccer clip and write the visual layer a blind or low-vision fan needs. Two example clips show the target style.</p>
+        <p class="tagline">Watch a soccer clip and write enthusiastic, voice-ready commentary for blind and low-vision fans. Two example clips show the target style.</p>
         <span id="submissionBadge" class="submission-badge" hidden></span>
         <p><a class="link" href="index.html">← Back to demo</a></p>
       </section>
@@ -62,17 +65,27 @@
 
       <form id="labelForm" class="card">
         <span id="taskType" class="task-kind"></span>
-        <h2>Write the visual transcription</h2>
+        <h2>Write the audio-description commentary</h2>
         <p id="taskInstructions" class="hint"></p>
-        <p id="exampleHint" class="hint" hidden>Experts do not submit examples. Select a “To do” clip to write a new transcription.</p>
-        <p id="todoHint" class="hint" hidden>Focus on visible action: teams/colors if clear, ball location, key movement, player spacing, and whether the clip ends before an outcome. Do not invent what happens after the clip.</p>
+        <div id="guidelines" class="reference-box">
+          <strong>What we need:</strong>
+          <ul class="instruction-list">
+            <li>Write commentary that can be spoken by a voice AI during or after the clip. It should sound natural, energetic, and useful, not like dry labels.</li>
+            <li>Prioritize blind/low-vision access: ball location, direction of play, player spacing, pressure, danger, and why the moment matters.</li>
+            <li>Describe only what is visible in the clip. If the clip ends before the outcome, say that instead of guessing.</li>
+            <li>If you do not know player names, use shirt numbers when visible. Otherwise use positions or roles: left back, right winger, goalkeeper, nearest defender, player in white, etc.</li>
+            <li>Use 2-4 concise sentences. Make it vivid and enthusiastic, but keep it factual enough for downstream voice AI.</li>
+          </ul>
+        </div>
+        <p id="exampleHint" class="hint" hidden>Experts do not submit examples. Select a “To do” clip to write new commentary.</p>
+        <p id="todoHint" class="hint" hidden>Watch the clip more than once if needed. Your goal is to give a fan who cannot see the screen the same visual understanding and excitement a sighted fan gets.</p>
 
         <p id="clipSummary" class="reference-box" hidden></p>
 
-        <label for="transcription">Visual transcription</label>
+        <label for="transcription">Voice-ready commentary</label>
         <textarea id="transcription" name="transcription" rows="8" required></textarea>
 
-        <button id="submitBtn" class="primary" type="submit">Save transcription</button>
+        <button id="submitBtn" class="primary" type="submit">Save commentary</button>
         <p id="saveStatus" class="status-line" aria-live="polite"></p>
       </form>
     </main>

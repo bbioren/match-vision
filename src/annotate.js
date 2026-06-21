@@ -53,10 +53,10 @@ function renderTask() {
   }
 
   const isExample = task.annotation_status === 'example';
-  $('taskType').textContent = isExample ? 'Example commentary' : 'Transcription task';
+  $('taskType').textContent = isExample ? 'Example commentary' : 'Commentary task';
   $('taskInstructions').textContent = isExample
     ? 'This is an example written by the requester. Watch the clip and use this level of factual, visual detail as the target style.'
-    : 'Watch the full clip and write a factual visual description/transcription for a blind or low-vision soccer fan. Describe only what happens in the clip.';
+    : 'Watch the full clip and write enthusiastic, factual audio-description commentary for a blind or low-vision soccer fan. Make it ready for a voice AI to speak aloud.';
   $('clipSummary').textContent = task.reference_description || '';
   $('clipSummary').hidden = !isExample;
   $('transcription').value = isExample ? task.reference_description : (task.transcription_draft || '');
@@ -64,10 +64,10 @@ function renderTask() {
   $('transcription').required = !isExample;
   $('transcription').placeholder = isExample
     ? ''
-    : 'Example: England in white deliver a corner into Croatia’s penalty area. The ball drops into a crowded six-yard box where attackers and defenders challenge, then play is stopped before a clear shot follows.';
+    : 'Example: The right winger in white drives toward the corner of the box, with two blue defenders backing off and the ball tight to his feet. He cuts the pass inside toward the penalty spot, where the nearest striker is arriving under pressure. The chance is building fast, but the clip ends before we see a shot.';
   $('exampleHint').hidden = !isExample;
   $('todoHint').hidden = isExample;
-  setSubmitState(isExample ? 'Example only' : 'Save transcription', isExample);
+  setSubmitState(isExample ? 'Example only' : 'Save commentary', isExample);
 }
 
 async function submitTranscription(transcription) {
@@ -75,7 +75,8 @@ async function submitTranscription(transcription) {
   const payload = {
     task_id: task.task_id,
     clip_id: task.clip_id,
-    annotation_type: 'visual_transcription',
+    annotation_type: 'bvi_audio_commentary',
+    commentary: transcription,
     transcription,
     teracSubmissionId: TERAC_SUBMISSION_ID,
     teracTaskId: TERAC_TASK_ID,
@@ -117,8 +118,8 @@ async function init() {
     if (selectedTask.annotation_status === 'example') return;
 
     const transcription = $('transcription').value.trim();
-    if (transcription.length < 40) {
-      $('saveStatus').textContent = 'Please write a more complete description before submitting.';
+    if (transcription.length < 120) {
+      $('saveStatus').textContent = 'Please write 2-4 complete sentences with enough visual detail for a blind or low-vision fan.';
       return;
     }
 
@@ -126,8 +127,8 @@ async function init() {
     $('saveStatus').textContent = '';
     const { ok, fallback } = await submitTranscription(transcription);
     setSubmitState(ok ? 'Saved ✓' : fallback ? 'Saved locally (offline)' : 'Save error – try again', false);
-    $('saveStatus').textContent = ok || fallback ? 'Thank you. Your transcription was saved.' : 'Could not save. Please try again.';
-    setTimeout(() => setSubmitState('Save transcription', false), 2000);
+    $('saveStatus').textContent = ok || fallback ? 'Thank you. Your commentary was saved.' : 'Could not save. Please try again.';
+    setTimeout(() => setSubmitState('Save commentary', false), 2000);
   });
 
   renderTask();

@@ -22,7 +22,7 @@ const tasksPath = 'data/annotation_tasks.json';
 if (fs.existsSync(tasksPath)) {
   const tasks = JSON.parse(fs.readFileSync(tasksPath, 'utf8'));
   for (const [taskIndex, task] of tasks.entries()) {
-    if (task.annotation_type === 'visual_transcription') {
+    if (['visual_transcription', 'bvi_audio_commentary', 'bvi_audio_commentary_example'].includes(task.annotation_type)) {
       for (const key of ['task_id', 'clip_id', 'video_src', 'annotation_status']) {
         if (!task[key]) throw new Error(`annotation_tasks[${taskIndex}] missing ${key}`);
       }

@@ -3,7 +3,7 @@
     "task_id": "yt_eng_cro_12",
     "clip_id": "england_vs_croatia_extended_highlights_2026_fifa_world_cup_012",
     "video_src": "clips/youtube/segments/england_vs_croatia_extended_highlights_2026_fifa_world_cup_012.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary_example",
     "annotation_status": "example",
     "reference_author": "requester",
     "reference_description": "Harry Kane prepares to take a penalty kick for England against Croatia in the FIFA World Cup 2026. The clip shows Kane in close-up composing himself, then standing over the ball on the penalty spot with the Croatian goalkeeper on the goal line. The clip ends before the kick is taken — this is the moment of anticipation before the penalty."
@@ -12,7 +12,7 @@
     "task_id": "yt_eng_cro_09",
     "clip_id": "england_vs_croatia_extended_highlights_2026_fifa_world_cup_009",
     "video_src": "clips/youtube/segments/england_vs_croatia_extended_highlights_2026_fifa_world_cup_009.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary_example",
     "annotation_status": "example",
     "reference_author": "requester",
     "reference_description": "England (in white) delivers a corner kick into Croatia's penalty area during the 8th minute of this FIFA World Cup 2026 Group L match, with the score level at 0-0. The ball is played into a crowded box where multiple England attackers challenge Croatian defenders in blue, resulting in a scramble near the six-yard box. The sequence ends with the referee stopping play inside the penalty area, likely for a foul, as Croatia's goalkeeper in pink positions himself on his line and England players appeal for a decision."
@@ -21,7 +21,7 @@
     "task_id": "first_9_mins_000",
     "clip_id": "first_9_mins_000",
     "video_src": "clips/real/segments/first_9_mins_000.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -29,7 +29,7 @@
     "task_id": "first_9_mins_001",
     "clip_id": "first_9_mins_001",
     "video_src": "clips/real/segments/first_9_mins_001.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -37,7 +37,7 @@
     "task_id": "first_9_mins_002",
     "clip_id": "first_9_mins_002",
     "video_src": "clips/real/segments/first_9_mins_002.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -45,7 +45,7 @@
     "task_id": "first_9_mins_003",
     "clip_id": "first_9_mins_003",
     "video_src": "clips/real/segments/first_9_mins_003.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -53,7 +53,7 @@
     "task_id": "first_9_mins_004",
     "clip_id": "first_9_mins_004",
     "video_src": "clips/real/segments/first_9_mins_004.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -61,7 +61,7 @@
     "task_id": "first_9_mins_005",
     "clip_id": "first_9_mins_005",
     "video_src": "clips/real/segments/first_9_mins_005.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -69,7 +69,7 @@
     "task_id": "first_9_mins_006",
     "clip_id": "first_9_mins_006",
     "video_src": "clips/real/segments/first_9_mins_006.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -77,7 +77,7 @@
     "task_id": "first_9_mins_007",
     "clip_id": "first_9_mins_007",
     "video_src": "clips/real/segments/first_9_mins_007.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -85,7 +85,7 @@
     "task_id": "first_9_mins_008",
     "clip_id": "first_9_mins_008",
     "video_src": "clips/real/segments/first_9_mins_008.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -93,7 +93,7 @@
     "task_id": "first_9_mins_009",
     "clip_id": "first_9_mins_009",
     "video_src": "clips/real/segments/first_9_mins_009.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -101,7 +101,7 @@
     "task_id": "first_9_mins_010",
     "clip_id": "first_9_mins_010",
     "video_src": "clips/real/segments/first_9_mins_010.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -109,7 +109,7 @@
     "task_id": "first_9_mins_011",
     "clip_id": "first_9_mins_011",
     "video_src": "clips/real/segments/first_9_mins_011.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -117,7 +117,7 @@
     "task_id": "first_9_mins_012",
     "clip_id": "first_9_mins_012",
     "video_src": "clips/real/segments/first_9_mins_012.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -125,7 +125,7 @@
     "task_id": "first_9_mins_013",
     "clip_id": "first_9_mins_013",
     "video_src": "clips/real/segments/first_9_mins_013.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -133,7 +133,7 @@
     "task_id": "first_9_mins_014",
     "clip_id": "first_9_mins_014",
     "video_src": "clips/real/segments/first_9_mins_014.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -141,7 +141,7 @@
     "task_id": "first_9_mins_015",
     "clip_id": "first_9_mins_015",
     "video_src": "clips/real/segments/first_9_mins_015.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -149,7 +149,7 @@
     "task_id": "first_9_mins_016",
     "clip_id": "first_9_mins_016",
     "video_src": "clips/real/segments/first_9_mins_016.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -157,7 +157,7 @@
     "task_id": "first_9_mins_017",
     "clip_id": "first_9_mins_017",
     "video_src": "clips/real/segments/first_9_mins_017.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -165,7 +165,7 @@
     "task_id": "first_9_mins_018",
     "clip_id": "first_9_mins_018",
     "video_src": "clips/real/segments/first_9_mins_018.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -173,7 +173,7 @@
     "task_id": "first_9_mins_019",
     "clip_id": "first_9_mins_019",
     "video_src": "clips/real/segments/first_9_mins_019.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -181,7 +181,7 @@
     "task_id": "first_9_mins_020",
     "clip_id": "first_9_mins_020",
     "video_src": "clips/real/segments/first_9_mins_020.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -189,7 +189,7 @@
     "task_id": "first_9_mins_021",
     "clip_id": "first_9_mins_021",
     "video_src": "clips/real/segments/first_9_mins_021.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -197,7 +197,7 @@
     "task_id": "first_9_mins_022",
     "clip_id": "first_9_mins_022",
     "video_src": "clips/real/segments/first_9_mins_022.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -205,7 +205,7 @@
     "task_id": "first_9_mins_023",
     "clip_id": "first_9_mins_023",
     "video_src": "clips/real/segments/first_9_mins_023.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -213,7 +213,7 @@
     "task_id": "first_9_mins_024",
     "clip_id": "first_9_mins_024",
     "video_src": "clips/real/segments/first_9_mins_024.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -221,7 +221,7 @@
     "task_id": "first_9_mins_025",
     "clip_id": "first_9_mins_025",
     "video_src": "clips/real/segments/first_9_mins_025.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -229,7 +229,7 @@
     "task_id": "first_9_mins_026",
     "clip_id": "first_9_mins_026",
     "video_src": "clips/real/segments/first_9_mins_026.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -237,7 +237,7 @@
     "task_id": "first_9_mins_027",
     "clip_id": "first_9_mins_027",
     "video_src": "clips/real/segments/first_9_mins_027.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -245,7 +245,7 @@
     "task_id": "first_9_mins_028",
     "clip_id": "first_9_mins_028",
     "video_src": "clips/real/segments/first_9_mins_028.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -253,7 +253,7 @@
     "task_id": "first_9_mins_029",
     "clip_id": "first_9_mins_029",
     "video_src": "clips/real/segments/first_9_mins_029.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -261,7 +261,7 @@
     "task_id": "first_9_mins_030",
     "clip_id": "first_9_mins_030",
     "video_src": "clips/real/segments/first_9_mins_030.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -269,7 +269,7 @@
     "task_id": "first_9_mins_031",
     "clip_id": "first_9_mins_031",
     "video_src": "clips/real/segments/first_9_mins_031.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -277,7 +277,7 @@
     "task_id": "first_9_mins_032",
     "clip_id": "first_9_mins_032",
     "video_src": "clips/real/segments/first_9_mins_032.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -285,7 +285,7 @@
     "task_id": "first_9_mins_033",
     "clip_id": "first_9_mins_033",
     "video_src": "clips/real/segments/first_9_mins_033.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -293,7 +293,7 @@
     "task_id": "first_9_mins_034",
     "clip_id": "first_9_mins_034",
     "video_src": "clips/real/segments/first_9_mins_034.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -301,7 +301,7 @@
     "task_id": "first_9_mins_035",
     "clip_id": "first_9_mins_035",
     "video_src": "clips/real/segments/first_9_mins_035.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -309,7 +309,7 @@
     "task_id": "first_9_mins_036",
     "clip_id": "first_9_mins_036",
     "video_src": "clips/real/segments/first_9_mins_036.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -317,7 +317,7 @@
     "task_id": "first_9_mins_037",
     "clip_id": "first_9_mins_037",
     "video_src": "clips/real/segments/first_9_mins_037.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -325,7 +325,7 @@
     "task_id": "first_9_mins_038",
     "clip_id": "first_9_mins_038",
     "video_src": "clips/real/segments/first_9_mins_038.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -333,7 +333,7 @@
     "task_id": "first_9_mins_039",
     "clip_id": "first_9_mins_039",
     "video_src": "clips/real/segments/first_9_mins_039.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -341,7 +341,7 @@
     "task_id": "first_9_mins_040",
     "clip_id": "first_9_mins_040",
     "video_src": "clips/real/segments/first_9_mins_040.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -349,7 +349,7 @@
     "task_id": "first_9_mins_041",
     "clip_id": "first_9_mins_041",
     "video_src": "clips/real/segments/first_9_mins_041.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -357,7 +357,7 @@
     "task_id": "first_9_mins_042",
     "clip_id": "first_9_mins_042",
     "video_src": "clips/real/segments/first_9_mins_042.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -365,7 +365,7 @@
     "task_id": "first_9_mins_043",
     "clip_id": "first_9_mins_043",
     "video_src": "clips/real/segments/first_9_mins_043.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -373,7 +373,7 @@
     "task_id": "first_9_mins_044",
     "clip_id": "first_9_mins_044",
     "video_src": "clips/real/segments/first_9_mins_044.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -381,7 +381,7 @@
     "task_id": "first_9_mins_045",
     "clip_id": "first_9_mins_045",
     "video_src": "clips/real/segments/first_9_mins_045.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -389,7 +389,7 @@
     "task_id": "first_9_mins_046",
     "clip_id": "first_9_mins_046",
     "video_src": "clips/real/segments/first_9_mins_046.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -397,7 +397,7 @@
     "task_id": "first_9_mins_047",
     "clip_id": "first_9_mins_047",
     "video_src": "clips/real/segments/first_9_mins_047.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -405,7 +405,7 @@
     "task_id": "first_9_mins_048",
     "clip_id": "first_9_mins_048",
     "video_src": "clips/real/segments/first_9_mins_048.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -413,7 +413,7 @@
     "task_id": "first_9_mins_049",
     "clip_id": "first_9_mins_049",
     "video_src": "clips/real/segments/first_9_mins_049.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -421,7 +421,7 @@
     "task_id": "first_9_mins_050",
     "clip_id": "first_9_mins_050",
     "video_src": "clips/real/segments/first_9_mins_050.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   },
@@ -429,7 +429,7 @@
     "task_id": "first_9_mins_051",
     "clip_id": "first_9_mins_051",
     "video_src": "clips/real/segments/first_9_mins_051.mp4",
-    "annotation_type": "visual_transcription",
+    "annotation_type": "bvi_audio_commentary",
     "annotation_status": "todo",
     "reference_description": ""
   }
