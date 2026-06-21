@@ -41,14 +41,18 @@ let tasks = [];
 let selectedTask = null;
 let draggedId = null;
 
-// ── Reason tags (cheap signal on why a candidate won/lost) ───────────────────
+// ── Reason tags (why this commentary is better for a BVI fan) ────────────────
 const REASON_TAGS = [
-  { id: 'ball_location', label: 'Ball location clear' },
-  { id: 'direction', label: 'Direction of attack' },
-  { id: 'key_event', label: 'Key event captured' },
-  { id: 'concise', label: 'Concise for live audio' },
-  { id: 'no_hallucination', label: 'No unsupported claims' },
-  { id: 'player_context', label: 'Player context' },
+  { id: 'ball_location',     label: 'Ball location specific enough to picture it' },
+  { id: 'direction',         label: 'Direction of play is clear' },
+  { id: 'play_type',         label: 'Correctly identifies the type of play' },
+  { id: 'danger',            label: 'Explains why this moment is dangerous' },
+  { id: 'tension',           label: 'Captures the tension or pressure of the moment' },
+  { id: 'presence',          label: 'Makes me feel present at the stadium' },
+  { id: 'player_named',      label: 'Names the key player so I can follow individual stories' },
+  { id: 'concise',           label: 'Short enough to process in real time' },
+  { id: 'no_visual_assume',  label: 'No visual-assumption phrases ("as you can see", etc.)' },
+  { id: 'beyond_tv',         label: 'Gives me more than standard TV commentary alone' },
 ];
 
 function renderReasonTags() {
