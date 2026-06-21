@@ -43,6 +43,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
 async function handleVoiceQuery(tabId, transcript, currentParams) {
   const { anthropicApiKey } = await chrome.storage.local.get('anthropicApiKey');
+  console.log('[MV voice] key present:', !!anthropicApiKey, 'prefix:', anthropicApiKey?.slice(0, 12));
   if (!anthropicApiKey) {
     chrome.tabs.sendMessage(tabId, {
       type: 'voice-response',
