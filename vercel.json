@@ -22,4 +22,3 @@
     { "src": "/(.*)", "dest": "/$1" }
   ]
 }
-# Vercel cache bust
