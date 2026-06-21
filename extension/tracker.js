@@ -15,6 +15,7 @@
   let _pidLastTime = 0;
   const INT_LIMIT = 3.0;
   const params = { panSpeed: 6, kP: 0.08, kI: 0.02, kD: 0.04, gazeSmooth: 0.12, yBias: 0, yScale: 1.0 };
+  const voiceHistory = []; // rolling conversation sent to Claude for context
   let panInterval = null;
   let calibrationOverlay = null;
   let debugDot = null;
@@ -406,81 +407,67 @@
       setTimeout(() => { voiceStatus.textContent = ''; }, 2000);
     });
 
-    // ── Always-on wake word ("Match Vision …") ───────────────────────────
+    // ── Always-on conversation mode ───────────────────────────────────────
+    // Every utterance goes to Claude. Claude decides whether it's being
+    // addressed — if not, returns __ignore__ and nothing happens.
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    let wakeRec = null;
-    let wakeOn  = false;
-    let lastQuery = '', lastQueryTime = 0;
+    let listenRec = null;
+    let listenOn  = false;
 
-    function setVoiceOn(on) {
-      wakeOn = on;
-      micBtn.textContent = on ? '🎤 Wake word: ON' : '🎤 Wake word: OFF';
-      micBtn.style.background = on ? '#4eff88' : '';
-      micBtn.style.color      = on ? '#000'    : '';
-      if (!on) {
-        voiceStatus.innerHTML = 'Say <strong style="color:#70e1ff">"Match Vision …"</strong> to talk to Claude';
-      }
+    function setListenOn(on) {
+      listenOn = on;
+      micBtn.textContent       = on ? '🎤 Listening: ON' : '🎤 Listening: OFF';
+      micBtn.style.background  = on ? '#4eff88' : '';
+      micBtn.style.color       = on ? '#000'    : '';
+      if (!on) voiceStatus.textContent = 'Conversation off.';
     }
 
-    function startWake(tabId) {
+    function startListening(tabId) {
       if (!SR) { voiceStatus.textContent = '⚠ Speech recognition not available.'; return; }
 
-      // Non-continuous + instant auto-restart is more reliable than continuous:true.
-      // Chrome batches results in continuous mode and only finalises on stop().
       function cycle() {
-        if (!wakeOn) return;
+        if (!listenOn) return;
         const rec = new SR();
         rec.lang = 'en-US';
         rec.continuous = false;
         rec.interimResults = false;
-        wakeRec = rec;
+        listenRec = rec;
 
         rec.onresult = (e) => {
-          const text = e.results[0][0].transcript;
-          console.log('[MV wake] heard:', text);
-
-          // Fuzzy wake word: "match vision/fission/mission/physician"
-          const m = text.match(/match\s*(?:vision|fission|mission|physician)\s+([\s\S]+)/i);
-          if (!m) return;
-
-          const query = m[1].trim();
-          const now = Date.now();
-          if (query === lastQuery && now - lastQueryTime < 4000) return;
-          lastQuery = query; lastQueryTime = now;
-
-          console.log('[MV wake] → Claude:', query);
-          voiceStatus.textContent = `"${query}" — asking Claude…`;
+          const text = e.results[0][0].transcript.trim();
+          if (!text) return;
+          console.log('[MV listen] heard:', text);
+          voiceStatus.textContent = `"${text}"`;
           chrome.runtime.sendMessage({
-            type: 'voice-transcript', tabId, text: query,
+            type: 'voice-transcript', tabId, text,
+            history: voiceHistory.slice(-10), // last 5 exchanges for context
             currentParams: { ...params, zoom: zoomLevel, isTracking },
           }).catch(() => {});
         };
 
-        rec.onend   = () => setTimeout(cycle, 100);
+        rec.onend   = () => setTimeout(cycle, 80);
         rec.onerror = (e) => {
           if (e.error !== 'no-speech' && e.error !== 'aborted')
-            console.warn('[MV wake] error:', e.error);
-          setTimeout(cycle, e.error === 'network' ? 2000 : 100);
+            console.warn('[MV listen] error:', e.error);
+          setTimeout(cycle, e.error === 'network' ? 2000 : 80);
         };
-        try { rec.start(); } catch (_) { setTimeout(cycle, 500); }
+        try { rec.start(); } catch (_) { setTimeout(cycle, 400); }
       }
-
       cycle();
     }
 
     micBtn.addEventListener('click', async () => {
       if (!SR) { voiceStatus.textContent = '⚠ Speech recognition not available.'; return; }
-      if (wakeOn) {
-        // Turn off
-        wakeOn = false;
-        try { wakeRec?.stop(); } catch(_) {}
-        setVoiceOn(false);
+      if (listenOn) {
+        listenOn = false;
+        try { listenRec?.stop(); } catch (_) {}
+        setListenOn(false);
+        voiceHistory.length = 0; // clear conversation on stop
       } else {
-        // Turn on
         const { tabId } = await chrome.runtime.sendMessage({ type: 'get-tab-id' });
-        setVoiceOn(true);
-        voiceStatus.textContent = 'Listening for "Match Vision …"';
-        startWake(tabId);
+        setListenOn(true);
+        voiceStatus.textContent = 'Listening — just speak naturally…';
+        startListening(tabId);
       }
     });
   }
@@ -589,6 +576,16 @@
           speak(msg.error);
           break;
         }
+        // Claude decided this wasn't directed at it — stay silent
+        if (msg.ignore) {
+          if (vs) vs.textContent = 'Listening…';
+          break;
+        }
+        // Add exchange to rolling history for context in future turns
+        if (msg.userText) voiceHistory.push({ role: 'user',      content: msg.userText });
+        if (msg.text)     voiceHistory.push({ role: 'assistant', content: msg.text });
+        if (voiceHistory.length > 20) voiceHistory.splice(0, 2);
+
         // Apply param changes from Claude tool call
         if (msg.params) {
           const p = msg.params;

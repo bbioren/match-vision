@@ -52,7 +52,19 @@ async function handleVoiceQuery(tabId, transcript, currentParams) {
     return;
   }
 
-  const systemPrompt = `You are the MatchVision voice assistant — a Chrome extension that helps low-vision users control gaze-based video zoom and pan with their eyes. Respond in 1-2 short sentences since your response will be spoken aloud.
+  const systemPrompt = `You are the MatchVision voice assistant, always listening while the user watches video. Most speech is NOT directed at you.
+
+CRITICAL: If the user is talking to someone else, thinking out loud, commenting on the video, or the speech is clearly not a command or question to you — respond with ONLY the word: __ignore__
+
+You ARE being addressed when the user:
+- Asks you to change a setting ("make it smoother", "zoom in more")
+- Asks a question about the extension ("what does kP do?")
+- Gives a control command ("start tracking", "stop", "reset")
+- Continues a conversation with you from earlier in this session
+
+When you DO respond: keep it to 1-2 short sentences since it will be spoken aloud.
+
+Current settings:
 
 Current settings:
 - Zoom: ${currentParams.zoom?.toFixed(1)}x
@@ -123,7 +135,7 @@ When the user asks to change a setting, use the adjust_params tool. Always confi
         max_tokens: 256,
         system: systemPrompt,
         tools,
-        messages: [{ role: 'user', content: transcript }],
+        messages: [...(msg.history || []), { role: 'user', content: transcript }],
       }),
     });
 
@@ -140,8 +152,16 @@ When the user asks to change a setting, use the adjust_params tool. Always confi
       if (block.type === 'tool_use' && block.name === 'control_tracking') action = block.input.action;
     }
     if (!text && (Object.keys(paramChanges).length || action)) text = 'Done.';
+    const ignore = text.trim() === '__ignore__';
 
-    chrome.tabs.sendMessage(tabId, { type: 'voice-response', text, params: paramChanges, action }).catch(() => {});
+    chrome.tabs.sendMessage(tabId, {
+      type: 'voice-response',
+      text: ignore ? '' : text,
+      params: paramChanges,
+      action,
+      userText: transcript,
+      ignore,
+    }).catch(() => {});
   } catch (err) {
     chrome.tabs.sendMessage(tabId, { type: 'voice-response', error: 'Claude error: ' + err.message }).catch(() => {});
   }
