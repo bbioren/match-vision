@@ -109,7 +109,8 @@ When the user asks to change a setting, use the adjust_params tool. Always confi
     });
 
     const data = await res.json();
-    if (data.error) throw new Error(data.error.message);
+    console.log('[MV voice] Claude status:', res.status, data.error ?? 'ok');
+    if (data.error) throw new Error(data.error.message ?? JSON.stringify(data.error));
 
     let text = '';
     let paramChanges = {};
