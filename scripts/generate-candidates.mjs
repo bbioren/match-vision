@@ -98,6 +98,15 @@ or decision point. Be factual and specific. Do not editorialize.`;
   return claude(system, content);
 }
 
+// ── Shared anti-hallucination rule injected into every strategy ───────────────
+const NO_HALLUCINATION = `
+CRITICAL RULES — violating any of these makes your output unusable:
+- Describe ONLY what is visible in the clip right now. This is a 10-second snapshot.
+- NEVER describe what happens next or the outcome (no "scores", "saves", "strikes it", "dives", "puts it in the net").
+- If the clip shows preparation or build-up, say so — do not jump to the kick or result.
+- NEVER include scorelines, match times, stadium names, or crowd details unless explicitly stated in the context.
+- If you are unsure about a detail, omit it. Omission is better than invention.`;
+
 // ── Step 2: Generate 5 commentary candidates ─────────────────────────────────
 const STRATEGIES = [
   {
@@ -107,7 +116,8 @@ const STRATEGIES = [
 Write ONE sentence of live commentary that prioritizes exact spatial information: 
 where the ball is, which direction play is moving, and where key players are positioned.
 Be specific about field zones (e.g. "right edge of the penalty area", "six yards from goal").
-No more than 30 words.`,
+No more than 30 words.
+${NO_HALLUCINATION}`,
   },
   {
     id: 'b',
@@ -115,27 +125,31 @@ No more than 30 words.`,
     system: `You are a tactically-minded soccer commentator writing for blind fans.
 Write ONE sentence that explains the tactical situation: team shape, pressure, space available, 
 and what the key decision or danger is. Help the listener understand WHY this moment matters.
-No more than 35 words.`,
+No more than 35 words.
+${NO_HALLUCINATION}`,
   },
   {
     id: 'c',
     label: 'Concise live',
     system: `You are a live radio commentator writing a single punchy line for blind and low-vision fans.
 Write ONE short, natural-sounding sentence (under 20 words) capturing the essential action right now.
-It should sound like something said on air mid-play.`,
+It should sound like something said on air mid-play.
+${NO_HALLUCINATION}`,
   },
   {
     id: 'd',
     label: 'Narrative',
     system: `You are writing audio description for a blind soccer fan who wants to feel the moment.
 Write ONE sentence (25-35 words) that combines spatial fact with the emotional weight of the moment.
-Name the key player if clearly identifiable. Make the listener feel present.`,
+Name the key player if clearly identifiable. Make the listener feel present.
+${NO_HALLUCINATION}`,
   },
   {
     id: 'e',
     label: 'Baseline',
     system: `Describe what is happening in this soccer clip in one plain sentence. 
-Be brief and generic. Under 15 words.`,
+Be brief and generic. Under 15 words.
+${NO_HALLUCINATION}`,
   },
 ];
 

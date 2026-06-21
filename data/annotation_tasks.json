@@ -189,34 +189,34 @@
     "task_id": "yt_eng_cro_07",
     "clip_id": "england_vs_croatia_extended_highlights_2026_fifa_world_cup_007",
     "video_src": "clips/youtube/segments/england_vs_croatia_extended_highlights_2026_fifa_world_cup_007.mp4",
-    "clip_summary": "The sequence shows a goal kick from the goalkeeper in yellow, who plays a long ball upfield from the left side of the penalty area. The team in white (appearing to be England based on the crowd and FIFA World Cup 2026 branding) builds possession through midfield against the team in blue. By the final frame, the white team has advanced into the attacking third on the right side of the pitch, with the ball near the edge of the penalty area as multiple players from both teams converge, creating a dangerous attacking opportunity with the blue team's goalkeeper in pink positioning himself in goal.",
+    "clip_summary": "The sequence shows a goal kick being taken by the goalkeeper in yellow, who distributes the ball long from the left side of the penalty area. The team in white receives possession and builds play through the middle third, advancing toward the right side of the pitch where the team in blue is defending. By the final frame, the white team has pushed into the attacking third just outside the penalty box, with the ball being played near the edge of the area as multiple blue defenders and the goalkeeper in pink position themselves to deal with the developing threat.",
     "baseline": "The teams are passing the ball around in midfield.",
     "improved": "Wide view at midfield: England in white and Croatia in blue are spread across the central third, with the ball moving through open play.",
     "candidates": [
       {
         "id": "a",
         "label": "Spatial",
-        "description": "Goalkeeper's long ball sparks fast transition—white team now controls possession at the right edge of the penalty area, 20 yards from goal, with blue defenders scrambling back."
+        "description": "Goalkeeper in yellow launches a long ball from the left side; the team in white advances through midfield and now has possession just outside the right edge of the penalty area."
       },
       {
         "id": "b",
         "label": "Tactical",
-        "description": "The goalkeeper's long distribution has sparked a rapid transition, with England advancing into the right side of the box against a retreating US defense that's scrambling to recover its shape—the key is whether the cross comes in before cover arrives."
+        "description": "The goalkeeper's long distribution has sparked a rapid transition, with the team in white advancing through midfield into a congested attacking zone where blue defenders are scrambling to compact their shape around the penalty area."
       },
       {
         "id": "c",
         "label": "Concise live",
-        "description": "Goalkeeper launches it long, England work it forward and now they're pressing into the box!"
+        "description": "The goalkeeper launches it long, and the white shirts work it forward into a dangerous area outside the box."
       },
       {
         "id": "d",
         "label": "Narrative",
-        "description": "The goalkeeper's long clearance sparks England into life as white shirts surge forward through midfield, the attack building momentum until the ball reaches the edge of the box with defenders scrambling and the crowd rising in anticipation."
+        "description": "The goalkeeper in yellow launches a searching ball upfield, and the team in white builds momentum through midfield, surging toward the penalty area where blue shirts scramble to form a desperate defensive wall."
       },
       {
         "id": "e",
         "label": "Baseline",
-        "description": "The goalkeeper launches a long ball upfield, starting an attacking move into the box."
+        "description": "The goalkeeper takes a goal kick and distributes long, starting a build-up through midfield."
       }
     ],
     "split": "train",
@@ -224,64 +224,64 @@
       {
         "id": "a",
         "label": "Spatial",
-        "text": "Goalkeeper's long ball sparks fast transition—white team now controls possession at the right edge of the penalty area, 20 yards from goal, with blue defenders scrambling back."
+        "text": "Goalkeeper in yellow launches a long ball from the left side; the team in white advances through midfield and now has possession just outside the right edge of the penalty area."
       },
       {
         "id": "b",
         "label": "Tactical",
-        "text": "The goalkeeper's long distribution has sparked a rapid transition, with England advancing into the right side of the box against a retreating US defense that's scrambling to recover its shape—the key is whether the cross comes in before cover arrives."
+        "text": "The goalkeeper's long distribution has sparked a rapid transition, with the team in white advancing through midfield into a congested attacking zone where blue defenders are scrambling to compact their shape around the penalty area."
       },
       {
         "id": "c",
         "label": "Concise live",
-        "text": "Goalkeeper launches it long, England work it forward and now they're pressing into the box!"
+        "text": "The goalkeeper launches it long, and the white shirts work it forward into a dangerous area outside the box."
       },
       {
         "id": "d",
         "label": "Narrative",
-        "text": "The goalkeeper's long clearance sparks England into life as white shirts surge forward through midfield, the attack building momentum until the ball reaches the edge of the box with defenders scrambling and the crowd rising in anticipation."
+        "text": "The goalkeeper in yellow launches a searching ball upfield, and the team in white builds momentum through midfield, surging toward the penalty area where blue shirts scramble to form a desperate defensive wall."
       },
       {
         "id": "e",
         "label": "Baseline",
-        "text": "The goalkeeper launches a long ball upfield, starting an attacking move into the box."
+        "text": "The goalkeeper takes a goal kick and distributes long, starting a build-up through midfield."
       }
     ],
-    "generated_at": "2026-06-21T03:30:38.571Z",
+    "generated_at": "2026-06-21T03:45:35.725Z",
     "generation_model": "claude-opus-4-5"
   },
   {
     "task_id": "yt_eng_cro_08",
     "clip_id": "england_vs_croatia_extended_highlights_2026_fifa_world_cup_008",
     "video_src": "clips/youtube/segments/england_vs_croatia_extended_highlights_2026_fifa_world_cup_008.mp4",
-    "clip_summary": "England (in white) is building an attack against Croatia (in blue) in this FIFA World Cup 2026 Group L match, with the score level at 0-0 in the 8th minute. The sequence shows England advancing the ball from midfield into Croatia's defensive third, culminating in what appears to be a set piece or corner kick situation, with multiple England players positioned inside and around the Croatian penalty area. The Croatian goalkeeper in pink is positioned near the goal line as defenders organize themselves to deal with the incoming delivery, with the ball about to be played into a congested box.",
+    "clip_summary": "England (in white) is building an attack against Croatia (in blue) in the opening minutes of this FIFA World Cup 2026 Group L match. The sequence shows England progressing from midfield possession into Croatia's defensive third, culminating in a set piece situation around the 8th minute where England appears to be delivering a corner or free kick into the Croatian penalty area. The Croatian goalkeeper in pink is positioned near the goal line as multiple players from both teams jostle for position in the box, awaiting the incoming delivery.",
     "baseline": "England are attacking near the penalty area.",
     "improved": "England move near Croatia’s penalty area, with several blue defenders between the ball and goal. The danger is a pass or cross into the crowded box.",
     "candidates": [
       {
         "id": "a",
         "label": "Spatial",
-        "description": "England corner from the right, ball swinging into the six-yard box where seven white shirts crowd the near post, Croatian keeper in pink rooted on his goal line."
+        "description": "England preparing to deliver a set piece from the right side, with the ball at the corner flag as Croatian defenders in blue and England attackers in white crowd the six-yard box awaiting the cross."
       },
       {
         "id": "b",
         "label": "Tactical",
-        "description": "England have worked the ball wide for a corner, with Croatia packing the box but England clustering runners at the near post—the key decision is whether to deliver it short or attack the dangerous six-yard area."
+        "description": "England have worked the ball into a dangerous set-piece position, with Croatian defenders packed inside their six-yard box while white shirts flood the area—the delivery is about to come in and Croatia's goalkeeper must organize quickly."
       },
       {
         "id": "c",
         "label": "Concise live",
-        "description": "England swinging in a corner, bodies packed in the Croatian box as the delivery comes in!"
+        "description": "England swing in a corner with bodies packed in the Croatian six-yard box, everyone jostling for position."
       },
       {
         "id": "d",
         "label": "Narrative",
-        "description": "England swings a corner into the Croatian box in the eighth minute, white shirts clustering at the near post as the crowd holds its breath, the blue-clad defenders scrambling to track runners in this tense World Cup opener."
+        "description": "England in white swarm Croatia's penalty area as a set piece delivery hangs in the air, blue shirts scrambling to track runners while the goalkeeper in pink braces near his line, the box a cauldron of nervous anticipation."
       },
       {
         "id": "e",
         "label": "Baseline",
-        "description": "England builds patiently from midfield before delivering a cross into the Croatian box."
+        "description": "England builds up play from midfield before delivering a set piece into Croatia's crowded penalty area."
       }
     ],
     "split": "train",
@@ -289,64 +289,64 @@
       {
         "id": "a",
         "label": "Spatial",
-        "text": "England corner from the right, ball swinging into the six-yard box where seven white shirts crowd the near post, Croatian keeper in pink rooted on his goal line."
+        "text": "England preparing to deliver a set piece from the right side, with the ball at the corner flag as Croatian defenders in blue and England attackers in white crowd the six-yard box awaiting the cross."
       },
       {
         "id": "b",
         "label": "Tactical",
-        "text": "England have worked the ball wide for a corner, with Croatia packing the box but England clustering runners at the near post—the key decision is whether to deliver it short or attack the dangerous six-yard area."
+        "text": "England have worked the ball into a dangerous set-piece position, with Croatian defenders packed inside their six-yard box while white shirts flood the area—the delivery is about to come in and Croatia's goalkeeper must organize quickly."
       },
       {
         "id": "c",
         "label": "Concise live",
-        "text": "England swinging in a corner, bodies packed in the Croatian box as the delivery comes in!"
+        "text": "England swing in a corner with bodies packed in the Croatian six-yard box, everyone jostling for position."
       },
       {
         "id": "d",
         "label": "Narrative",
-        "text": "England swings a corner into the Croatian box in the eighth minute, white shirts clustering at the near post as the crowd holds its breath, the blue-clad defenders scrambling to track runners in this tense World Cup opener."
+        "text": "England in white swarm Croatia's penalty area as a set piece delivery hangs in the air, blue shirts scrambling to track runners while the goalkeeper in pink braces near his line, the box a cauldron of nervous anticipation."
       },
       {
         "id": "e",
         "label": "Baseline",
-        "text": "England builds patiently from midfield before delivering a cross into the Croatian box."
+        "text": "England builds up play from midfield before delivering a set piece into Croatia's crowded penalty area."
       }
     ],
-    "generated_at": "2026-06-21T03:31:08.694Z",
+    "generated_at": "2026-06-21T03:45:59.665Z",
     "generation_model": "claude-opus-4-5"
   },
   {
     "task_id": "yt_eng_cro_09",
     "clip_id": "england_vs_croatia_extended_highlights_2026_fifa_world_cup_009",
     "video_src": "clips/youtube/segments/england_vs_croatia_extended_highlights_2026_fifa_world_cup_009.mp4",
-    "clip_summary": "In this FIFA World Cup 2026 Group L match between England (in white) and Croatia (in blue), England delivers a corner kick into Croatia's penalty area around the 8th minute. The ball is played into a crowded box where multiple players from both teams contest for position, with England attempting a headed effort on goal. The Croatian goalkeeper in pink positions himself to deal with the delivery, and following the cleared ball, play continues with England maintaining possession on the edge of the box as the referee monitors the situation closely.",
+    "clip_summary": "England (in white) delivers a corner kick into Croatia's penalty area during the 8th minute of this FIFA World Cup 2026 Group L match, with the score level at 0-0. The ball is played into a crowded box where multiple England attackers challenge Croatian defenders in blue, resulting in a scramble near the six-yard box. The sequence ends with the referee stopping play inside the penalty area, likely for a foul, as Croatia's goalkeeper in pink positions himself on his line and England players appeal for a decision.",
     "baseline": "There is pressure near the goal.",
     "improved": "The play is close to Croatia’s goal, with players from both teams packed in and around the penalty area. The immediate danger is a shot, rebound, or cross.",
     "candidates": [
       {
         "id": "a",
         "label": "Spatial",
-        "description": "England corner swings into the six-yard box from the left, headed down amid a crowd of players, Croatia clears, ball now recycled to England at the left edge of the penalty area."
+        "description": "England corner swings into the six-yard box from the left, crowded with white shirts challenging blue defenders, as the ball drops centrally with Croatia's pink-clad goalkeeper rooted on his goal line."
       },
       {
         "id": "b",
         "label": "Tactical",
-        "description": "England's corner delivery finds a congested six-yard box with Croatia defending deep and compact, but the header lacks power—Croatia clears and resets their defensive shape as England recycles possession, probing for another opening."
+        "description": "England deliver a corner into a congested Croatian box where bodies jostle tightly near the six-yard area, creating chaos as attackers and defenders compete for position, with the referee now intervening to stop play amid appeals."
       },
       {
         "id": "c",
         "label": "Concise live",
-        "description": "Corner swings in, headed away by Croatia, and England recycle possession outside the box."
+        "description": "England swings in the corner and bodies collide in a chaotic scramble inside Croatia's six-yard box."
       },
       {
         "id": "d",
         "label": "Narrative",
-        "description": "England swings in a corner from the left as the packed Croatian box becomes a battleground of white and blue shirts, bodies jostling desperately before the ball is cleared, leaving English players appealing with arms raised in frustration."
+        "description": "An England corner swings into the heart of Croatia's six-yard box, bodies in white and blue colliding in a desperate aerial scramble as the referee's whistle cuts through the tension, England players' arms raised in urgent appeal."
       },
       {
         "id": "e",
         "label": "Baseline",
-        "description": "England takes a corner kick into the box, but Croatia clears the danger."
+        "description": "England delivers a corner kick into Croatia's crowded penalty area, creating a scramble near goal."
       }
     ],
     "split": "train",
@@ -354,64 +354,64 @@
       {
         "id": "a",
         "label": "Spatial",
-        "text": "England corner swings into the six-yard box from the left, headed down amid a crowd of players, Croatia clears, ball now recycled to England at the left edge of the penalty area."
+        "text": "England corner swings into the six-yard box from the left, crowded with white shirts challenging blue defenders, as the ball drops centrally with Croatia's pink-clad goalkeeper rooted on his goal line."
       },
       {
         "id": "b",
         "label": "Tactical",
-        "text": "England's corner delivery finds a congested six-yard box with Croatia defending deep and compact, but the header lacks power—Croatia clears and resets their defensive shape as England recycles possession, probing for another opening."
+        "text": "England deliver a corner into a congested Croatian box where bodies jostle tightly near the six-yard area, creating chaos as attackers and defenders compete for position, with the referee now intervening to stop play amid appeals."
       },
       {
         "id": "c",
         "label": "Concise live",
-        "text": "Corner swings in, headed away by Croatia, and England recycle possession outside the box."
+        "text": "England swings in the corner and bodies collide in a chaotic scramble inside Croatia's six-yard box."
       },
       {
         "id": "d",
         "label": "Narrative",
-        "text": "England swings in a corner from the left as the packed Croatian box becomes a battleground of white and blue shirts, bodies jostling desperately before the ball is cleared, leaving English players appealing with arms raised in frustration."
+        "text": "An England corner swings into the heart of Croatia's six-yard box, bodies in white and blue colliding in a desperate aerial scramble as the referee's whistle cuts through the tension, England players' arms raised in urgent appeal."
       },
       {
         "id": "e",
         "label": "Baseline",
-        "text": "England takes a corner kick into the box, but Croatia clears the danger."
+        "text": "England delivers a corner kick into Croatia's crowded penalty area, creating a scramble near goal."
       }
     ],
-    "generated_at": "2026-06-21T03:31:32.653Z",
+    "generated_at": "2026-06-21T03:46:23.714Z",
     "generation_model": "claude-opus-4-5"
   },
   {
     "task_id": "yt_eng_cro_11",
     "clip_id": "england_vs_croatia_extended_highlights_2026_fifa_world_cup_011",
     "video_src": "clips/youtube/segments/england_vs_croatia_extended_highlights_2026_fifa_world_cup_011.mp4",
-    "clip_summary": "In this FIFA World Cup 2026 Group L match between England and Croatia (0-0 at around the 9th minute), the action begins with a scramble in the Croatian penalty area where an England player has gone to ground challenging for the ball near the goal line, with Croatia's #15 (Pasalic) among the defenders attempting to clear. The ball is then played out to midfield where Croatia's #17 works to retain possession against English pressure, before Croatia's #15 carries the ball forward in the center of the pitch while an England player has slipped trying to make a challenge. The sequence concludes with a close-up of England captain Harry Kane watching the play develop, appearing focused as his team works to regain possession.",
+    "clip_summary": "In this FIFA World Cup 2026 Group L match between England and Croatia, the action begins with a scramble in the Croatian penalty area where an England player has gone to ground attempting to win the ball, with Croatia's number 15 clearing under pressure. The ball is then played out to midfield where Croatia's number 17 receives possession and looks to distribute, but England's number 5 applies pressure as the play transitions back toward Croatia. The sequence concludes with a close-up of England captain Harry Kane watching the play develop, with the match still goalless at the 9-minute mark.",
     "baseline": "A set-piece is developing near the box.",
     "improved": "Players are lined up around Croatia’s penalty area for a set-piece delivery, with defenders holding the box and attackers preparing runs.",
     "candidates": [
       {
         "id": "a",
         "label": "Spatial",
-        "description": "Croatia's number 15 carries the ball centrally just outside England's penalty area, driving left to right as an England midfielder slips on the turf, with Kane watching from ten yards ahead."
+        "description": "Scramble in the Croatian six-yard box, England player down as Croatia's number 15 clears centrally; ball moves to midfield where Croatia's 17 holds possession under pressure from England's number 5."
       },
       {
         "id": "b",
         "label": "Tactical",
-        "description": "Croatia's number 15 drives forward through the center after England's failed tackle, exploiting the gap left as the English midfield scrambles to recover their defensive shape following the earlier box scramble."
+        "description": "Croatia's number 15 clears from a dangerous scramble in their own box, transitioning quickly to midfield where England's number 5 presses to prevent a counter—the key tactical battle now shifting to who controls the central spaces."
       },
       {
         "id": "c",
         "label": "Concise live",
-        "description": "Croatia clear the danger and Pasalic drives forward as Kane watches on, England searching for a way through."
+        "description": "Scramble in the Croatian box, England go down, and Croatia's number 15 hacks it clear under pressure."
       },
       {
         "id": "d",
         "label": "Narrative",
-        "description": "Chaos erupts in Croatia's six-yard box as bodies collide and an England attacker hits the turf, the ball scrambled away, before the camera finds Harry Kane's steely gaze—frustration flickering as another chance slips away."
+        "description": "Chaos erupts in the Croatian box as an England player tumbles to the turf battling for the ball, bodies everywhere, before the camera finds Harry Kane's steely, watchful gaze—England's captain surveying the scramble, waiting."
       },
       {
         "id": "e",
         "label": "Baseline",
-        "description": "Croatia clears the ball from their penalty area and maintains possession in midfield."
+        "description": "England scramble for the ball in Croatia's box before the clearance leads to midfield play."
       }
     ],
     "split": "train",
@@ -419,30 +419,30 @@
       {
         "id": "a",
         "label": "Spatial",
-        "text": "Croatia's number 15 carries the ball centrally just outside England's penalty area, driving left to right as an England midfielder slips on the turf, with Kane watching from ten yards ahead."
+        "text": "Scramble in the Croatian six-yard box, England player down as Croatia's number 15 clears centrally; ball moves to midfield where Croatia's 17 holds possession under pressure from England's number 5."
       },
       {
         "id": "b",
         "label": "Tactical",
-        "text": "Croatia's number 15 drives forward through the center after England's failed tackle, exploiting the gap left as the English midfield scrambles to recover their defensive shape following the earlier box scramble."
+        "text": "Croatia's number 15 clears from a dangerous scramble in their own box, transitioning quickly to midfield where England's number 5 presses to prevent a counter—the key tactical battle now shifting to who controls the central spaces."
       },
       {
         "id": "c",
         "label": "Concise live",
-        "text": "Croatia clear the danger and Pasalic drives forward as Kane watches on, England searching for a way through."
+        "text": "Scramble in the Croatian box, England go down, and Croatia's number 15 hacks it clear under pressure."
       },
       {
         "id": "d",
         "label": "Narrative",
-        "text": "Chaos erupts in Croatia's six-yard box as bodies collide and an England attacker hits the turf, the ball scrambled away, before the camera finds Harry Kane's steely gaze—frustration flickering as another chance slips away."
+        "text": "Chaos erupts in the Croatian box as an England player tumbles to the turf battling for the ball, bodies everywhere, before the camera finds Harry Kane's steely, watchful gaze—England's captain surveying the scramble, waiting."
       },
       {
         "id": "e",
         "label": "Baseline",
-        "text": "Croatia clears the ball from their penalty area and maintains possession in midfield."
+        "text": "England scramble for the ball in Croatia's box before the clearance leads to midfield play."
       }
     ],
-    "generated_at": "2026-06-21T03:32:01.482Z",
+    "generated_at": "2026-06-21T03:46:47.545Z",
     "generation_model": "claude-opus-4-5"
   },
   {
@@ -456,27 +456,27 @@
       {
         "id": "a",
         "label": "Spatial",
-        "description": "Kane stands twelve yards out at the penalty spot, ball positioned center of the goal frame, Croatian keeper balanced on the line as Kane begins his approach and strikes."
+        "description": "Kane stands twelve yards out at the penalty spot, facing the Croatian goalkeeper who waits centrally on the goal line, then begins his run-up toward the ball."
       },
       {
         "id": "b",
         "label": "Tactical",
-        "description": "Kane stands alone at the spot, twelve yards out with only the goalkeeper to beat—a moment of pure mental warfare where timing and placement must overcome the keeper's desperate dive."
+        "description": "Kane stands over the spot, the Croatian keeper rooted to his line—this is a moment of pure isolation, one striker against one goalkeeper, with England's momentum hanging on his composure and placement."
       },
       {
         "id": "c",
         "label": "Concise live",
-        "description": "Kane steps up, strikes it hard—goalkeeper dives right, the ball rifles into the bottom left corner!"
+        "description": "Kane steps up, eyes the goal, and strikes the penalty."
       },
       {
         "id": "d",
         "label": "Narrative",
-        "description": "Harry Kane stands alone at the penalty spot, twelve yards from glory, the Croatian keeper crouched and waiting—he breathes deep, begins his measured run-up, and strikes the ball with devastating purpose."
+        "description": "Harry Kane stands alone at the penalty spot, the weight of England's hopes visible in his focused gaze as he begins his measured run-up toward the ball."
       },
       {
         "id": "e",
         "label": "Baseline",
-        "description": "Harry Kane steps up and strikes the penalty kick for England against Croatia."
+        "description": "Harry Kane prepares and strikes a penalty kick for England against Croatia."
       }
     ],
     "split": "heldout",
@@ -484,30 +484,30 @@
       {
         "id": "a",
         "label": "Spatial",
-        "text": "Kane stands twelve yards out at the penalty spot, ball positioned center of the goal frame, Croatian keeper balanced on the line as Kane begins his approach and strikes."
+        "text": "Kane stands twelve yards out at the penalty spot, facing the Croatian goalkeeper who waits centrally on the goal line, then begins his run-up toward the ball."
       },
       {
         "id": "b",
         "label": "Tactical",
-        "text": "Kane stands alone at the spot, twelve yards out with only the goalkeeper to beat—a moment of pure mental warfare where timing and placement must overcome the keeper's desperate dive."
+        "text": "Kane stands over the spot, the Croatian keeper rooted to his line—this is a moment of pure isolation, one striker against one goalkeeper, with England's momentum hanging on his composure and placement."
       },
       {
         "id": "c",
         "label": "Concise live",
-        "text": "Kane steps up, strikes it hard—goalkeeper dives right, the ball rifles into the bottom left corner!"
+        "text": "Kane steps up, eyes the goal, and strikes the penalty."
       },
       {
         "id": "d",
         "label": "Narrative",
-        "text": "Harry Kane stands alone at the penalty spot, twelve yards from glory, the Croatian keeper crouched and waiting—he breathes deep, begins his measured run-up, and strikes the ball with devastating purpose."
+        "text": "Harry Kane stands alone at the penalty spot, the weight of England's hopes visible in his focused gaze as he begins his measured run-up toward the ball."
       },
       {
         "id": "e",
         "label": "Baseline",
-        "text": "Harry Kane steps up and strikes the penalty kick for England against Croatia."
+        "text": "Harry Kane prepares and strikes a penalty kick for England against Croatia."
       }
     ],
-    "generated_at": "2026-06-21T03:40:34.863Z",
+    "generated_at": "2026-06-21T03:47:00.455Z",
     "generation_model": "claude-opus-4-5",
     "clip_summary_source": "manual"
   }
