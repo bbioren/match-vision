@@ -449,34 +449,34 @@
     "task_id": "yt_eng_cro_12",
     "clip_id": "england_vs_croatia_extended_highlights_2026_fifa_world_cup_012",
     "video_src": "clips/youtube/segments/england_vs_croatia_extended_highlights_2026_fifa_world_cup_012.mp4",
-    "clip_summary": "England has a corner kick opportunity in the 10th minute of this FIFA World Cup 2026 Group L match against Croatia, with the score level at 0-0. The ball is positioned at the left corner flag as England players in white kits crowd the Croatian penalty area, while Croatia's defenders in blue organize themselves in the box with their goalkeeper in pink positioned on the goal line. The sequence shows the build-up to the corner delivery, with an England player (likely Harry Kane, shown in the opening close-up) waiting in the box as teammates and opponents jostle for position ahead of the incoming cross.",
+    "clip_summary": "Harry Kane steps up to take a penalty kick for England against Croatia in the FIFA World Cup 2026. Kane is shown in close-up preparing himself, then the camera pulls back to show him standing over the ball on the penalty spot with the Croatian goalkeeper on the goal line. Kane takes his run-up and strikes the ball.",
     "baseline": "England have a free kick near Croatia's goal.",
     "improved": "Harry Kane stands over a free kick just outside Croatia's penalty area. Croatia's wall is set and defenders mark runners, while Kane measures his run-up — a direct shot on goal or a precise delivery into the crowded box is seconds away.",
     "candidates": [
       {
         "id": "a",
         "label": "Spatial",
-        "description": "England corner from the left flag, ball waiting to be delivered as eight players cluster at the penalty spot, Croatian keeper in pink stationed center of the goal line, Kane lurking near the six-yard box."
+        "description": "Kane stands twelve yards out at the penalty spot, ball positioned center of the goal frame, Croatian keeper balanced on the line as Kane begins his approach and strikes."
       },
       {
         "id": "b",
         "label": "Tactical",
-        "description": "England corner from the left with Croatia packing the six-yard box—eight blue shirts defending zonally while Kane lurks at the penalty spot, the key battle being whether England's runners can lose their markers at the near post."
+        "description": "Kane stands alone at the spot, twelve yards out with only the goalkeeper to beat—a moment of pure mental warfare where timing and placement must overcome the keeper's desperate dive."
       },
       {
         "id": "c",
         "label": "Concise live",
-        "description": "England corner swung in from the left, bodies packed in the box—Croatia bracing for the delivery."
+        "description": "Kane steps up, strikes it hard—goalkeeper dives right, the ball rifles into the bottom left corner!"
       },
       {
         "id": "d",
         "label": "Narrative",
-        "description": "Harry Kane's steely blue eyes fix on the Croatian goal as England prepares to deliver a corner from the left, the penalty box a crowded battleground of white and blue shirts jostling for position in this tense World Cup opener."
+        "description": "Harry Kane stands alone at the penalty spot, twelve yards from glory, the Croatian keeper crouched and waiting—he breathes deep, begins his measured run-up, and strikes the ball with devastating purpose."
       },
       {
         "id": "e",
         "label": "Baseline",
-        "description": "England prepares to take a corner kick as players position themselves in the box."
+        "description": "Harry Kane steps up and strikes the penalty kick for England against Croatia."
       }
     ],
     "split": "heldout",
@@ -484,30 +484,31 @@
       {
         "id": "a",
         "label": "Spatial",
-        "text": "England corner from the left flag, ball waiting to be delivered as eight players cluster at the penalty spot, Croatian keeper in pink stationed center of the goal line, Kane lurking near the six-yard box."
+        "text": "Kane stands twelve yards out at the penalty spot, ball positioned center of the goal frame, Croatian keeper balanced on the line as Kane begins his approach and strikes."
       },
       {
         "id": "b",
         "label": "Tactical",
-        "text": "England corner from the left with Croatia packing the six-yard box—eight blue shirts defending zonally while Kane lurks at the penalty spot, the key battle being whether England's runners can lose their markers at the near post."
+        "text": "Kane stands alone at the spot, twelve yards out with only the goalkeeper to beat—a moment of pure mental warfare where timing and placement must overcome the keeper's desperate dive."
       },
       {
         "id": "c",
         "label": "Concise live",
-        "text": "England corner swung in from the left, bodies packed in the box—Croatia bracing for the delivery."
+        "text": "Kane steps up, strikes it hard—goalkeeper dives right, the ball rifles into the bottom left corner!"
       },
       {
         "id": "d",
         "label": "Narrative",
-        "text": "Harry Kane's steely blue eyes fix on the Croatian goal as England prepares to deliver a corner from the left, the penalty box a crowded battleground of white and blue shirts jostling for position in this tense World Cup opener."
+        "text": "Harry Kane stands alone at the penalty spot, twelve yards from glory, the Croatian keeper crouched and waiting—he breathes deep, begins his measured run-up, and strikes the ball with devastating purpose."
       },
       {
         "id": "e",
         "label": "Baseline",
-        "text": "England prepares to take a corner kick as players position themselves in the box."
+        "text": "Harry Kane steps up and strikes the penalty kick for England against Croatia."
       }
     ],
-    "generated_at": "2026-06-21T03:32:26.010Z",
-    "generation_model": "claude-opus-4-5"
+    "generated_at": "2026-06-21T03:40:34.863Z",
+    "generation_model": "claude-opus-4-5",
+    "clip_summary_source": "manual"
   }
 ]

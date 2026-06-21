@@ -139,10 +139,13 @@ Be brief and generic. Under 15 words.`,
   },
 ];
 
-async function generateCandidates(clipSummary, frames) {
-  const userPrompt = framesToContent(frames,
-    `Soccer clip context: ${clipSummary}\n\nWrite your commentary based on the frames and context above.`
-  );
+async function generateCandidates(clipSummary, frames, manualSummary = false) {
+  // If summary was manually written, use text-only to avoid frames overriding it
+  const userPrompt = manualSummary
+    ? `Soccer clip context: ${clipSummary}\n\nWrite your commentary based on the context above.`
+    : framesToContent(frames,
+        `Soccer clip context: ${clipSummary}\n\nWrite your commentary based on the frames and context above.`
+      );
 
   const results = [];
   for (const strategy of STRATEGIES) {
@@ -197,15 +200,23 @@ async function run() {
     console.log(`${frames.length} frames`);
 
     try {
-      // Auto-generate clip_summary from vision
-      process.stdout.write('  Generating clip_summary... ');
-      const clipSummary = await generateClipSummary(frames);
-      console.log('✓');
-      console.log(`  → "${clipSummary.slice(0, 80)}..."`);
+      // Auto-generate clip_summary from vision, unless manually overridden
+      let clipSummary;
+      if (task.clip_summary_source === 'manual') {
+        clipSummary = task.clip_summary;
+        console.log('  Using manual clip_summary (skipping vision)');
+        console.log(`  → "${clipSummary.slice(0, 80)}..."`);
+      } else {
+        process.stdout.write('  Generating clip_summary... ');
+        clipSummary = await generateClipSummary(frames);
+        console.log('✓');
+        console.log(`  → "${clipSummary.slice(0, 80)}..."`);
+      }
 
       // Generate 5 candidates
       console.log('  Generating commentary candidates:');
-      const candidates = await generateCandidates(clipSummary, frames);
+      const isManual = task.clip_summary_source === 'manual';
+      const candidates = await generateCandidates(clipSummary, frames, isManual);
 
       // Update task in place
       const taskInFull = tasks.find(t => t.task_id === task.task_id);
