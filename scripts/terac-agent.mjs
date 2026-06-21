@@ -156,7 +156,7 @@ async function run() {
 
   // ── Step 4: Launch ─────────────────────────────────────────────────────────
   console.log('\n[4/6] Launching opportunity (this spends credits)...');
-  const launch = await terac('terac_launch_draft_opportunity', { opportunity_id: draftId });
+  const launch = await terac('terac_launch_draft_opportunity', { opportunityId: draftId });
   console.log('Launch result:', JSON.stringify(launch, null, 2));
 
   // ── Step 5: Poll for submissions ───────────────────────────────────────────
