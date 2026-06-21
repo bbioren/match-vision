@@ -14,7 +14,9 @@
     "segment-videos": "node scripts/segment-videos.mjs",
     "terac": "node --env-file=.env.local scripts/terac-agent.mjs",
     "terac:dry": "node --env-file=.env.local scripts/terac-agent.mjs --dry-run",
-    "build-pairs": "node --env-file=.env.local scripts/build-preference-dataset.mjs"
+    "build-pairs": "node --env-file=.env.local scripts/build-preference-dataset.mjs",
+    "generate": "node --env-file=.env.local scripts/generate-candidates.mjs",
+    "generate:dry": "node --env-file=.env.local scripts/generate-candidates.mjs --dry-run"
   },
   "keywords": [
     "accessibility",
