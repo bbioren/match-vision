@@ -11,9 +11,9 @@ The core model is a **description selector**. For each soccer moment, MatchVisio
 - tactical context description
 - brief live-audio description
 
-Terac labelers rank which candidate is best for a blind or low-vision listener and score accessibility features: ball location, direction of attack, key-event coverage, concision, hallucination, and helpfulness.
+Terac labelers drag five actual commentary variations into best-to-worst order for blind or low-vision usefulness. They also explain why the #1 commentary wins, describing exact features such as ball location, direction of attack, pressure/open space, concision, and avoiding unsupported claims.
 
-Those labels tune the selector weights:
+Those rankings tune the selector weights:
 
 - reward ball location
 - reward direction of attack
@@ -36,6 +36,6 @@ npm run eval-ranker
 
 Show:
 
-1. Annotation Lab: humans rank candidate descriptions.
+1. Annotation Lab: humans drag-rank five real commentary variations and explain why the winner is best.
 2. Main app: selected output is chosen by the Terac-tuned selector.
 3. Eval dashboard: selector beats baseline on accessibility metrics.

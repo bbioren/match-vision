@@ -26,13 +26,13 @@ Minimum target: 30 labels. Strong target: 60+ labels.
 Process:
 
 1. Open Annotation Lab.
-2. Ask teammates / nearby hackers to label 3 tasks.
+2. Ask teammates / nearby hackers to drag-rank all 5 commentary options for 3-5 tasks.
 3. Export CSV.
-4. Save as `data/annotations/real_labels.csv`.
+4. Save as `data/annotations/terac_labels.csv`.
 5. Run:
 
 ```bash
-node scripts/compute-metrics.mjs data/annotations/real_labels.csv
+node scripts/compute-metrics.mjs data/annotations/terac_labels.csv
 ```
 
 Use these numbers in Devpost and judging.
@@ -45,7 +45,7 @@ Required shots:
 
 1. Problem: commentary assumes sight.
 2. Main demo: ask “What just happened?” and “Why did the crowd react?”
-3. Annotation Lab: show baseline vs improved labels.
+3. Annotation Lab: show drag-ranking five commentary variations and the “why this is best” explanation.
 4. Eval Dashboard: show improvement metrics.
 5. Sponsor stack close.
 
