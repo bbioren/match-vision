@@ -58,3 +58,15 @@ th { color: var(--accent); }
 .clip-visual { width: 100%; margin-top: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,.16); background: #0b3b27; }
 .candidate-list label { display: block; padding: 12px; margin: 10px 0; border: 1px solid rgba(255,255,255,.14); border-radius: 14px; background: rgba(0,0,0,.16); }
 .candidate-list span { color: var(--muted); }
+.ranking-list { list-style: none; padding: 0; margin: 18px 0; display: grid; gap: 12px; }
+.ranking-item { display: grid; grid-template-columns: 86px 1fr; gap: 14px; align-items: stretch; padding: 14px; border: 1px solid rgba(255,255,255,.16); border-radius: 18px; background: rgba(0,0,0,.18); cursor: grab; transition: transform .12s ease, border-color .12s ease, background .12s ease; }
+.ranking-item:hover { border-color: rgba(112,225,255,.55); background: rgba(112,225,255,.08); }
+.ranking-item.dragging { opacity: .55; transform: scale(.99); cursor: grabbing; border-color: var(--accent-2); }
+.rank-meta { display: grid; place-items: center; align-content: center; gap: 8px; border-radius: 14px; background: rgba(112,225,255,.09); }
+.rank-number { color: var(--accent-2); font-weight: 1000; font-size: 1.35rem; }
+.drag-handle { color: var(--muted); font-size: 1.3rem; }
+.rank-body strong { color: var(--accent); font-size: 1.05rem; }
+.rank-body p { margin: 8px 0 12px; line-height: 1.5; }
+.rank-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+.rank-controls button { padding: 7px 10px; font-size: .8rem; background: rgba(255,255,255,.14); color: var(--text); }
+@media (max-width: 640px) { .ranking-item { grid-template-columns: 1fr; } .rank-meta { grid-template-columns: auto auto; justify-content: start; padding: 10px; } }
