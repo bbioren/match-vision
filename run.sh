@@ -31,4 +31,4 @@ echo "  Main demo:     http://localhost:$PORT/"
 echo "  Annotation:    http://localhost:$PORT/annotate.html"
 echo "  Press Ctrl+C to stop."
 echo ""
-exec "$NODE" server.mjs
+exec "$NODE" local-server.mjs
