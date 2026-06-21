@@ -1,10 +1,16 @@
 import fs from 'node:fs';
 
 const clips = JSON.parse(fs.readFileSync('data/clips.json', 'utf8'));
-const clipRequired = ['clip_id', 'title', 'video_asset'];
+const clipRequired = ['clip_id', 'title'];
 for (const [i, clip] of clips.entries()) {
   for (const key of clipRequired) {
     if (!(key in clip)) throw new Error(`clips[${i}] missing ${key}`);
+  }
+  // Every clip needs either a video (live VLM extraction) or a precomputed
+  // ground-truth timeline (analytics replay, e.g. StatsBomb/socceraction) —
+  // never neither.
+  if (!clip.video_asset && !clip.timeline_asset) {
+    throw new Error(`clips[${i}] must have either video_asset or timeline_asset`);
   }
   if (clip.match_context) {
     if (!clip.match_context.teams) throw new Error(`clips[${i}] match_context missing teams`);

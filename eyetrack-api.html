@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MatchVision — Eye Tracking (TF.js API)</title>
+    <link rel="stylesheet" href="src/styles.css" />
+    <style>
+      .eyetrack-status {
+        margin-top: 12px;
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        background: rgba(255,255,255,.06);
+        color: var(--muted);
+        min-height: 38px;
+      }
+      .eyetrack-status.active {
+        background: rgba(164,255,159,.1);
+        color: var(--accent-2);
+      }
+      .eyetrack-controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 16px;
+      }
+      .eyetrack-controls button {
+        flex: 1;
+        min-width: 120px;
+      }
+      .eyetrack-controls button.tracking-on {
+        background: var(--accent-2);
+      }
+      .tune-label {
+        color: var(--muted);
+        font-size: .85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .1em;
+        display: block;
+        margin-bottom: 10px;
+      }
+      input[type=range] {
+        width: 100%;
+        height: 10px;
+        margin-top: 10px;
+        accent-color: var(--accent-1, #70e1ff);
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <section class="hero" aria-labelledby="et-title">
+        <p class="eyebrow">Low-vision accessibility feature</p>
+        <h1 id="et-title">Eye Tracking <span style="font-size:0.6em;color:var(--accent-2);">TF.js API</span></h1>
+        <p class="tagline">Look where you want to focus — the video zooms and follows your gaze.</p>
+        <p><a class="link" href="index.html">← Back to MatchVision</a> &nbsp;|&nbsp; <a class="link" href="eyetrack.html">← ml5 version</a></p>
+      </section>
+
+      <section class="card" style="margin-bottom: 18px;">
+        <div id="eyetrack-player" style="position:relative;">
+        <div class="eyetrack-controls">
+          <button id="et-toggle" type="button">👁️ Enable Eye Tracking</button>
+          <button id="et-zoomin" type="button">🔍+ Zoom In</button>
+          <button id="et-zoomout" type="button">🔍− Zoom Out</button>
+          <button id="et-reset" type="button">↺ Reset</button>
+        </div>
+        <div class="eyetrack-status" id="et-status">
+          Click <strong>Enable Eye Tracking</strong> to start. Your browser will ask for camera access — all processing stays on your device.
+        </div>
+      </section>
+
+      <section class="card" style="margin-bottom: 18px;">
+        <h2 style="margin-bottom: 16px;">Tune tracking</h2>
+        <div class="grid" style="gap: 20px;">
+          <label style="margin:0;">
+            <span class="tune-label">Pan speed &nbsp;<strong id="val-speed">8</strong></span>
+            <input type="range" id="ctrl-speed" min="1" max="100" step="1" value="8">
+          </label>
+          <label style="margin:0;">
+            <span class="tune-label">Sensitivity X &nbsp;<strong id="val-sensX">2</strong></span>
+            <input type="range" id="ctrl-sensX" min="0.5" max="20" step="0.5" value="2">
+          </label>
+          <label style="margin:0;">
+            <span class="tune-label">Sensitivity Y &nbsp;<strong id="val-sensY">2</strong></span>
+            <input type="range" id="ctrl-sensY" min="0.5" max="20" step="0.5" value="2">
+          </label>
+          <label style="margin:0;">
+            <span class="tune-label">Zoom &nbsp;<strong id="val-zoom">2.0</strong>×</span>
+            <input type="range" id="ctrl-zoom" min="1" max="8" step="0.1" value="2">
+          </label>
+        </div>
+      </section>
+
+      <div class="grid">
+        <section class="card">
+          <h2>For low-vision fans</h2>
+          <ul style="color: var(--muted); line-height: 1.9; padding-left: 1.2em; margin: 0;">
+            <li>Automatically magnifies wherever your eyes focus</li>
+            <li>No manual scrolling or pinch-zooming needed</li>
+            <li>Works alongside MatchVision's spoken descriptions</li>
+            <li>Fully private — camera never leaves your device</li>
+          </ul>
+        </section>
+        <section class="card">
+          <h2>How it works</h2>
+          <ol style="color: var(--muted); line-height: 1.9; padding-left: 1.2em; margin: 0;">
+            <li>Grant camera access when prompted</li>
+            <li>TensorFlow.js + MediaPipe FaceMesh detects iris landmarks in real time</li>
+            <li>Three Y signals are blended: lid-gap ratio, iris Z depth, and head pitch</li>
+            <li>Eye position maps to a zoom + pan on the video — no calibration needed</li>
+          </ol>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import {
+        initEyeTracking,
+        stopEyeTracking,
+        updateZoom,
+        isTrackingActive,
+        setParams,
+      } from './src/services/eyetrack-api.js';
+
+      // ---------------------------------------------------------------------------
+      // Inline minimal video player (avoids dependency on eyetrack-player.js which
+      // hard-imports eyetrack-real.js)
+      // ---------------------------------------------------------------------------
+      const container = document.getElementById('eyetrack-player');
+
+      const wrapper = document.createElement('div');
+      wrapper.style.cssText = `
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        background: #000;
+        border-radius: 16px;
+        overflow: hidden;
+      `;
+
+      const video = document.createElement('video');
+      video.src = 'clips/real/children_football_01.webm';
+      video.controls = true;
+      video.autoplay = true;
+      video.loop = true;
+      video.muted = true;
+      video.playsInline = true;
+      video.style.cssText = `
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        display: block;
+        object-fit: cover;
+        transform-origin: center;
+        transition: transform 0.15s ease-out;
+      `;
+
+      wrapper.appendChild(video);
+      // Insert wrapper before the controls div inside #eyetrack-player
+      container.insertBefore(wrapper, container.firstChild);
+
+      let zoomLevel = 2.0;
+      const status = document.getElementById('et-status');
+      const toggleBtn = document.getElementById('et-toggle');
+
+      toggleBtn.addEventListener('click', async () => {
+        toggleBtn.disabled = true;
+        toggleBtn.textContent = '⏳ Loading model…';
+        try {
+          let on;
+          if (isTrackingActive()) {
+            await stopEyeTracking();
+            video.style.transform = 'scale(1) translate(0,0)';
+            on = false;
+          } else {
+            on = await initEyeTracking(video, zoomLevel);
+          }
+          toggleBtn.textContent = on ? '👁️ Eye Tracking ON' : '👁️ Enable Eye Tracking';
+          toggleBtn.classList.toggle('tracking-on', on);
+          status.textContent = on
+            ? '✅ Eye tracking active — look at the video to pan and zoom.'
+            : 'Eye tracking off.';
+          status.classList.toggle('active', on);
+        } finally {
+          toggleBtn.disabled = false;
+        }
+      });
+
+      document.getElementById('et-zoomin').addEventListener('click', () => {
+        zoomLevel = Math.min(zoomLevel + 0.25, 4);
+        if (isTrackingActive()) updateZoom(video, zoomLevel);
+        else video.style.transform = `scale(${zoomLevel})`;
+        document.getElementById('val-zoom').textContent = zoomLevel.toFixed(1);
+        document.getElementById('ctrl-zoom').value = zoomLevel;
+      });
+      document.getElementById('et-zoomout').addEventListener('click', () => {
+        zoomLevel = Math.max(zoomLevel - 0.25, 1);
+        if (isTrackingActive()) updateZoom(video, zoomLevel);
+        else video.style.transform = zoomLevel === 1 ? '' : `scale(${zoomLevel})`;
+        document.getElementById('val-zoom').textContent = zoomLevel.toFixed(1);
+        document.getElementById('ctrl-zoom').value = zoomLevel;
+      });
+      document.getElementById('et-reset').addEventListener('click', () => {
+        zoomLevel = 2.0;
+        if (isTrackingActive()) updateZoom(video, 1);
+        else video.style.transform = '';
+        document.getElementById('val-zoom').textContent = '2.0';
+        document.getElementById('ctrl-zoom').value = 2;
+      });
+
+      // Live param sliders
+      function slider(id, valId, paramKey, fmt = v => v) {
+        const el = document.getElementById(id);
+        el.addEventListener('input', () => {
+          const v = parseFloat(el.value);
+          document.getElementById(valId).textContent = fmt(v);
+          if (paramKey === 'zoom') {
+            zoomLevel = v;
+            if (isTrackingActive()) updateZoom(video, v);
+            else video.style.transform = v === 1 ? '' : `scale(${v})`;
+          } else {
+            setParams({ [paramKey]: v });
+          }
+        });
+      }
+      slider('ctrl-speed', 'val-speed', 'panSpeed');
+      slider('ctrl-sensX', 'val-sensX', 'sensitivityX');
+      slider('ctrl-sensY', 'val-sensY', 'sensitivityY');
+      slider('ctrl-zoom',  'val-zoom',  'zoom', v => v.toFixed(1));
+
+      setParams({
+        panSpeed:     parseFloat(document.getElementById('ctrl-speed').value),
+        sensitivityX: parseFloat(document.getElementById('ctrl-sensX').value),
+        sensitivityY: parseFloat(document.getElementById('ctrl-sensY').value),
+      });
+    </script>
+  </body>
+</html>

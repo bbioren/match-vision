@@ -23,6 +23,21 @@ const port = Number(process.env.PORT || 5173);
 const root = process.cwd();
 const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.webm': 'video/webm', '.mp4': 'video/mp4', '.md': 'text/markdown' };
 
+// Champion prompt (Phase 3A, docs/TERAC_FINETUNE_PLAN.md): if real Terac
+// preference data has been turned into data/prompts/champion_prompt.txt via
+// scripts/optimize-prompt.mjs, use it as the system prompt for ADC/Q&A
+// generation instead of the client-supplied default. Purely additive — when
+// the file doesn't exist (the common case pre-launch / pre-labels) this is a
+// no-op and /api/describe behaves exactly as before.
+const CHAMPION_PROMPT_PATH = path.join(root, 'data', 'prompts', 'champion_prompt.txt');
+let championPrompt = null;
+try {
+  championPrompt = fsSync.readFileSync(CHAMPION_PROMPT_PATH, 'utf8').trim() || null;
+  if (championPrompt) console.log(`Loaded champion prompt from ${CHAMPION_PROMPT_PATH}`);
+} catch {
+  // No champion prompt yet — fall back to whatever system prompt the caller sends.
+}
+
 async function readJson(req) {
   const chunks = [];
   for await (const chunk of req) chunks.push(chunk);
@@ -103,13 +118,17 @@ async function describe(req, res) {
   const body = await readJson(req);
   const provider = resolveProvider();
   const maxTokens = Number(body.maxTokens) || 200;
-  const args = { system: body.system, prompt: body.prompt, maxTokens };
+  // Champion prompt (if one has been learned from real Terac preference data)
+  // takes over the system prompt for narration calls; falls back to whatever
+  // the client sent (src/services/description.js's IMPROVED_SYSTEM) otherwise.
+  const system = championPrompt || body.system;
+  const args = { system, prompt: body.prompt, maxTokens };
   let result;
   if (provider === 'gemini') result = await callGemini(args);
   else if (provider === 'qwen') result = await callQwen(args);
   else if (provider === 'anthropic') result = await callAnthropic(args);
   else result = { fallback: true };
-  send(res, 200, JSON.stringify({ provider, ...result }), { 'content-type': 'application/json' });
+  send(res, 200, JSON.stringify({ provider, usedChampionPrompt: Boolean(championPrompt), ...result }), { 'content-type': 'application/json' });
 }
 
 async function callQwenVision({ imageBase64, frames, atSecond, matchContext, priorMoments }) {
@@ -283,6 +302,15 @@ http.createServer(async (req, res) => {
     if (url.pathname === '/api/labels') return await labels(req, res);
     if (url.pathname === '/api/sessions') return await sessions(req, res);
     if (req.method === 'POST' && url.pathname === '/api/tts') return await tts(req, res);
+    // Proxy mediapipe WASM assets for WebGazer (it hardcodes relative paths)
+    if (url.pathname.startsWith('/mediapipe/')) {
+      const upstream = `https://cdn.jsdelivr.net/npm/@mediapipe${url.pathname.slice('/mediapipe'.length)}`;
+      const r = await fetch(upstream);
+      if (!r.ok) return send(res, 404, 'Not found');
+      const buf = Buffer.from(await r.arrayBuffer());
+      const ct = r.headers.get('content-type') || 'application/octet-stream';
+      return send(res, 200, buf, { 'content-type': ct, 'cache-control': 'public,max-age=86400' });
+    }
     const pathname = url.pathname === '/' ? '/index.html' : decodeURIComponent(url.pathname);
     const file = path.normalize(path.join(root, pathname));
     if (!file.startsWith(root)) return send(res, 403, 'Forbidden');

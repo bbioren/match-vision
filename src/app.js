@@ -11,6 +11,11 @@ let annotationTasks = [];
 let timeline = [];
 let liveTimeline = [];
 let liveMode = true;
+// True for clips loaded from a precomputed ground-truth timeline_asset
+// (e.g. StatsBomb/socceraction analytics replay) instead of live video +
+// VLM extraction. Disables the live-extraction toggle/video element for
+// that clip without touching the live-vision path used by video clips.
+let isAnalyticsReplay = false;
 let currentSeconds = 0;
 let pendingBuckets = new Set();
 let bucketWaiters = new Map();
@@ -97,7 +102,7 @@ function localAnswer(question) {
 function renderLiveJson() {
   const el = $('liveJson');
   if (!el) return;
-  if (!liveMode) {
+  if (!isAnalyticsReplay && !liveMode) {
     el.textContent = 'Live extraction off — enable the checkbox above and press play.';
     return;
   }
@@ -243,7 +248,7 @@ async function drainQueue() {
 }
 
 function scheduleExtraction(seconds) {
-  if (!liveMode || liveExtractBlocked) return;
+  if (isAnalyticsReplay || !liveMode || liveExtractBlocked) return;
   enqueueBucketsUpTo(seconds);
   drainQueue();
 }
@@ -299,7 +304,7 @@ function encodeVideoPath(assetPath) {
   return assetPath.split('/').map((part) => encodeURIComponent(part)).join('/');
 }
 
-function renderClip() {
+async function renderClip() {
   const clip = currentClip();
   liveTimeline = [];
   pendingBuckets.clear();
@@ -309,21 +314,63 @@ function renderClip() {
   liveExtractBlocked = false;
   timeline = [];
   currentSeconds = 0;
+  isAnalyticsReplay = Boolean(clip?.timeline_asset);
   resetProbeVideo();
-  if ($('clipVideo')) {
-    $('clipVideo').src = clip.video_asset ? encodeVideoPath(clip.video_asset) : '';
-    $('clipVideo').style.display = clip.video_asset ? 'block' : 'none';
+
+  if ($('liveExtractToggle')) {
+    $('liveExtractToggle').disabled = isAnalyticsReplay;
+    $('liveExtractToggle').checked = isAnalyticsReplay ? false : liveMode;
   }
-  if ($('clipVisual')) {
-    $('clipVisual').style.display = 'none';
+  setReplayIndicator(isAnalyticsReplay, clip);
+
+  if (isAnalyticsReplay) {
+    // Ground-truth analytics replay (e.g. StatsBomb/socceraction) — no
+    // broadcast video, no VLM extraction. Load the precomputed moment
+    // timeline directly and reuse the existing live-vision rendering path.
+    if ($('clipVideo')) {
+      $('clipVideo').src = '';
+      $('clipVideo').style.display = 'none';
+    }
+    if ($('clipVisual')) $('clipVisual').style.display = 'none';
+    try {
+      const res = await fetch(clip.timeline_asset);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      timeline = await res.json();
+    } catch (error) {
+      console.warn('Failed to load timeline_asset', clip.timeline_asset, error);
+      timeline = [];
+    }
+    liveTimeline = timeline;
+    setExtractStatus(`Analytics replay — ${timeline.length} ground-truth moment(s) loaded (no live video or VLM extraction for this clip).`);
+  } else {
+    if ($('clipVideo')) {
+      $('clipVideo').src = clip.video_asset ? encodeVideoPath(clip.video_asset) : '';
+      $('clipVideo').style.display = clip.video_asset ? 'block' : 'none';
+    }
+    if ($('clipVisual')) {
+      $('clipVisual').style.display = 'none';
+    }
+    setExtractStatus(liveMode ? 'Live extraction on — press play to analyze frames' : 'Live extraction off — enable above and press play');
   }
+
   renderMoment();
   renderRanker();
   renderMemory();
   renderLiveJson();
   renderMatchContext();
-  setExtractStatus(liveMode ? 'Live extraction on — press play to analyze frames' : 'Live extraction off — enable above and press play');
   $('answer').textContent = localAdc($('modeSelect')?.value || 'balanced');
+}
+
+function setReplayIndicator(active, clip) {
+  let el = $('replayIndicator');
+  if (!el) return;
+  if (active) {
+    el.style.display = 'block';
+    el.textContent = `📊 Analytics replay — ground-truth match data (${clip?.source || 'statsbomb-open-data'}), not live video.`;
+  } else {
+    el.style.display = 'none';
+    el.textContent = '';
+  }
 }
 
 function onTimeUpdate() {
@@ -345,7 +392,7 @@ function onSeeked() {
   renderMemory();
   clearTimeout(seekTimer);
   seekTimer = setTimeout(async () => {
-    if (liveMode && !liveExtractBlocked) {
+    if (!isAnalyticsReplay && liveMode && !liveExtractBlocked) {
       const bucket = bucketSecond(currentSeconds);
       enqueueBucketsUpTo(currentSeconds);
       priorityBucket = bucket;
@@ -430,7 +477,7 @@ async function init() {
     if (event.key === 'Enter') ask();
   });
   setupVoiceInput();
-  renderClip();
+  await renderClip();
 }
 
 init().catch((error) => {

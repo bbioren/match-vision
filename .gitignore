@@ -39,3 +39,7 @@ clips/real/*.mp4
 data/labels.local.json
 
 clips/real/*.mov
+
+# analytics: cached StatsBomb actions + fitted xT/VAEP models (regenerable)
+analytics/cache/
+

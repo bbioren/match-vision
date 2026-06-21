@@ -35,5 +35,11 @@
         }
       ]
     }
+  },
+  {
+    "clip_id": "turkey_vs_italy_euro2020_analytics",
+    "title": "Turkey vs Italy (Euro 2020) — analytics replay",
+    "timeline_asset": "data/analytics/turkey_vs_italy_euro2020_timeline.json",
+    "source": "statsbomb-open-data"
   }
 ]

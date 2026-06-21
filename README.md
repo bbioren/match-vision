@@ -51,6 +51,58 @@ GEMINI_MODEL=gemini-2.5-flash
 
 `GOOGLE_API_KEY` is also accepted as an alias for `GEMINI_API_KEY`.
 
+## Terac fine-tune pipeline (human labels → better commentary prompt)
+
+See [`docs/TERAC_FINETUNE_PLAN.md`](./docs/TERAC_FINETUNE_PLAN.md) for the full design. Short version — zero labels to a champion prompt:
+
+1. **Generate real AI candidates** (replaces hand-written commentary variations):
+   ```bash
+   GEMINI_API_KEY=your_key node scripts/generate-candidates.mjs
+   # or one clip at a time:
+   GEMINI_API_KEY=your_key node scripts/generate-candidates.mjs --clip yt_eng_cro_12
+   # sanity-check without burning quota / without a key at all:
+   node scripts/generate-candidates.mjs --dry-run
+   ```
+   Writes real Gemini outputs (5 prompt strategies per clip) into `data/annotation_tasks.json`.
+
+2. **Collect Terac rankings** — open `annotate.html`, rank the 5 real candidates per clip. Locally this POSTs to `/api/labels` and is stored in `data/labels.local.json` (gitignored) by `local-server.mjs`; hosted Terac sessions use the same shape.
+
+3. **Build the preference dataset**:
+   ```bash
+   node scripts/build-preference-dataset.mjs --api=http://localhost:5173
+   # -> data/training/preference_pairs.jsonl (+ summary.json)
+   ```
+
+4. **Learn the champion prompt** (Phase 3A — no GPU, no fine-tune budget needed):
+   ```bash
+   node scripts/optimize-prompt.mjs
+   # -> data/prompts/champion_prompt.txt + data/prompts/champion_eval.json
+   ```
+   Finds the prompt strategy that wins most often, extracts the linguistic patterns of winning vs. losing commentary (ball-location rate, direction mentions, hedging, sentence length), and bakes them into an explicit system prompt. If `data/training/preference_pairs.jsonl` doesn't exist yet, this exits cleanly with instructions instead of crashing.
+
+   `local-server.mjs` automatically loads `data/prompts/champion_prompt.txt` at startup (if present) and uses it as the system prompt for every `/api/describe` call, overriding the client-sent default — no code changes needed once the file exists. The response body includes `usedChampionPrompt: true/false` for debugging.
+
+5. **Export a DPO fine-tune file** (Option B — stronger, needs a training budget):
+   ```bash
+   node scripts/export-dpo-dataset.mjs
+   # -> data/training/dpo_dataset.jsonl, one {"prompt","chosen","rejected"} object per line
+   node scripts/export-dpo-dataset.mjs --min-rank-gap=2   # keep only high-confidence pairs
+   ```
+   Ready for the OpenAI fine-tuning API, a local `trl` DPOTrainer run, or the Anthropic fine-tuning API once available.
+
+### API keys needed, by step
+
+| Step | Key | Where |
+|---|---|---|
+| Generate candidates | `GEMINI_API_KEY` (or `GOOGLE_API_KEY`) | `.env`, read by `scripts/generate-candidates.mjs` |
+| Collect labels | none | local — `local-server.mjs` writes `data/labels.local.json` |
+| Build preference dataset | none | reads from the local server's `/api/labels` + `/api/sessions` |
+| Optimize prompt | none | pure text-pattern analysis over `preference_pairs.jsonl` |
+| Live ADC/Q&A with champion prompt | one of `DASHSCOPE_API_KEY` / `ANTHROPIC_API_KEY` / `GEMINI_API_KEY` | `.env`, read by `local-server.mjs` |
+| Export DPO dataset | none | pure reshape of `preference_pairs.jsonl` |
+
+Every step degrades gracefully without keys: `generate-candidates.mjs --dry-run` needs none, `optimize-prompt.mjs`/`export-dpo-dataset.mjs` report "no preference data yet" instead of crashing, and `/api/describe` falls back to the client's local deterministic description (`localAdc()`/`localAnswer()` in `src/app.js`) when no LLM key is configured.
+
 ## Key docs
 
 - [`SCOPE.md`](./SCOPE.md): full scope and architecture

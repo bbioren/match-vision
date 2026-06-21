@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MatchVision — Eye Tracking (WebGazer)</title>
+    <link rel="stylesheet" href="src/styles.css" />
+    <style>
+      .eyetrack-status {
+        margin-top: 12px;
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        background: rgba(255,255,255,.06);
+        color: var(--muted);
+        min-height: 38px;
+      }
+      .eyetrack-status.active {
+        background: rgba(164,255,159,.1);
+        color: var(--accent-2);
+      }
+      .eyetrack-controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 16px;
+      }
+      .eyetrack-controls button {
+        flex: 1;
+        min-width: 120px;
+      }
+      .eyetrack-controls button.tracking-on {
+        background: var(--accent-2);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <section class="hero" aria-labelledby="et-title">
+        <p class="eyebrow">Low-vision accessibility feature</p>
+        <h1 id="et-title">Eye Tracking <span style="font-size:0.6em; color:var(--accent-2);">WebGazer</span></h1>
+        <p class="tagline">Look where you want to focus — the video zooms and follows your gaze.</p>
+        <p>
+          <a class="link" href="index.html">← Back to MatchVision</a>
+          &nbsp;&nbsp;
+          <a class="link" href="eyetrack.html">Switch to ml5 backend</a>
+        </p>
+      </section>
+
+      <section class="card" style="margin-bottom: 18px;">
+        <div id="eyetrack-player" style="position:relative;">
+        <div class="eyetrack-controls">
+          <button id="et-toggle" type="button">👁️ Enable Eye Tracking</button>
+          <button id="et-zoomin" type="button">🔍+ Zoom In</button>
+          <button id="et-zoomout" type="button">🔍− Zoom Out</button>
+          <button id="et-reset" type="button">↺ Reset</button>
+          <button id="et-test" type="button">🎮 Bouncing-dot test</button>
+        </div>
+        <div style="margin-top:10px;">
+          <select id="clip-picker" style="width:100%;padding:8px 12px;border-radius:8px;background:#1a1a2e;color:#e0e0e0;border:1px solid rgba(255,255,255,.15);font-size:0.85rem;cursor:pointer;">
+            <option value="clips/youtube/brazil_vs_haiti_2026_world_cup.mp4">🏆 Brazil vs Haiti — 2026 World Cup (17 min)</option>
+            <option value="clips/real/children_football_01.webm">⚽ Children football — clip 1</option>
+            <option value="clips/real/children_football_02.webm">⚽ Children football — clip 2</option>
+            <option value="clips/youtube/segments/england_vs_croatia_extended_highlights_2026_fifa_world_cup_007.mp4">🏆 England vs Croatia 2026 — seg 7</option>
+            <option value="clips/youtube/segments/england_vs_croatia_extended_highlights_2026_fifa_world_cup_008.mp4">🏆 England vs Croatia 2026 — seg 8</option>
+            <option value="clips/youtube/segments/england_vs_croatia_extended_highlights_2026_fifa_world_cup_009.mp4">🏆 England vs Croatia 2026 — seg 9</option>
+            <option value="clips/youtube/segments/england_vs_croatia_extended_highlights_2026_fifa_world_cup_011.mp4">🏆 England vs Croatia 2026 — seg 11</option>
+            <option value="clips/youtube/segments/england_vs_croatia_extended_highlights_2026_fifa_world_cup_012.mp4">🏆 England vs Croatia 2026 — seg 12</option>
+          </select>
+        </div>
+        <div class="eyetrack-status" id="et-status">
+          Click <strong>Enable Eye Tracking</strong> to start. WebGazer will ask for camera access, then show 9 dots — look at each one and press <strong>Space</strong> to record it. All processing stays on your device.
+        </div>
+      </section>
+
+      <section class="card" style="margin-bottom: 18px;">
+        <h2 style="margin-bottom: 16px;">Tune tracking</h2>
+        <div class="grid" style="gap: 12px;">
+          <label style="margin:0;">
+            <span style="color:var(--muted); font-size:.85rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em;">Gaze smoothing <span id="val-smooth">0.12</span></span>
+            <input type="range" id="ctrl-smooth" min="0.02" max="0.5" step="0.01" value="0.12" style="margin-top:8px;">
+          </label>
+          <label style="margin:0;">
+            <span style="color:var(--muted); font-size:.85rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em;">Pan speed <span id="val-speed">6</span></span>
+            <input type="range" id="ctrl-speed" min="1" max="50" step="1" value="6" style="margin-top:8px;">
+          </label>
+          <label style="margin:0;">
+            <span style="color:var(--muted); font-size:.85rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em;">Responsiveness (kP) <span id="val-kP">0.08</span></span>
+            <input type="range" id="ctrl-kP" min="0.01" max="0.5" step="0.01" value="0.08" style="margin-top:8px;">
+          </label>
+          <label style="margin:0;">
+            <span style="color:var(--muted); font-size:.85rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em;">Integral (kI) <span id="val-kI">0.02</span></span>
+            <input type="range" id="ctrl-kI" min="0" max="0.2" step="0.005" value="0.02" style="margin-top:8px;">
+          </label>
+          <label style="margin:0;">
+            <span style="color:var(--muted); font-size:.85rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em;">Damping (kD) <span id="val-kD">0.04</span></span>
+            <input type="range" id="ctrl-kD" min="0" max="0.3" step="0.01" value="0.04" style="margin-top:8px;">
+          </label>
+          <label style="margin:0;">
+            <span style="color:var(--muted); font-size:.85rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em;">Zoom <span id="val-zoom">2.0</span>×</span>
+            <input type="range" id="ctrl-zoom" min="1.2" max="6" step="0.1" value="2" style="margin-top:8px;">
+          </label>
+        </div>
+      </section>
+
+      <div class="grid">
+        <section class="card">
+          <h2>For low-vision fans</h2>
+          <ul style="color: var(--muted); line-height: 1.9; padding-left: 1.2em; margin: 0;">
+            <li>Automatically magnifies wherever your eyes focus</li>
+            <li>No manual scrolling or pinch-zooming needed</li>
+            <li>Works alongside MatchVision's spoken descriptions</li>
+            <li>Fully private — camera never leaves your device</li>
+          </ul>
+        </section>
+        <section class="card">
+          <h2>How it works (WebGazer)</h2>
+          <ol style="color: var(--muted); line-height: 1.9; padding-left: 1.2em; margin: 0;">
+            <li>Grant camera access when prompted</li>
+            <li>Click each of the 9 coloured calibration dots</li>
+            <li>WebGazer maps your eye position to screen coordinates</li>
+            <li>Gaze position drives smooth zoom + pan on the video</li>
+          </ol>
+        </section>
+      </div>
+    </main>
+
+    <script type="module">
+      import { EyeTrackingVideoPlayer } from './src/services/eyetrack-player-webgazer.js';
+      import { setParams } from './src/services/eyetrack-webgazer.js';
+
+      // ---------------------------------------------------------------------------
+      // Bouncing-dot test mode
+      // ---------------------------------------------------------------------------
+      let bouncingStream = null;
+      let bouncingRaf = null;
+
+      function startBouncingDot(videoEl) {
+        const W = 1280, H = 720;
+        const canvas = document.createElement('canvas');
+        canvas.width = W; canvas.height = H;
+        const ctx = canvas.getContext('2d');
+
+        // Ball state
+        let bx = W / 2, by = H / 2;
+        let vx = 4.5, vy = 3.2;
+        const R = 36;
+        let hue = 0;
+
+        function frame() {
+          // Background: dark field with a subtle grid
+          ctx.fillStyle = '#0a0a1a';
+          ctx.fillRect(0, 0, W, H);
+
+          // Grid
+          ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+          ctx.lineWidth = 1;
+          for (let x = 0; x < W; x += 80) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+          for (let y = 0; y < H; y += 80) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+
+          // Center crosshair
+          ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(W/2, 0); ctx.lineTo(W/2, H); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(0, H/2); ctx.lineTo(W, H/2); ctx.stroke();
+
+          // Move ball
+          bx += vx; by += vy;
+          if (bx - R < 0) { bx = R; vx = Math.abs(vx); }
+          if (bx + R > W) { bx = W - R; vx = -Math.abs(vx); }
+          if (by - R < 0) { by = R; vy = Math.abs(vy); }
+          if (by + R > H) { by = H - R; vy = -Math.abs(vy); }
+          hue = (hue + 1.2) % 360;
+
+          // Shadow
+          ctx.save();
+          ctx.shadowColor = `hsl(${hue},100%,65%)`;
+          ctx.shadowBlur = 32;
+
+          // Ball
+          const grad = ctx.createRadialGradient(bx - R*0.3, by - R*0.3, R*0.1, bx, by, R);
+          grad.addColorStop(0, `hsl(${hue},100%,90%)`);
+          grad.addColorStop(1, `hsl(${hue},100%,45%)`);
+          ctx.fillStyle = grad;
+          ctx.beginPath(); ctx.arc(bx, by, R, 0, Math.PI * 2); ctx.fill();
+          ctx.restore();
+
+          // Coords label
+          ctx.fillStyle = 'rgba(255,255,255,0.55)';
+          ctx.font = '16px monospace';
+          ctx.fillText(`ball: ${Math.round(bx)}, ${Math.round(by)}`, 14, H - 12);
+
+          bouncingRaf = requestAnimationFrame(frame);
+        }
+        frame();
+
+        bouncingStream = canvas.captureStream(30);
+        videoEl.srcObject = bouncingStream;
+        videoEl.play().catch(() => {});
+      }
+
+      function stopBouncingDot(videoEl, realSrc) {
+        if (bouncingRaf) { cancelAnimationFrame(bouncingRaf); bouncingRaf = null; }
+        if (bouncingStream) { bouncingStream.getTracks().forEach(t => t.stop()); bouncingStream = null; }
+        videoEl.srcObject = null;
+        videoEl.src = realSrc;
+        videoEl.play().catch(() => {});
+      }
+
+      // ---------------------------------------------------------------------------
+      // Player init
+      // ---------------------------------------------------------------------------
+      const REAL_SRC = 'clips/youtube/brazil_vs_haiti_2026_world_cup.mp4';
+      const player = new EyeTrackingVideoPlayer('eyetrack-player');
+      player.init(REAL_SRC);
+      document.getElementById('clip-picker').value = REAL_SRC;
+
+      // Test-mode toggle button
+      let testMode = false;
+      const testBtn = document.getElementById('et-test');
+      testBtn.addEventListener('click', () => {
+        testMode = !testMode;
+        if (testMode) {
+          startBouncingDot(player.videoElement);
+          testBtn.textContent = '🎮 Test mode ON';
+          testBtn.classList.add('tracking-on');
+        } else {
+          const src = document.getElementById('clip-picker').value;
+          stopBouncingDot(player.videoElement, src);
+          testBtn.textContent = '🎮 Bouncing-dot test';
+          testBtn.classList.remove('tracking-on');
+        }
+      });
+
+      // Clip picker
+      document.getElementById('clip-picker').addEventListener('change', (e) => {
+        if (testMode) return; // ignore while bouncing-dot is active
+        player.videoElement.src = e.target.value;
+        player.videoElement.play().catch(() => {});
+      });
+
+      let zoomLevel = 2.0;
+      const status = document.getElementById('et-status');
+      const toggleBtn = document.getElementById('et-toggle');
+
+      toggleBtn.addEventListener('click', async () => {
+        toggleBtn.disabled = true;
+        toggleBtn.textContent = '⏳ Starting…';
+        status.textContent = 'Loading WebGazer and starting camera…';
+
+        const on = await player.toggleTracking(zoomLevel);
+        toggleBtn.disabled = false;
+        toggleBtn.textContent = on ? '👁️ Eye Tracking ON' : '👁️ Enable Eye Tracking';
+        toggleBtn.classList.toggle('tracking-on', on);
+        status.textContent = on
+          ? '✅ Eye tracking active — look at the video to pan and zoom.'
+          : 'Eye tracking off.';
+        status.classList.toggle('active', on);
+      });
+
+      document.getElementById('et-zoomin').addEventListener('click', () => {
+        zoomLevel = Math.min(zoomLevel + 0.25, 4);
+        player.setZoom(zoomLevel);
+        document.getElementById('val-zoom').textContent = zoomLevel.toFixed(1);
+        document.getElementById('ctrl-zoom').value = zoomLevel;
+      });
+      document.getElementById('et-zoomout').addEventListener('click', () => {
+        zoomLevel = Math.max(zoomLevel - 0.25, 1);
+        player.setZoom(zoomLevel);
+        document.getElementById('val-zoom').textContent = zoomLevel.toFixed(1);
+        document.getElementById('ctrl-zoom').value = zoomLevel;
+      });
+      document.getElementById('et-reset').addEventListener('click', () => {
+        zoomLevel = 2.0;
+        player.setZoom(1);
+        document.getElementById('val-zoom').textContent = '2.0';
+        document.getElementById('ctrl-zoom').value = 2;
+      });
+
+
+      // Live param sliders
+      function slider(id, valId, paramKey, fmt = v => v) {
+        const el = document.getElementById(id);
+        el.addEventListener('input', () => {
+          const v = parseFloat(el.value);
+          document.getElementById(valId).textContent = fmt(v);
+          if (paramKey === 'zoom') { zoomLevel = v; player.setZoom(v); }
+          else setParams({ [paramKey]: v });
+        });
+      }
+      slider('ctrl-smooth', 'val-smooth', 'gazeSmooth', v => v.toFixed(2));
+      slider('ctrl-speed',  'val-speed',  'panSpeed');
+      slider('ctrl-kP',     'val-kP',     'kP',  v => v.toFixed(2));
+      slider('ctrl-kI',     'val-kI',     'kI',  v => v.toFixed(3));
+      slider('ctrl-kD',     'val-kD',     'kD',  v => v.toFixed(2));
+      slider('ctrl-zoom',   'val-zoom',   'zoom', v => v.toFixed(1));
+
+      setParams({
+        gazeSmooth: parseFloat(document.getElementById('ctrl-smooth').value),
+        panSpeed:   parseFloat(document.getElementById('ctrl-speed').value),
+        kP:         parseFloat(document.getElementById('ctrl-kP').value),
+        kI:         parseFloat(document.getElementById('ctrl-kI').value),
+        kD:         parseFloat(document.getElementById('ctrl-kD').value),
+      });
+    </script>
+  </body>
+</html>
