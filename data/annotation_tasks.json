@@ -456,27 +456,27 @@
       {
         "id": "a",
         "label": "Spatial",
-        "description": "Harry Kane stands over the ball on the penalty spot, twelve yards from goal, composing himself as the Croatian goalkeeper waits centrally on the goal line."
+        "description": "Kane stands at the penalty spot, 12 yards from goal, ball centered, as the Croatian keeper waits on the goal line."
       },
       {
         "id": "b",
         "label": "Tactical",
-        "description": "Kane stands alone at the spot, twelve yards of tension between him and the Croatian keeper who shifts nervously on his line—England's entire momentum hanging on this single, prepared strike."
+        "description": "Kane stands over the ball, a solitary figure against the Croatian keeper, who is spread wide on his line; the tension is palpable as this penalty could define the match."
       },
       {
         "id": "c",
         "label": "Concise live",
-        "description": "Harry Kane stands over the ball, eyes fixed on goal, the tension building before he strikes."
+        "description": "Kane stands over the ball, eyes fixed on the Croatian keeper."
       },
       {
         "id": "d",
         "label": "Narrative",
-        "description": "Harry Kane stands alone at the penalty spot, shoulders squared, eyes fixed forward as the Croatian goalkeeper shifts nervously on his line—an entire nation holding its breath in this frozen moment of possibility."
+        "description": "Harry Kane stands poised at the penalty spot, his gaze fixed on the ball, the weight of England's hopes resting on his shoulders as the Croatian goalkeeper looms large on the distant goal line."
       },
       {
         "id": "e",
         "label": "Baseline",
-        "description": "Harry Kane stands over the ball at the penalty spot, composing himself before the kick."
+        "description": "Harry Kane stands over the ball, preparing to take a penalty kick."
       }
     ],
     "split": "heldout",
@@ -484,31 +484,31 @@
       {
         "id": "a",
         "label": "Spatial",
-        "text": "Harry Kane stands over the ball on the penalty spot, twelve yards from goal, composing himself as the Croatian goalkeeper waits centrally on the goal line."
+        "text": "Kane stands at the penalty spot, 12 yards from goal, ball centered, as the Croatian keeper waits on the goal line."
       },
       {
         "id": "b",
         "label": "Tactical",
-        "text": "Kane stands alone at the spot, twelve yards of tension between him and the Croatian keeper who shifts nervously on his line—England's entire momentum hanging on this single, prepared strike."
+        "text": "Kane stands over the ball, a solitary figure against the Croatian keeper, who is spread wide on his line; the tension is palpable as this penalty could define the match."
       },
       {
         "id": "c",
         "label": "Concise live",
-        "text": "Harry Kane stands over the ball, eyes fixed on goal, the tension building before he strikes."
+        "text": "Kane stands over the ball, eyes fixed on the Croatian keeper."
       },
       {
         "id": "d",
         "label": "Narrative",
-        "text": "Harry Kane stands alone at the penalty spot, shoulders squared, eyes fixed forward as the Croatian goalkeeper shifts nervously on his line—an entire nation holding its breath in this frozen moment of possibility."
+        "text": "Harry Kane stands poised at the penalty spot, his gaze fixed on the ball, the weight of England's hopes resting on his shoulders as the Croatian goalkeeper looms large on the distant goal line."
       },
       {
         "id": "e",
         "label": "Baseline",
-        "text": "Harry Kane stands over the ball at the penalty spot, composing himself before the kick."
+        "text": "Harry Kane stands over the ball, preparing to take a penalty kick."
       }
     ],
-    "generated_at": "2026-06-21T03:48:21.190Z",
-    "generation_model": "claude-opus-4-5",
+    "generated_at": "2026-06-21T04:48:21.931Z",
+    "generation_model": "gemini-2.5-flash",
     "clip_summary_source": "manual"
   }
 ]

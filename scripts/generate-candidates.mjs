@@ -42,7 +42,7 @@ async function gemini(system, userContent, attempt = 1) {
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: system }] },
       contents: [{ role: 'user', parts }],
-      generationConfig: { maxOutputTokens: 512, temperature: 0.15 },
+      generationConfig: { maxOutputTokens: 1024, temperature: 0.15, thinkingConfig: { thinkingBudget: 0 } },
     }),
   });
   if (!res.ok) {
@@ -58,6 +58,13 @@ async function gemini(system, userContent, attempt = 1) {
   const text = data.candidates?.[0]?.content?.parts?.map(part => part.text || '').join('\n').trim();
   if (!text) throw new Error(`Gemini returned no text: ${JSON.stringify(data)}`);
   return text;
+}
+
+function assertCompleteSentence(text, label) {
+  const trimmed = text.trim();
+  if (!/[.!?]$/.test(trimmed) || /["'“‘]$/.test(trimmed)) {
+    throw new Error(`${label} returned an incomplete sentence: ${trimmed}`);
+  }
 }
 
 // ── Extract frames from video ─────────────────────────────────────────────────
@@ -170,6 +177,7 @@ async function generateCandidates(clipSummary, frames, manualSummary = false) {
     process.stdout.write(`    [${strategy.id}] ${strategy.label}... `);
     try {
       const text = await gemini(strategy.system, userPrompt);
+      assertCompleteSentence(text, strategy.label);
       results.push({ id: strategy.id, label: strategy.label, text });
       console.log('✓');
     } catch (err) {
