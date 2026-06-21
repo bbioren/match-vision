@@ -88,8 +88,8 @@
     [0.1,0.9],[0.5,0.9],[0.9,0.9],
   ];
   const DOT_COLORS = ['#ff4444','#ff8800','#ffdd00','#44ff44','#00ddff',
-                      '#4488ff','#cc44ff','#ff44cc','#ffffff'];
-  const CAL_DWELL_MS = 2000;
+                      '#4488ff','#cc44ff','#ff44cc','#ff3366'];
+  const CAL_DWELL_MS = 1333;
 
   function runCalibration() {
     return new Promise(resolve => {
