@@ -449,34 +449,34 @@
     "task_id": "yt_eng_cro_12",
     "clip_id": "england_vs_croatia_extended_highlights_2026_fifa_world_cup_012",
     "video_src": "clips/youtube/segments/england_vs_croatia_extended_highlights_2026_fifa_world_cup_012.mp4",
-    "clip_summary": "Harry Kane steps up to take a penalty kick for England against Croatia in the FIFA World Cup 2026. Kane is shown in close-up preparing himself, then the camera pulls back to show him standing over the ball on the penalty spot with the Croatian goalkeeper on the goal line. Kane takes his run-up and strikes the ball.",
+    "clip_summary": "Harry Kane prepares to take a penalty kick for England against Croatia in the FIFA World Cup 2026. The clip shows Kane in close-up composing himself, then standing over the ball on the penalty spot with the Croatian goalkeeper on the goal line. The clip ends before the kick is taken — this is the moment of anticipation before the penalty.",
     "baseline": "England have a free kick near Croatia's goal.",
     "improved": "Harry Kane stands over a free kick just outside Croatia's penalty area. Croatia's wall is set and defenders mark runners, while Kane measures his run-up — a direct shot on goal or a precise delivery into the crowded box is seconds away.",
     "candidates": [
       {
         "id": "a",
         "label": "Spatial",
-        "description": "Kane stands twelve yards out at the penalty spot, facing the Croatian goalkeeper who waits centrally on the goal line, then begins his run-up toward the ball."
+        "description": "Harry Kane stands over the ball on the penalty spot, twelve yards from goal, composing himself as the Croatian goalkeeper waits centrally on the goal line."
       },
       {
         "id": "b",
         "label": "Tactical",
-        "description": "Kane stands over the spot, the Croatian keeper rooted to his line—this is a moment of pure isolation, one striker against one goalkeeper, with England's momentum hanging on his composure and placement."
+        "description": "Kane stands alone at the spot, twelve yards of tension between him and the Croatian keeper who shifts nervously on his line—England's entire momentum hanging on this single, prepared strike."
       },
       {
         "id": "c",
         "label": "Concise live",
-        "description": "Kane steps up, eyes the goal, and strikes the penalty."
+        "description": "Harry Kane stands over the ball, eyes fixed on goal, the tension building before he strikes."
       },
       {
         "id": "d",
         "label": "Narrative",
-        "description": "Harry Kane stands alone at the penalty spot, the weight of England's hopes visible in his focused gaze as he begins his measured run-up toward the ball."
+        "description": "Harry Kane stands alone at the penalty spot, shoulders squared, eyes fixed forward as the Croatian goalkeeper shifts nervously on his line—an entire nation holding its breath in this frozen moment of possibility."
       },
       {
         "id": "e",
         "label": "Baseline",
-        "description": "Harry Kane prepares and strikes a penalty kick for England against Croatia."
+        "description": "Harry Kane stands over the ball at the penalty spot, composing himself before the kick."
       }
     ],
     "split": "heldout",
@@ -484,30 +484,30 @@
       {
         "id": "a",
         "label": "Spatial",
-        "text": "Kane stands twelve yards out at the penalty spot, facing the Croatian goalkeeper who waits centrally on the goal line, then begins his run-up toward the ball."
+        "text": "Harry Kane stands over the ball on the penalty spot, twelve yards from goal, composing himself as the Croatian goalkeeper waits centrally on the goal line."
       },
       {
         "id": "b",
         "label": "Tactical",
-        "text": "Kane stands over the spot, the Croatian keeper rooted to his line—this is a moment of pure isolation, one striker against one goalkeeper, with England's momentum hanging on his composure and placement."
+        "text": "Kane stands alone at the spot, twelve yards of tension between him and the Croatian keeper who shifts nervously on his line—England's entire momentum hanging on this single, prepared strike."
       },
       {
         "id": "c",
         "label": "Concise live",
-        "text": "Kane steps up, eyes the goal, and strikes the penalty."
+        "text": "Harry Kane stands over the ball, eyes fixed on goal, the tension building before he strikes."
       },
       {
         "id": "d",
         "label": "Narrative",
-        "text": "Harry Kane stands alone at the penalty spot, the weight of England's hopes visible in his focused gaze as he begins his measured run-up toward the ball."
+        "text": "Harry Kane stands alone at the penalty spot, shoulders squared, eyes fixed forward as the Croatian goalkeeper shifts nervously on his line—an entire nation holding its breath in this frozen moment of possibility."
       },
       {
         "id": "e",
         "label": "Baseline",
-        "text": "Harry Kane prepares and strikes a penalty kick for England against Croatia."
+        "text": "Harry Kane stands over the ball at the penalty spot, composing himself before the kick."
       }
     ],
-    "generated_at": "2026-06-21T03:47:00.455Z",
+    "generated_at": "2026-06-21T03:48:21.190Z",
     "generation_model": "claude-opus-4-5",
     "clip_summary_source": "manual"
   }
