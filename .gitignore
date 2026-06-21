@@ -37,3 +37,5 @@ clips/real/*.mp4
 
 # local annotation smoke-test output
 data/labels.local.json
+
+clips/real/*.mov
