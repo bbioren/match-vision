@@ -451,6 +451,9 @@
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     let listenRec = null;
     let listenOn  = false;
+    let listenGen = 0;            // bumped on every forced restart — stale rec/recorder callbacks check this and no-op
+    let lastRecogActivity = Date.now();
+    let watchdogInterval = null;
 
     function setListenOn(on) {
       listenOn = on;
@@ -465,6 +468,8 @@
 
       function cycle() {
         if (!listenOn) return;
+        const myGen = ++listenGen; // any earlier cycle's rec/recorder becomes stale and no-ops
+        lastRecogActivity = Date.now();
         const rec = new SR();
         rec.lang = 'en-US';
         rec.continuous = false;
@@ -483,9 +488,13 @@
           } catch (_) { recorder = null; }
         }
 
+        rec.onstart = () => { lastRecogActivity = Date.now(); };
+
         rec.onresult = async (e) => {
+          lastRecogActivity = Date.now();
           const localRaw = e.results[0][0].transcript.trim();
           const blob = await stopRecorder(recorder);
+          if (myGen !== listenGen) return; // superseded by a watchdog restart while we were transcribing
           if (!localRaw && !blob) return;
           if (Date.now() < micMuteUntil) { console.log('[MV listen] ignoring (TTS playing)'); return; }
 
@@ -508,22 +517,49 @@
           }).catch(() => { voiceBusy = false; });
         };
 
-        rec.onend   = () => { if (recorder?.state === 'recording') { try { recorder.stop(); } catch (_) {} } setTimeout(cycle, 80); };
+        rec.onend   = () => {
+          lastRecogActivity = Date.now();
+          if (recorder?.state === 'recording') { try { recorder.stop(); } catch (_) {} }
+          if (myGen === listenGen) setTimeout(cycle, 80);
+        };
         rec.onerror = (e) => {
+          lastRecogActivity = Date.now();
           if (recorder?.state === 'recording') { try { recorder.stop(); } catch (_) {} }
           if (e.error !== 'no-speech' && e.error !== 'aborted')
             console.warn('[MV listen] error:', e.error);
-          setTimeout(cycle, e.error === 'network' ? 2000 : 80);
+          if (myGen === listenGen) setTimeout(cycle, e.error === 'network' ? 2000 : 80);
         };
-        try { rec.start(); } catch (_) { setTimeout(cycle, 400); }
+        try { rec.start(); } catch (_) { if (myGen === listenGen) setTimeout(cycle, 400); }
       }
       cycle();
+
+      // Watchdog: browsers can silently stop delivering recognition events —
+      // e.g. after entering/exiting fullscreen, or when focus moves off the
+      // page — without ever firing onend/onerror. If nothing has happened for
+      // a while, or the mic track itself died, force a fresh restart instead
+      // of staying stuck. Mirrors the recovery behavior already built for the
+      // gaze-tracking camera pipeline.
+      if (watchdogInterval) clearInterval(watchdogInterval);
+      watchdogInterval = setInterval(async () => {
+        if (!listenOn) return;
+        const micDead = micStream && micStream.getAudioTracks().every(t => t.readyState === 'ended');
+        if (micDead) {
+          console.warn('[MV listen] mic stream ended unexpectedly — reacquiring');
+          try { micStream = await navigator.mediaDevices.getUserMedia({ audio: true }); } catch (_) { micStream = null; }
+        }
+        if (micDead || Date.now() - lastRecogActivity > 8000) {
+          console.warn('[MV listen] recognition looked stuck — forcing restart');
+          try { listenRec?.abort(); } catch (_) {}
+          cycle();
+        }
+      }, 4000);
     }
 
     micBtn.addEventListener('click', async () => {
       if (!SR) { voiceStatus.textContent = '⚠ Speech recognition not available.'; return; }
       if (listenOn) {
         listenOn = false;
+        if (watchdogInterval) { clearInterval(watchdogInterval); watchdogInterval = null; }
         try { listenRec?.stop(); } catch (_) {}
         micStream?.getTracks().forEach(t => t.stop());
         micStream = null;
